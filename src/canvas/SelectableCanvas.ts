@@ -41,9 +41,9 @@ export const DefaultCanvasProperties = {
   altActionKey: 'shiftKey',
   selection: true,
   selectionKey: 'shiftKey',
-  selectionColor: 'rgba(100, 100, 255, 0.3)', // blue
+  selectionColor: 'rgba(179, 205, 253, 0.5)', // blue
   selectionDashArray: [],
-  selectionBorderColor: 'rgba(255, 255, 255, 0.3)',
+  selectionBorderColor: '#31A4F5',
   selectionLineWidth: 1,
   selectionFullyContained: false,
   hoverCursor: 'move',
@@ -60,6 +60,7 @@ export const DefaultCanvasProperties = {
   fireRightClick: false,
   fireMiddleClick: false,
   enablePointerEvents: false,
+  showBackgroundDots: true,
 };
 
 /**
@@ -566,8 +567,8 @@ export class SelectableCanvas<
     const activeObject = this._activeObject;
     return !this.preserveObjectStacking && activeObject
       ? this._objects
-          .filter((object) => !object.group && object !== activeObject)
-          .concat(activeObject)
+        .filter((object) => !object.group && object !== activeObject)
+        .concat(activeObject)
       : this._objects;
   }
 
@@ -808,11 +809,11 @@ export class SelectableCanvas<
     }
     const pointer = target.group
       ? // transform pointer to target's containing coordinate plane
-        sendPointToPlane(
-          this.getPointer(e),
-          undefined,
-          target.group.calcTransformMatrix()
-        )
+      sendPointToPlane(
+        this.getPointer(e),
+        undefined,
+        target.group.calcTransformMatrix()
+      )
       : this.getPointer(e);
     const corner = target.__corner || '',
       control = !!corner && target.controls[corner],
@@ -1136,9 +1137,9 @@ export class SelectableCanvas<
       boundsWidth === 0 || boundsHeight === 0
         ? new Point(1, 1)
         : new Point(
-            upperCanvasEl.width / boundsWidth,
-            upperCanvasEl.height / boundsHeight
-          );
+          upperCanvasEl.width / boundsWidth,
+          upperCanvasEl.height / boundsHeight
+        );
 
     return pointer.multiply(cssScale);
   }

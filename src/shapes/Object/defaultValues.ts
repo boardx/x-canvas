@@ -105,4 +105,5 @@ export const fabricObjectDefaultValues = {
   inverted: false,
   absolutePositioned: false,
   FX_DURATION: 500,
+  obj_type: ''
 } as const;

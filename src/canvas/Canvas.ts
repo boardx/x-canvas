@@ -864,7 +864,7 @@ export class Canvas extends SelectableCanvas {
       (transform.target !== target || transform.corner !== corner)
     ) {
       const originalControl =
-          transform.target && transform.target.controls[transform.corner],
+        transform.target && transform.target.controls[transform.corner],
         originalMouseUpHandler =
           originalControl &&
           originalControl.getMouseUpHandler(
@@ -1362,10 +1362,10 @@ export class Canvas extends SelectableCanvas {
       //  both pointer and object should agree on every point
       localPointer = target.group
         ? sendPointToPlane(
-            pointer,
-            undefined,
-            target.group.calcTransformMatrix()
-          )
+          pointer,
+          undefined,
+          target.group.calcTransformMatrix()
+        )
         : pointer;
     // seems used only here.
     // @TODO: investigate;
@@ -1415,9 +1415,9 @@ export class Canvas extends SelectableCanvas {
     }
     let hoverCursor = target.hoverCursor || this.hoverCursor;
     const activeSelection =
-        this._activeObject === this._activeSelection
-          ? this._activeObject
-          : null,
+      this._activeObject === this._activeSelection
+        ? this._activeObject
+        : null,
       // only show proper corner when group selection is not active
       corner =
         (!activeSelection || target.group !== activeSelection) &&
@@ -1566,8 +1566,8 @@ export class Canvas extends SelectableCanvas {
         ? [collectedObjects[0]]
         : []
       : collectedObjects.length > 1
-      ? collectedObjects.filter((object) => !object.onSelect({ e })).reverse()
-      : collectedObjects;
+        ? collectedObjects.filter((object) => !object.onSelect({ e })).reverse()
+        : collectedObjects;
 
     // set active object
     if (objects.length === 1) {

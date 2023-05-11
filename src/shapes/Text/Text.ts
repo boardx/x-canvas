@@ -65,11 +65,11 @@ export type GraphemeBBox<onPath = false> = {
   deltaY: number;
 } & (onPath extends true
   ? {
-      // on path
-      renderLeft: number;
-      renderTop: number;
-      angle: number;
-    }
+    // on path
+    renderLeft: number;
+    renderTop: number;
+    angle: number;
+  }
   : Record<string, never>);
 
 // @TODO this is not complete
@@ -88,26 +88,26 @@ interface UniqueTextProps {
   textAlign: string;
   direction: CanvasDirection;
   path?: Path;
+  obj_type: 'WBText';
 }
 
 export interface SerializedTextProps
   extends SerializedObjectProps,
-    UniqueTextProps {}
+  UniqueTextProps { }
 
-export interface TextProps extends FabricObjectProps, UniqueTextProps {}
+export interface TextProps extends FabricObjectProps, UniqueTextProps { }
 
 /**
  * Text class
  * @tutorial {@link http://fabricjs.com/fabric-intro-part-2#text}
  */
 export class Text<
-    Props extends TProps<TextProps> = Partial<TextProps>,
-    SProps extends SerializedTextProps = SerializedTextProps,
-    EventSpec extends ObjectEvents = ObjectEvents
-  >
+  Props extends TProps<TextProps> = Partial<TextProps>,
+  SProps extends SerializedTextProps = SerializedTextProps,
+  EventSpec extends ObjectEvents = ObjectEvents
+>
   extends StyledText<Props, SProps, EventSpec>
-  implements UniqueTextProps
-{
+  implements UniqueTextProps {
   /**
    * Properties that requires a text layout recalculation when changed
    * @type string[]
@@ -544,9 +544,8 @@ export class Text<
    * @return {String} String representation of text object
    */
   toString(): string {
-    return `#<Text (${this.complexity()}): { "text": "${
-      this.text
-    }", "fontFamily": "${this.fontFamily}" }>`;
+    return `#<Text (${this.complexity()}): { "text": "${this.text
+      }", "fontFamily": "${this.fontFamily}" }>`;
   }
 
   /**
@@ -818,7 +817,15 @@ export class Text<
       kernedWidth: kernedWidth * fontMultiplier,
     };
   }
-
+  toObject() {
+    const object = {};
+    this.keys.forEach((key) => {
+      if (this[key] !== undefined) {
+        object[key] = this[key];
+      }
+    });
+    return object;
+  }
   /**
    * Computes height of character at given position
    * @param {Number} line the line index number
@@ -1609,10 +1616,10 @@ export class Text<
       fontIsGeneric = Text.genericFonts.indexOf(family.toLowerCase()) > -1;
     const fontFamily =
       family === undefined ||
-      family.indexOf("'") > -1 ||
-      family.indexOf(',') > -1 ||
-      family.indexOf('"') > -1 ||
-      fontIsGeneric
+        family.indexOf("'") > -1 ||
+        family.indexOf(',') > -1 ||
+        family.indexOf('"') > -1 ||
+        fontIsGeneric
         ? style.fontFamily
         : `"${style.fontFamily}"`;
     return [
@@ -1852,7 +1859,7 @@ export class Text<
       top:
         text.top -
         (textHeight - text.fontSize * (0.07 + text._fontSizeFraction)) /
-          text.lineHeight,
+        text.lineHeight,
       strokeWidth:
         typeof originalStrokeWidth !== 'undefined' ? originalStrokeWidth : 1,
     });

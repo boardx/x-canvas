@@ -100,6 +100,6 @@ export const createResizeControls = () => ({
 });
 
 export const createTextboxDefaultControls = () => ({
-  ...createObjectDefaultControls(),
+  //...createObjectDefaultControls(),
   ...createResizeControls(),
 });

@@ -14,6 +14,7 @@ export const textboxDefaultValues: Partial<TClassProperties<Textbox>> = {
   noScaleCache: false,
   _wordJoiners: /[ \t\r]/,
   splitByGrapheme: false,
+  obj_type: 'WBTextbox',
 };
 
 /**
@@ -30,6 +31,8 @@ export class Textbox extends IText {
    */
   declare minWidth: number;
 
+  /* boardx cusotm function */
+  declare obj_type: string;
   /**
    * Minimum calculated width of a textbox, in pixels.
    * fixed to 2 so that an empty textbox cannot go to 0
@@ -86,7 +89,15 @@ export class Textbox extends IText {
     // clear cache and re-calculate height
     this.height = this.calcTextHeight();
   }
-
+  toObject() {
+    const object = {};
+    this.keys.forEach((key) => {
+      if (this[key] !== undefined) {
+        object[key] = this[key];
+      }
+    });
+    return object;
+  }
   /**
    * Generate an object that translates the style object so that it is
    * broken up by visual lines (new lines and automatic wrapping).

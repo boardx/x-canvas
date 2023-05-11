@@ -38,6 +38,7 @@ export const iTextDefaultValues = {
   keysMapRtl,
   ctrlKeysMapDown,
   ctrlKeysMapUp,
+  obj_type: ''
 };
 
 // @TODO this is not complete
@@ -48,9 +49,9 @@ interface UniqueITextProps {
 
 export interface SerializedITextProps
   extends SerializedTextProps,
-    UniqueITextProps {}
+  UniqueITextProps { }
 
-export interface ITextProps extends TextProps, UniqueITextProps {}
+export interface ITextProps extends TextProps, UniqueITextProps { }
 
 /**
  * @fires changed
@@ -96,13 +97,12 @@ export interface ITextProps extends TextProps, UniqueITextProps {}
  * ```
  */
 export class IText<
-    Props extends ITextProps = ITextProps,
-    SProps extends SerializedITextProps = SerializedITextProps,
-    EventSpec extends ITextEvents = ITextEvents
-  >
+  Props extends ITextProps = ITextProps,
+  SProps extends SerializedITextProps = SerializedITextProps,
+  EventSpec extends ITextEvents = ITextEvents
+>
   extends ITextClickBehavior<Props, SProps, EventSpec>
-  implements UniqueITextProps
-{
+  implements UniqueITextProps {
   /**
    * Index where text selection starts (or where cursor is when there is no selection)
    * @type Number
@@ -498,7 +498,7 @@ export class IText<
       topOffset =
         boundaries.topOffset +
         ((1 - this._fontSizeFraction) * this.getHeightOfLine(lineIndex)) /
-          this.lineHeight -
+        this.lineHeight -
         charHeight * (1 - this._fontSizeFraction);
 
     if (this.inCompositionMode) {
