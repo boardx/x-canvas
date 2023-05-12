@@ -1,6 +1,6 @@
 import { cache } from '../../cache';
 import { config } from '../../config';
-import { ALIASING_LIMIT, iMatrix, VERSION } from '../../constants';
+import { ALIASING_LIMIT, iMatrix } from '../../constants';
 import { ObjectEvents } from '../../EventTypeDefs';
 import { AnimatableObject } from './AnimatableObject';
 import { Point } from '../../Point';
@@ -85,13 +85,12 @@ export type TCachedFabricObject = FabricObject &
  * @fires drop
  */
 export class FabricObject<
-    Props extends TProps<ObjectProps> = Partial<ObjectProps>,
-    SProps extends SerializedObjectProps = SerializedObjectProps,
-    EventSpec extends ObjectEvents = ObjectEvents
-  >
+  Props extends TProps<ObjectProps> = Partial<ObjectProps>,
+  SProps extends SerializedObjectProps = SerializedObjectProps,
+  EventSpec extends ObjectEvents = ObjectEvents
+>
   extends AnimatableObject<EventSpec>
-  implements ObjectProps
-{
+  implements ObjectProps {
   declare minScaleLimit: number;
 
   declare opacity: number;
@@ -495,15 +494,15 @@ export class FabricObject<
       clipPathData =
         this.clipPath && !this.clipPath.excludeFromExport
           ? {
-              ...this.clipPath.toObject(propertiesToInclude),
-              inverted: this.clipPath.inverted,
-              absolutePositioned: this.clipPath.absolutePositioned,
-            }
+            ...this.clipPath.toObject(propertiesToInclude),
+            inverted: this.clipPath.inverted,
+            absolutePositioned: this.clipPath.absolutePositioned,
+          }
           : null,
       object = {
         ...pick(this, propertiesToInclude as (keyof this)[]),
-        type: this.constructor.name,
-        version: VERSION,
+        //type: this.constructor.name,
+        //version: VERSION,
         originX: this.originX,
         originY: this.originY,
         left: toFixed(this.left, NUM_FRACTION_DIGITS),

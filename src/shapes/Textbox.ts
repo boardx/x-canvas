@@ -89,15 +89,6 @@ export class Textbox extends IText {
     // clear cache and re-calculate height
     this.height = this.calcTextHeight();
   }
-  toObject() {
-    const object = {};
-    this.keys.forEach((key) => {
-      if (this[key] !== undefined) {
-        object[key] = this[key];
-      }
-    });
-    return object;
-  }
   /**
    * Generate an object that translates the style object so that it is
    * broken up by visual lines (new lines and automatic wrapping).

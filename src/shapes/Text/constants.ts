@@ -32,6 +32,26 @@ export const additionalProps = [
   ...textDecorationProperties,
   'textBackgroundColor',
   'direction',
+  '_id',
+  'editable',
+  'fixedScaleChange',
+  'fromCopy',
+  'isPanel',
+  'lines',
+  'locked',
+  'lockScalingFlip',
+  'maxHeight',
+  'obj_type',
+  'panelObj',
+  'preTop',
+  'relationship',
+  'shapeScaleX',
+  'shapeScaleY',
+  'subObjList',
+  'tempTop',
+  'userId',
+  'whiteboardId',
+  'zIndex'
 ] as const;
 
 export const styleProperties = [
@@ -88,5 +108,26 @@ export const textDefaultValues: Partial<TClassProperties<Text>> = {
   direction: 'ltr',
   CACHE_FONT_SIZE: 400,
   MIN_TEXT_WIDTH: 2,
-  obj_type: 'WBText'
+
+  /*boardx extend values*/
+  _id: '',
+  editable: true,
+  fixedScaleChange: true,
+  fromCopy: false,
+  isPanel: false,
+  lines: [],
+  locked: false,
+  lockScalingFlip: false,
+  maxHeight: 138,
+  obj_type: 'WBText',
+  panelObj: false,
+  preTop: 0,
+  relationship: [],
+  shapeScaleX: 0,
+  shapeScaleY: 0,
+  subObjList: '',
+  tempTop: 0,
+  userId: '',
+  whiteboardId: '',
+  zIndex: 0
 };

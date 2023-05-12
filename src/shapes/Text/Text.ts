@@ -75,6 +75,7 @@ export type GraphemeBBox<onPath = false> = {
 // @TODO this is not complete
 interface UniqueTextProps {
   charSpacing: number;
+  direction: CanvasDirection;
   lineHeight: number;
   fontSize: number;
   fontWeight: string;
@@ -86,9 +87,8 @@ interface UniqueTextProps {
   overline: boolean;
   linethrough: boolean;
   textAlign: string;
-  direction: CanvasDirection;
+
   path?: Path;
-  obj_type: 'WBText';
 }
 
 export interface SerializedTextProps
@@ -141,8 +141,49 @@ export class Text<
    */
   declare _reWords: RegExp;
 
-  /*boardx custom function*/
+  /*boardx custom function start*/
+
+  declare _id: string;
+
+  declare editable: boolean;
+
+  declare fixedScaleChange: boolean;
+
+  declare fromCopy: boolean;
+
+  declare isPanel: boolean;
+
+  declare lines: object[];
+
+  declare locked: boolean;
+
+  declare lockScalingFlip: boolean;
+
+  declare maxHeight: number;
+
   declare obj_type: string;
+
+  declare panelObj: boolean;
+
+  declare preTop: number;
+
+  declare relationship: object[];
+
+  declare shapeScaleX: number;
+
+  declare shapeScaleY: number;
+
+  declare subObjList: string;
+
+  declare tempTop: number;
+
+  declare userId: string;
+
+  declare whiteboardId: string;
+
+  declare zIndex: number;
+
+  /*boardx custom function end*/
 
   declare text: string;
 
