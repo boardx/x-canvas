@@ -7,8 +7,7 @@
  * @return {String} Capitalized version of a string
  */
 export const capitalize = (string: string, firstLetterOnly = false): string =>
-  `${string.charAt(0).toUpperCase()}${
-    firstLetterOnly ? string.slice(1) : string.slice(1).toLowerCase()
+  `${string.charAt(0).toUpperCase()}${firstLetterOnly ? string.slice(1) : string.slice(1).toLowerCase()
   }`;
 
 /**
