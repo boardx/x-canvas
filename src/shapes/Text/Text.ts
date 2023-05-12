@@ -141,6 +141,9 @@ export class Text<
    */
   declare _reWords: RegExp;
 
+  /*boardx custom function*/
+  declare obj_type: string;
+
   declare text: string;
 
   /**
@@ -816,15 +819,6 @@ export class Text<
       width: width * fontMultiplier,
       kernedWidth: kernedWidth * fontMultiplier,
     };
-  }
-  toObject() {
-    const object = {};
-    this.keys.forEach((key) => {
-      if (this[key] !== undefined) {
-        object[key] = this[key];
-      }
-    });
-    return object;
   }
   /**
    * Computes height of character at given position

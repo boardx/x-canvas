@@ -88,4 +88,5 @@ export const textDefaultValues: Partial<TClassProperties<Text>> = {
   direction: 'ltr',
   CACHE_FONT_SIZE: 400,
   MIN_TEXT_WIDTH: 2,
+  obj_type: 'WBText'
 };
