@@ -686,6 +686,28 @@ export class IText<
     this.draggableTextDelegate.dispose();
     super.dispose();
   }
+  /* boardx extend function */
+  getWidgetMenuList() {
+    if (this.locked) {
+      return ['objectLock'];
+    }
+    return [
+      'drawNote',
+      'more',
+      'switchNoteType',
+      'fontSize',
+      'changeFont',
+      'fontWeight',
+      'textBullet',
+      'borderLineIcon',
+      'textAlign',
+      'backgroundColor',
+      'fontColor',
+      'applyFormat',
+      'objectLock',
+      'delete',
+    ];
+  }
 }
 
 classRegistry.setClass(IText);
