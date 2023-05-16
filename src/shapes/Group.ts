@@ -91,11 +91,11 @@ export interface GroupOwnProps {
 
 export interface SerializedGroupProps
   extends SerializedObjectProps,
-    GroupOwnProps {
+  GroupOwnProps {
   objects: SerializedObjectProps[];
 }
 
-export interface GroupProps extends FabricObjectProps, GroupOwnProps {}
+export interface GroupProps extends FabricObjectProps, GroupOwnProps { }
 
 export const groupDefaultValues = {
   layout: 'fit-content',
@@ -869,15 +869,15 @@ export class Group extends createCollectionMixin(
       hasX
         ? center.x - calculatedCenter.x + bboxSizeAfter.x * (hasWidth ? 0.5 : 0)
         : -(hasWidth
-            ? (sizeAfter.x - strokeWidthVector.x) * 0.5
-            : sizeAfter.x * originT.x),
+          ? (sizeAfter.x - strokeWidthVector.x) * 0.5
+          : sizeAfter.x * originT.x),
       hasY
         ? center.y -
-          calculatedCenter.y +
-          bboxSizeAfter.y * (hasHeight ? 0.5 : 0)
+        calculatedCenter.y +
+        bboxSizeAfter.y * (hasHeight ? 0.5 : 0)
         : -(hasHeight
-            ? (sizeAfter.y - strokeWidthVector.y) * 0.5
-            : sizeAfter.y * originT.y)
+          ? (sizeAfter.y - strokeWidthVector.y) * 0.5
+          : sizeAfter.y * originT.y)
     ).add(rotationCorrection);
     const correction = new Point(
       hasWidth ? -sizeAfter.x / 2 : 0,
@@ -951,7 +951,7 @@ export class Group extends createCollectionMixin(
    * @param {LayoutResult} result layout result
    */
   // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
-  onLayout(context: LayoutContext, result: LayoutResult) {}
+  onLayout(context: LayoutContext, result: LayoutResult) { }
 
   /**
    *
@@ -1051,9 +1051,9 @@ export class Group extends createCollectionMixin(
    */
   getSvgStyles() {
     const opacity =
-        typeof this.opacity !== 'undefined' && this.opacity !== 1
-          ? `opacity: ${this.opacity};`
-          : '',
+      typeof this.opacity !== 'undefined' && this.opacity !== 1
+        ? `opacity: ${this.opacity};`
+        : '',
       visibility = this.visible ? '' : ' visibility: hidden;';
     return [opacity, this.getSvgFilter(), visibility].join('');
   }
@@ -1074,7 +1074,18 @@ export class Group extends createCollectionMixin(
       reviver,
     });
   }
+  /**boardx cusotm function */
+  getWidgetMenuList() {
+    if (this.locked) {
+      return ['objectLock'];
+    }
+    return ['objectLock', 'delete'];
+  }
 
+  getWidgetMenuLength() {
+    return 60;
+  }
+  /**boardx cusotm function */
   /**
    * @todo support loading from svg
    * @private
