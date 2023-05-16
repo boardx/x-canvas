@@ -94,7 +94,8 @@ export class FabricObject<
   declare minScaleLimit: number;
 
   declare opacity: number;
-
+  declare obj_type: string;
+  declare lastEditedBy: string;
   declare paintFirst: 'fill' | 'stroke';
   declare fill: string | TFiller | null;
   declare fillRule: CanvasFillRule;

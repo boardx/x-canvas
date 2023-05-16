@@ -68,7 +68,7 @@ export const fabricObjectDefaultValues = {
   globalCompositeOperation: 'source-over',
   backgroundColor: '',
   selectionBackgroundColor: '',
-  selectionLineWidth: 2,
+  selectionLineWidth: 4,
   stroke: null,
   strokeWidth: 1,
   strokeDashArray: null,

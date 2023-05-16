@@ -12,6 +12,7 @@ import type {
 } from './Object/types';
 import type { ObjectEvents } from '../EventTypeDefs';
 import { makeBoundingBoxFromPoints } from '../util';
+import { createPathDefaultControls } from '../controls/commonControls';
 
 // @TODO this code is terrible and Line should be a special case of polyline.
 
@@ -26,16 +27,17 @@ interface UniqueLineProps {
 
 export interface SerializedLineProps
   extends SerializedObjectProps,
-    UniqueLineProps {}
+  UniqueLineProps {
+  obj_type: 'WBArrow'
+}
 
 export class Line<
-    Props extends TProps<FabricObjectProps> = Partial<FabricObjectProps>,
-    SProps extends SerializedLineProps = SerializedLineProps,
-    EventSpec extends ObjectEvents = ObjectEvents
-  >
+  Props extends TProps<FabricObjectProps> = Partial<FabricObjectProps>,
+  SProps extends SerializedLineProps = SerializedLineProps,
+  EventSpec extends ObjectEvents = ObjectEvents
+>
   extends FabricObject<Props, SProps, EventSpec>
-  implements UniqueLineProps
-{
+  implements UniqueLineProps {
   /**
    * x value or first line edge
    * @type number
@@ -78,7 +80,12 @@ export class Line<
     typeof left === 'number' && this.set('left', left);
     typeof top === 'number' && this.set('top', top);
   }
-
+  static getDefaults() {
+    return {
+      ...super.getDefaults(),
+      controls: createPathDefaultControls(),
+    };
+  }
   /**
    * @private
    * @param {Object} [options] Options
@@ -241,12 +248,12 @@ export class Line<
    */
   static fromElement(element: SVGElement, callback: (line: Line) => any) {
     const {
-        x1 = 0,
-        y1 = 0,
-        x2 = 0,
-        y2 = 0,
-        ...parsedAttributes
-      } = parseAttributes(element, this.ATTRIBUTE_NAMES),
+      x1 = 0,
+      y1 = 0,
+      x2 = 0,
+      y2 = 0,
+      ...parsedAttributes
+    } = parseAttributes(element, this.ATTRIBUTE_NAMES),
       points: [number, number, number, number] = [x1, y1, x2, y2];
     callback(new this(points, parsedAttributes));
   }

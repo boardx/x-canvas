@@ -82,6 +82,37 @@ export const createObjectDefaultControls = () => ({
   }),
 });
 
+export const createObjectDefaultNoRotateControls = () => ({
+  tl: new Control({
+    x: -0.5,
+    y: -0.5,
+    cursorStyleHandler: scaleCursorStyleHandler,
+    actionHandler: scalingEqually,
+  }),
+
+  tr: new Control({
+    x: 0.5,
+    y: -0.5,
+    cursorStyleHandler: scaleCursorStyleHandler,
+    actionHandler: scalingEqually,
+  }),
+
+  bl: new Control({
+    x: -0.5,
+    y: 0.5,
+    cursorStyleHandler: scaleCursorStyleHandler,
+    actionHandler: scalingEqually,
+  }),
+
+  br: new Control({
+    x: 0.5,
+    y: 0.5,
+    cursorStyleHandler: scaleCursorStyleHandler,
+    actionHandler: scalingEqually,
+  }),
+
+});
+
 export const createResizeControls = () => ({
   mr: new Control({
     x: 0.5,
@@ -102,4 +133,7 @@ export const createResizeControls = () => ({
 export const createTextboxDefaultControls = () => ({
   //...createObjectDefaultControls(),
   ...createResizeControls(),
+});
+export const createPathDefaultControls = () => ({
+  ...createObjectDefaultNoRotateControls(),
 });

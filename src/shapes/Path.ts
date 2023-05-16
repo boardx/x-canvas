@@ -25,17 +25,19 @@ import type {
 import type { ObjectEvents } from '../EventTypeDefs';
 import { TBBox, TClassProperties, TSVGReviver } from '../typedefs';
 import { cloneDeep } from '../util/internals/cloneDeep';
+import { createPathDefaultControls } from '../controls/commonControls';
 
 interface UniquePathProps {
   sourcePath?: string;
   path?: TSimplePathData;
+  obj_type: 'WBPath',
 }
 
 export interface SerializedPathProps
   extends SerializedObjectProps,
-    UniquePathProps {}
+  UniquePathProps { }
 
-export interface PathProps extends FabricObjectProps, UniquePathProps {}
+export interface PathProps extends FabricObjectProps, UniquePathProps { }
 
 export interface IPathBBox extends TBBox {
   left: number;
@@ -79,6 +81,13 @@ export class Path<
     typeof top === 'number' && this.set('top', top);
   }
 
+  static getDefaults() {
+    return {
+      ...super.getDefaults(),
+      controls: createPathDefaultControls(),
+    };
+  }
+
   /**
    * @private
    * @param {TComplexPathData | string} path Path data (sequence of coordinates and corresponding "command" tokens)
@@ -119,7 +128,7 @@ export class Path<
 
     for (const command of this.path) {
       switch (
-        command[0] // first letter
+      command[0] // first letter
       ) {
         case 'L': // lineto, absolute
           x = command[1];
@@ -186,9 +195,8 @@ export class Path<
    * @return {string} string representation of an instance
    */
   toString() {
-    return `#<Path (${this.complexity()}): { "top": ${this.top}, "left": ${
-      this.left
-    } }>`;
+    return `#<Path (${this.complexity()}): { "top": ${this.top}, "left": ${this.left
+      } }>`;
   }
 
   /**
@@ -308,7 +316,7 @@ export class Path<
     for (const command of this.path) {
       // current instruction
       switch (
-        command[0] // first letter
+      command[0] // first letter
       ) {
         case 'L': // lineto, absolute
           x = command[1];
