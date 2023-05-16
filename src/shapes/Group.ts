@@ -112,6 +112,7 @@ export const groupDefaultValues = {
 export class Group extends createCollectionMixin(
   FabricObject<GroupProps, SerializedGroupProps, GroupEvents>
 ) {
+  declare obj_type: string;
   /**
    * Specifies the **layout strategy** for instance
    * Used by `getLayoutStrategyResult` to calculate layout
