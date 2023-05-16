@@ -28,7 +28,6 @@ interface UniqueLineProps {
 export interface SerializedLineProps
   extends SerializedObjectProps,
   UniqueLineProps {
-  obj_type: 'WBArrow'
 }
 
 export class Line<
@@ -65,6 +64,21 @@ export class Line<
    * @default
    */
   declare y2: number;
+
+  /*boardx custom declare*/
+  declare obj_type: string;
+
+  declare locked: boolean;
+
+  declare whiteboardId: string;
+
+  declare userId: string;
+
+  declare timestamp: Date;
+
+  declare zIndex: number;
+
+  public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked'];
 
   static cacheProperties = [...cacheProperties, ...coordProps];
   /**
@@ -168,8 +182,9 @@ export class Line<
     K extends keyof T = never
   >(propertiesToInclude: K[] = []): Pick<T, K> & SProps {
     return {
-      ...super.toObject(propertiesToInclude),
+      ...super.toObject([...propertiesToInclude, ...this.extendPropeties]),
       ...this.calcLinePoints(),
+
     };
   }
 
@@ -259,6 +274,56 @@ export class Line<
   }
 
   /* _FROM_SVG_END_ */
+  /** boardx custom function */
+  getWidgetMenuList() {
+    if (this.locked) {
+      return ['objectLock'];
+    }
+    return [
+      'strokeColor',
+      'lineWidth',
+      'connectorShape',
+      'connectorTip',
+      'objectLock',
+      'borderLineIcon',
+      'delete'
+    ];
+  }
+  getWidgetMenuLength() {
+    if (this.locked) return 50;
+    return 165;
+  }
+  getContextMenuList() {
+    let menuList;
+    if (this.locked) {
+      menuList = [
+        'Bring forward',
+        'Bring to front',
+        'Send backward',
+        'Send to back'
+      ];
+    } else {
+      menuList = [
+        'Bring forward',
+        'Bring to front',
+        'Send backward',
+        'Send to back',
+        'Duplicate',
+        'Copy',
+        'Paste',
+        'Cut',
+        'Delete'
+      ];
+    }
+
+    if (this.locked) {
+      menuList.push('Unlock');
+    } else {
+      menuList.push('Lock');
+    }
+
+    return menuList;
+  }
 
   /**
    * Returns Line instance from an object representation
