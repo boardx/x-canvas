@@ -25,6 +25,7 @@ export { SprayBrush } from './src/brushes/SprayBrush';
 export { PatternBrush } from './src/brushes/PatternBrush';
 
 export { FabricObject as Object } from './src/shapes/Object/FabricObject';
+export { Arrow } from './src/shapes/Arrow';
 export { Line } from './src/shapes/Line';
 export { Circle } from './src/shapes/Circle';
 export { Triangle } from './src/shapes/Triangle';
@@ -35,6 +36,7 @@ export { Polyline } from './src/shapes/Polyline';
 export { Polygon } from './src/shapes/Polygon';
 export { Text } from './src/shapes/Text/Text';
 export { IText } from './src/shapes/IText/IText';
+export { RectNotes } from './src/shapes/RectNotes';
 export { Textbox } from './src/shapes/Textbox';
 export { Group } from './src/shapes/Group';
 export { ActiveSelection } from './src/shapes/ActiveSelection';
