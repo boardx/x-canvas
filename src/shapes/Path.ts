@@ -65,6 +65,20 @@ export class Path<
 
   static cacheProperties = [...cacheProperties, 'path', 'fillRule'];
 
+  /*boardx custom declare*/
+  declare obj_type: string;
+
+  declare locked: boolean;
+
+  declare whiteboardId: string;
+
+  declare userId: string;
+
+  declare timestamp: Date;
+
+  declare zIndex: number;
+
+  public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked'];
   /**
    * Constructor
    * @param {TComplexPathData} path Path data (sequence of coordinates and corresponding "command" tokens)
@@ -209,7 +223,7 @@ export class Path<
     K extends keyof T = never
   >(propertiesToInclude: K[] = []): Pick<T, K> & SProps {
     return {
-      ...super.toObject(propertiesToInclude),
+      ...super.toObject([...propertiesToInclude, ...this.extendPropeties]),
       path: cloneDeep(this.path),
     };
   }
@@ -433,6 +447,66 @@ export class Path<
         top: undefined,
       })
     );
+  }
+  /**boardx custom function */
+  getWidgetMenuList() {
+    if (this.locked) return ['objectLock'];
+    return [
+      'strokeColor',
+      'lineWidth',
+      'borderLineIcon',
+      'objectLock',
+      'delete',
+    ]; // 'fillColor',  'backgroundColor','more',
+  }
+  getWidgetMenuLength() {
+    if (this.locked) return 50;
+    return 125;
+  }
+  getContextMenuList() {
+    let menuList;
+    if (this.locked) {
+      menuList = [
+        'Export board',
+        'Exporting selected area',
+        'Create Share Back',
+        'Bring forward',
+        'Bring to front',
+        'Send backward',
+        'Send to back',
+        'Copy as image',
+      ];
+    } else {
+      menuList = [
+        'Export board',
+        'Exporting selected area',
+        'Create Share Back',
+        'Bring forward',
+        'Bring to front',
+        'Send backward',
+        'Send to back',
+        'Duplicate',
+        'Copy',
+        'Copy as image',
+        'Paste',
+        'Cut',
+        'Delete',
+      ];
+    }
+    menuList.push('Select All');
+    if (this.locked) {
+      menuList.push('Unlock');
+    } else {
+      menuList.push('Lock');
+    }
+
+    // if (this.isPanel && !this.locked) {
+    //   menuList.push('Switch to non-panel');
+    // } else {
+    //   menuList.push('Switch to panel');
+    // }
+
+    return menuList;
   }
 }
 
