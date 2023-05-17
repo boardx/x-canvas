@@ -134,6 +134,10 @@ export const createTextboxDefaultControls = () => ({
   //...createObjectDefaultControls(),
   ...createResizeControls(),
 });
+export const createRectNotesDefaultControls = () => ({
+  ...createObjectDefaultNoRotateControls(),
+  ...createResizeControls(),
+});
 export const createPathDefaultControls = () => ({
   ...createObjectDefaultNoRotateControls(),
 });
