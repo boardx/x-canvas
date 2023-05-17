@@ -33,6 +33,18 @@ export class RectNotes extends Textbox {
 
   /* boardx cusotm function */
   declare obj_type: string;
+
+  declare locked: boolean;
+
+  declare whiteboardId: string;
+
+  declare userId: string;
+
+  declare timestamp: Date;
+
+  declare zIndex: number;
+
+  public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked'];
   /**
    * Minimum calculated width of a textbox, in pixels.
    * fixed to 2 so that an empty textbox cannot go to 0
@@ -471,7 +483,7 @@ export class RectNotes extends Textbox {
    */
   toObject(propertiesToInclude: Array<any>): object {
     return super.toObject(
-      ['minWidth', 'splitByGrapheme'].concat(propertiesToInclude)
+      ['minWidth', 'splitByGrapheme'].concat([...propertiesToInclude, ...extendPropeties])
     );
   }
   /**boardx custom function */
