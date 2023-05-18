@@ -82,7 +82,7 @@ type TCanvasHydrationOption = {
 };
 
 export const StaticCanvasDefaults = {
-  backgroundColor: '',
+  backgroundColor: '#ffffff',
   backgroundImage: null,
   overlayColor: '',
   overlayImage: null,
@@ -98,6 +98,7 @@ export const StaticCanvasDefaults = {
   svgViewportTransformation: true,
   skipOffscreen: true,
   clipPath: undefined,
+  showBackgroundDots: true,
 };
 
 /**
@@ -120,6 +121,7 @@ export class StaticCanvas<
    */
   declare backgroundColor: TFiller | string;
 
+  declare showBackgroundDots: boolean;
   /**
    * Background image of canvas instance.
    * since 2.4.0 image caching is active, please when putting an image as background, add to the
@@ -359,7 +361,7 @@ export class StaticCanvas<
       /* _DEV_MODE_START_ */
       console.warn(
         'fabric.Canvas: trying to add an object that belongs to a different canvas.\n' +
-          'Resulting to default behavior: removing object from previous canvas and adding to new canvas'
+        'Resulting to default behavior: removing object from previous canvas and adding to new canvas'
       );
       /* _DEV_MODE_END_ */
       obj.canvas.remove(obj);
@@ -684,7 +686,8 @@ export class StaticCanvas<
     this.remove(...this.getObjects());
     this.backgroundImage = null;
     this.overlayImage = null;
-    this.backgroundColor = '';
+    this.backgroundColor = '#ffffff';
+    this.showBackgroundDots = true;
     this.overlayColor = '';
     this.clearContext(this.contextContainer);
     this.fire('canvas:cleared');
@@ -1432,18 +1435,14 @@ export class StaticCanvas<
           ? matrixToSVG(invertTransform(this.viewportTransform))
           : '';
       markup.push(
-        `<rect transform="${additionalTransform} translate(${finalWidth / 2},${
-          finalHeight / 2
-        })" x="${filler.offsetX - finalWidth / 2}" y="${
-          filler.offsetY - finalHeight / 2
-        }" width="${
-          (repeat === 'repeat-y' || repeat === 'no-repeat') && isPattern(filler)
-            ? filler.source.width
-            : finalWidth
-        }" height="${
-          (repeat === 'repeat-x' || repeat === 'no-repeat') && isPattern(filler)
-            ? filler.source.height
-            : finalHeight
+        `<rect transform="${additionalTransform} translate(${finalWidth / 2},${finalHeight / 2
+        })" x="${filler.offsetX - finalWidth / 2}" y="${filler.offsetY - finalHeight / 2
+        }" width="${(repeat === 'repeat-y' || repeat === 'no-repeat') && isPattern(filler)
+          ? filler.source.width
+          : finalWidth
+        }" height="${(repeat === 'repeat-x' || repeat === 'no-repeat') && isPattern(filler)
+          ? filler.source.height
+          : finalHeight
         }" fill="url(#SVGID_${filler.id})"></rect>\n`
       );
     } else {
@@ -1501,6 +1500,7 @@ export class StaticCanvas<
       overlayImage,
       overlay,
       clipPath,
+      showBackgroundDots,
     } = serialized;
     const renderOnAddRemove = this.renderOnAddRemove;
     this.renderOnAddRemove = false;
@@ -1727,8 +1727,7 @@ export class StaticCanvas<
    * @return {String} string representation of an instance
    */
   toString() {
-    return `#<Canvas (${this.complexity()}): { objects: ${
-      this._objects.length
-    } }>`;
+    return `#<Canvas (${this.complexity()}): { objects: ${this._objects.length
+      } }>`;
   }
 }
