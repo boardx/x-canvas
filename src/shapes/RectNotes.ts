@@ -104,7 +104,15 @@ export class RectNotes extends IText {
       this.enlargeSpaces();
     }
     // clear cache and re-calculate height
-    //this.height = this.calcTextHeight();
+    const height = this.calcTextHeight();
+    if (height > this.maxHeight && this.fontSize > 6) {
+      this.set('fontSize', this.fontSize - 2);
+      this._splitTextIntoLines(this.text);
+      return;
+    }
+
+    this.height = this.maxHeight;
+    return this.height;
   }
   /**
    * Generate an object that translates the style object so that it is
@@ -559,7 +567,42 @@ export class RectNotes extends IText {
     const textHeight = this.height;
     return (rectHeight - textHeight) / 2;
   }
+  _getSelectionStartOffsetY() {
+    console.log('this.verticalAlign', this.verticalAlign)
+    switch (this.verticalAlign) {
+      case 'middle':
+        return this.height / 2 - this._getTotalLineHeights() / 2;
+      case 'bottom':
+        return this.height - this._getTotalLineHeights();
+      default:
+        return 0;
+    }
+  }
+  _getTotalLineHeights() {
+    return this._textLines.reduce(
+      (total, _line, index) => total + this.getHeightOfLine(index),
+      0
+    );
+  }
+  _renderBackground(ctx) {
+    if (!this.backgroundColor) {
+      return;
+    }
+    const dim = this._getNonTransformedDimensions();
+    ctx.fillStyle = this.backgroundColor;
 
+    ctx.shadowBlur = 20;
+    // ctx.shadowOffsetX = 2 * this.scaleX * canvas.getZoom();
+    // ctx.shadowOffsetY = 6 * this.scaleY * canvas.getZoom();
+    ctx.shadowColor = 'rgba(0,0,0,0.1)';
+    // ctx.shadowColor = 'rgba(0,0,0,1)';
+
+    ctx.fillRect(-dim.x / 2, -dim.y / 2, dim.x, dim.y);
+
+    // if there is background color no other shadows
+    // should be casted
+    this._removeShadow(ctx);
+  }
 }
 
 classRegistry.setClass(RectNotes);
