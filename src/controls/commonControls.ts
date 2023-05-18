@@ -128,6 +128,21 @@ export const createResizeControls = () => ({
     cursorStyleHandler: scaleSkewCursorStyleHandler,
     actionName: 'resizing',
   }),
+  mb: new Control({
+    x: 0,
+    y: 0.5,
+    cursorStyleHandler: scaleSkewCursorStyleHandler,
+    actionHandler: scalingYOrSkewingX,
+    getActionName: scaleOrSkewActionName,
+  }),
+
+  mt: new Control({
+    x: 0,
+    y: -0.5,
+    cursorStyleHandler: scaleSkewCursorStyleHandler,
+    actionHandler: scalingYOrSkewingX,
+    getActionName: scaleOrSkewActionName,
+  }),
 });
 
 export const createTextboxDefaultControls = () => ({
