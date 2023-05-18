@@ -3,6 +3,7 @@ import { TClassProperties } from '../typedefs';
 import { Textbox } from './Textbox';
 import { classRegistry } from '../ClassRegistry';
 import { createRectNotesDefaultControls } from '../controls/commonControls';
+import { IText } from './IText/IText';
 
 // @TODO: Many things here are configuration related and shouldn't be on the class nor prototype
 // regexes, list of properties that are not suppose to change by instances, magic consts.
@@ -15,6 +16,8 @@ export const rectNotesDefaultValues: Partial<TClassProperties<RectNotes>> = {
   _wordJoiners: /[ \t\r]/,
   splitByGrapheme: true,
   obj_type: 'WBRectNotes',
+  height: 138,
+  maxHeight: 138,
 };
 
 /**
@@ -23,7 +26,7 @@ export const rectNotesDefaultValues: Partial<TClassProperties<RectNotes>> = {
  * user can only change width. Height is adjusted automatically based on the
  * wrapping of lines.
  */
-export class RectNotes extends Textbox {
+export class RectNotes extends IText {
   /**selectable
    * Minimum width of textbox, in pixels.
    * @type Number
@@ -64,7 +67,7 @@ export class RectNotes extends Textbox {
    */
   declare splitByGrapheme: boolean;
 
-  static textLayoutProperties = [...Textbox.textLayoutProperties, 'width'];
+  static textLayoutProperties = [...IText.textLayoutProperties, 'width'];
 
   static ownDefaults: Record<string, any> = rectNotesDefaultValues;
 
@@ -101,7 +104,7 @@ export class RectNotes extends Textbox {
       this.enlargeSpaces();
     }
     // clear cache and re-calculate height
-    this.height = this.calcTextHeight();
+    //this.height = this.calcTextHeight();
   }
   /**
    * Generate an object that translates the style object so that it is
@@ -551,6 +554,12 @@ export class RectNotes extends Textbox {
     }
     return 420;
   }
+  /* caculate cusor positon in the middle of the textbox */
+  getCenteredTop(rectHeight) {
+    const textHeight = this.height;
+    return (rectHeight - textHeight) / 2;
+  }
+
 }
 
 classRegistry.setClass(RectNotes);
