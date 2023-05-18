@@ -145,9 +145,25 @@ export const createResizeControls = () => ({
   }),
 });
 
+export const createResizeControlsForText = () => ({
+  mr: new Control({
+    x: 0.5,
+    y: 0,
+    actionHandler: changeWidth,
+    cursorStyleHandler: scaleSkewCursorStyleHandler,
+    actionName: 'resizing',
+  }),
+  ml: new Control({
+    x: -0.5,
+    y: 0,
+    actionHandler: changeWidth,
+    cursorStyleHandler: scaleSkewCursorStyleHandler,
+    actionName: 'resizing',
+  }),
+});
 export const createTextboxDefaultControls = () => ({
   //...createObjectDefaultControls(),
-  ...createResizeControls(),
+  ...createResizeControlsForText(),
 });
 export const createRectNotesDefaultControls = () => ({
   ...createObjectDefaultNoRotateControls(),
