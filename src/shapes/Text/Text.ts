@@ -1721,6 +1721,23 @@ export class Text<
       graphemeLines: newLines,
     };
   }
+  _getTotalLineHeights() {
+    return this._textLines.reduce(
+      (total, _line, index) => total + this.getHeightOfLine(index),
+      0,
+    );
+  }
+
+  _getSelectionStartOffsetY() {
+    switch (this.verticalAlign) {
+      case 'middle':
+        return this.height / 2 - this._getTotalLineHeights() / 2;
+      case 'bottom':
+        return this.height - this._getTotalLineHeights();
+      default:
+        return 0;
+    }
+  }
 
   /**
    * Returns object representation of an instance
