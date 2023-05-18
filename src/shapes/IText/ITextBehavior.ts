@@ -315,8 +315,8 @@ export abstract class ITextBehavior<
   searchWordBoundary(selectionStart: number, direction: number): number {
     const text = this._text;
     let index = this._reSpace.test(text[selectionStart])
-        ? selectionStart - 1
-        : selectionStart,
+      ? selectionStart - 1
+      : selectionStart,
       _char = text[index];
 
     while (!reNonWord.test(_char) && index > 0 && index < text.length) {
@@ -336,9 +336,9 @@ export abstract class ITextBehavior<
   selectWord(selectionStart: number) {
     selectionStart = selectionStart || this.selectionStart;
     const newSelectionStart = this.searchWordBoundary(
-        selectionStart,
-        -1
-      ) /* search backwards */,
+      selectionStart,
+      -1
+    ) /* search backwards */,
       newSelectionEnd = this.searchWordBoundary(
         selectionStart,
         1
@@ -445,7 +445,8 @@ export abstract class ITextBehavior<
     }
 
     this.borderColor = this.editingBorderColor;
-    this.hasControls = this.selectable = false;
+    this.hasControls = false;
+    this.selectable = true;
     this.lockMovementX = this.lockMovementY = true;
   }
 
@@ -552,8 +553,8 @@ export abstract class ITextBehavior<
       return { left: '1px', top: '1px' };
     }
     const desiredPosition = this.inCompositionMode
-        ? this.compositionStart
-        : this.selectionStart,
+      ? this.compositionStart
+      : this.selectionStart,
       boundaries = this._getCursorBoundaries(desiredPosition),
       cursorLocation = this.get2DCursorLocation(desiredPosition),
       lineIndex = cursorLocation.lineIndex,
@@ -705,7 +706,7 @@ export abstract class ITextBehavior<
    */
   removeStyleFromTo(start: number, end: number) {
     const { lineIndex: lineStart, charIndex: charStart } =
-        this.get2DCursorLocation(start, true),
+      this.get2DCursorLocation(start, true),
       { lineIndex: lineEnd, charIndex: charEnd } = this.get2DCursorLocation(
         end,
         true

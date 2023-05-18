@@ -24,7 +24,7 @@ export const rectNotesDefaultValues: Partial<TClassProperties<RectNotes>> = {
  * wrapping of lines.
  */
 export class RectNotes extends Textbox {
-  /**
+  /**selectable
    * Minimum width of textbox, in pixels.
    * @type Number
    * @default
@@ -42,9 +42,11 @@ export class RectNotes extends Textbox {
 
   declare timestamp: Date;
 
+  declare verticalAlign: string;
+
   declare zIndex: number;
 
-  public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked'];
+  public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'verticalAlign'];
   /**
    * Minimum calculated width of a textbox, in pixels.
    * fixed to 2 so that an empty textbox cannot go to 0
@@ -483,8 +485,9 @@ export class RectNotes extends Textbox {
    */
   toObject(propertiesToInclude: Array<any>): object {
     return super.toObject(
-      ['minWidth', 'splitByGrapheme'].concat([...propertiesToInclude, ...extendPropeties])
+      [...this.extendPropeties, 'minWidth', 'splitByGrapheme'].concat(propertiesToInclude)
     );
+
   }
   /**boardx custom function */
 
