@@ -28,6 +28,7 @@ export { FabricObject as Object } from './src/shapes/Object/FabricObject';
 export { Arrow } from './src/shapes/Arrow';
 export { Line } from './src/shapes/Line';
 export { Circle } from './src/shapes/Circle';
+export { CircleNotes } from './src/shapes/CircleNotes';
 export { Triangle } from './src/shapes/Triangle';
 export { Ellipse } from './src/shapes/Ellipse';
 export { Rect } from './src/shapes/Rect';
