@@ -3,7 +3,6 @@ import { TClassProperties } from '../typedefs';
 import { Textbox } from './Textbox';
 import { classRegistry } from '../ClassRegistry';
 import { createRectNotesDefaultControls } from '../controls/commonControls';
-import { IText } from './IText/IText';
 
 // @TODO: Many things here are configuration related and shouldn't be on the class nor prototype
 // regexes, list of properties that are not suppose to change by instances, magic consts.
@@ -26,7 +25,7 @@ export const rectNotesDefaultValues: Partial<TClassProperties<RectNotes>> = {
  * user can only change width. Height is adjusted automatically based on the
  * wrapping of lines.
  */
-export class RectNotes extends IText {
+export class RectNotes extends Textbox {
   /**selectable
    * Minimum width of textbox, in pixels.
    * @type Number
@@ -67,7 +66,7 @@ export class RectNotes extends IText {
    */
   declare splitByGrapheme: boolean;
 
-  static textLayoutProperties = [...IText.textLayoutProperties, 'width'];
+  static textLayoutProperties = [...Textbox.textLayoutProperties, 'width'];
 
   static ownDefaults: Record<string, any> = rectNotesDefaultValues;
 
@@ -571,6 +570,7 @@ export class RectNotes extends IText {
     console.log('this.verticalAlign', this.verticalAlign)
     switch (this.verticalAlign) {
       case 'middle':
+        console.log('this.height / 2 - this._getTotalLineHeights() / 2', this.height / 2 - this._getTotalLineHeights() / 2)
         return this.height / 2 - this._getTotalLineHeights() / 2;
       case 'bottom':
         return this.height - this._getTotalLineHeights();
@@ -584,6 +584,7 @@ export class RectNotes extends IText {
       0
     );
   }
+
   _renderBackground(ctx) {
     if (!this.backgroundColor) {
       return;
@@ -602,6 +603,63 @@ export class RectNotes extends IText {
     // if there is background color no other shadows
     // should be casted
     this._removeShadow(ctx);
+  }
+  renderEmoji(ctx) {
+    if (this.emoji === undefined) {
+      return;
+    }
+
+    let width = 0;
+    const imageList = [
+      this.canvas.emoji_thumb,
+      this.canvas.emoji_love,
+      this.canvas.emoji_smile,
+      this.canvas.emoji_shock,
+      this.canvas.emoji_question
+    ];
+    const imageListArray = [];
+    const emojiList = [];
+    for (let i = 0; i < 5; i++) {
+      if (this.emoji[i] !== 0) {
+        imageListArray.push(imageList[i]);
+        emojiList.push(this.emoji[i]);
+        width += 26.6;
+      }
+    }
+
+    if (emojiList.length === 0) return;
+
+    const x = this.width / 2 - width;
+    const y = this.height / 2 - 18;
+    ctx.font = '10px Inter ';
+    ctx.lineJoin = 'round';
+    ctx.save();
+    ctx.translate(x - 10, y);
+    this.drawRoundRectPath(ctx, width, 15, 2);
+    ctx.fillStyle = 'rgba(255, 255, 255, 1)';
+    ctx.fill();
+    ctx.restore();
+
+    //ctx.strokeRect(x - 10, y, width, 16);
+    //ctx.fillRect(x - 10 + 10 / 2, y + 10 / 2, width - 10, 16 - 10);
+    ctx.fillStyle = '#000';
+    const isEmojiThumbExist = !(this.canvas.emoji_thumb === undefined);
+    if (isEmojiThumbExist) {
+      let modifier = 0;
+      for (let i = 0; i < imageListArray.length; i++) {
+        const imageX = this.width / 2 - 33.6 + modifier + 2;
+        const imageY = this.height / 2 - 15;
+        const imageW = 10;
+        const imageH = 10;
+        ctx.drawImage(imageListArray[i], imageX, imageY, imageW, imageH);
+        ctx.fillText(
+          emojiList[i].toString(),
+          this.width / 2 - 20.6 + modifier + 1,
+          y + 12
+        );
+        modifier -= 23.6;
+      }
+    }
   }
 }
 
