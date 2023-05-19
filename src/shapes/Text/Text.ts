@@ -183,6 +183,7 @@ export class Text<
 
   declare zIndex: number;
 
+  declare verticalAlign: string;
   /*boardx custom function end*/
 
   declare text: string;
