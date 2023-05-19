@@ -51,7 +51,8 @@ export const additionalProps = [
   'tempTop',
   'userId',
   'whiteboardId',
-  'zIndex'
+  'zIndex',
+  'verticalAlign'
 ] as const;
 
 export const styleProperties = [
