@@ -24,7 +24,7 @@ import type {
 } from './Object/types';
 import type { ObjectEvents } from '../EventTypeDefs';
 import { WebGLFilterBackend } from '../filters/WebGLFilterBackend';
-
+import { createFileDefaultControls } from '../controls/commonControls';
 // @todo Would be nice to have filtering code not imported directly.
 
 export type ImageSource =
@@ -62,7 +62,7 @@ export interface SerializedImageProps extends SerializedObjectProps {
   cropY: number;
 }
 
-export interface ImageProps extends FabricObjectProps, UniqueImageProps {}
+export interface ImageProps extends FabricObjectProps, UniqueImageProps { }
 
 const IMAGE_PROPS = ['cropX', 'cropY'] as const;
 
@@ -70,13 +70,12 @@ const IMAGE_PROPS = ['cropX', 'cropY'] as const;
  * @tutorial {@link http://fabricjs.com/fabric-intro-part-1#images}
  */
 export class Image<
-    Props extends TProps<ImageProps> = Partial<ImageProps>,
-    SProps extends SerializedImageProps = SerializedImageProps,
-    EventSpec extends ObjectEvents = ObjectEvents
-  >
+  Props extends TProps<ImageProps> = Partial<ImageProps>,
+  SProps extends SerializedImageProps = SerializedImageProps,
+  EventSpec extends ObjectEvents = ObjectEvents
+>
   extends FabricObject<Props, SProps, EventSpec>
-  implements ImageProps
-{
+  implements ImageProps {
   /**
    * When calling {@link Image.getSrc}, return value from element src with `element.getAttribute('src')`.
    * This allows for relative urls as image src.
@@ -164,6 +163,27 @@ export class Image<
   declare filters: BaseFilter[];
   declare resizeFilter: BaseFilter;
 
+  /* boardx cusotm function */
+  declare obj_type: string;
+
+  declare locked: boolean;
+
+  declare whiteboardId: string;
+
+  declare userId: string;
+
+  declare timestamp: Date;
+
+  declare verticalAlign: string;
+
+  declare zIndex: number;
+
+  declare lines: object[];
+
+  declare relationship: object[];
+
+  public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'verticalAlign', 'line', 'relationship'];
+
   protected declare _element: ImageSource;
   protected declare _originalElement: ImageSource;
   protected declare _filteredEl: ImageSource;
@@ -175,6 +195,7 @@ export class Image<
   static getDefaults() {
     return {
       ...super.getDefaults(),
+      controls: createFileDefaultControls(),
       ...Image.ownDefaults,
     };
   }
@@ -320,7 +341,7 @@ export class Image<
       filterObj && filters.push(filterObj.toObject());
     });
     return {
-      ...super.toObject([...IMAGE_PROPS, ...propertiesToInclude]),
+      ...super.toObject([...IMAGE_PROPS, ...this.extendPropeties, ...propertiesToInclude]),
       src: this.getSrc(),
       crossOrigin: this.getCrossOrigin(),
       filters,
@@ -329,7 +350,81 @@ export class Image<
         : {}),
     };
   }
+  /*boardx custom function */
+  getWidgetMenuList() {
+    if (this.locked) {
+      return ['objectLock'];
+    }
+    return ['more', 'objectLock', 'crop', 'delete', 'aiassist'];
+  }
+  getWidgetMenuLength() {
+    if (this.locked) return 30;
+    return 80;
+  }
+  getContextMenuList() {
+    let menuList;
+    if (this.locked) {
+      menuList = [
+        'Open image',
+        'Export board',
+        'Exporting selected area',
+        'Create Share Back',
+        'Bring forward',
+        'Bring to front',
+        'Send backward',
+        'Send to back',
+        'Copy as image'
+      ];
+    } else {
+      menuList = [
+        'Open image',
+        'Export board',
+        'Exporting selected area',
+        'Create Share Back',
+        'Bring forward',
+        'Bring to front',
+        'Send backward',
+        'Send to back',
+        'Duplicate',
+        'Copy',
+        'Copy as image',
+        'Paste',
+        'Cut',
+        'Delete'
+      ];
+    }
+    menuList.push('Select All');
+    if (this.locked) {
+      menuList.push('Unlock');
+    } else {
+      menuList.push('Lock');
+    }
 
+    // if (this.isPanel && !this.locked) {
+    //   menuList.push('Switch to non-panel');
+    // } else {
+    //   menuList.push('Switch to panel');
+    // }
+
+    return menuList;
+  }
+  setLockedShadow(locked) {
+    if (locked) {
+      this.shadow = new fabric.Shadow({
+        blur: 2,
+        offsetX: 0,
+        offsetY: 0,
+        color: 'rgba(0, 0, 0, 0.5)'
+      });
+    } else {
+      this.shadow = new fabric.Shadow({
+        blur: 8,
+        offsetX: 0,
+        offsetY: 4,
+        color: 'rgba(0,0,0,0.04)'
+      });
+    }
+  }
   /**
    * Returns true if an image has crop applied, inspecting values of cropX,cropY,width,height.
    * @return {Boolean}
@@ -365,14 +460,14 @@ export class Image<
       svgString.push(
         '<clipPath id="imageCrop_' + clipPathId + '">\n',
         '\t<rect x="' +
-          x +
-          '" y="' +
-          y +
-          '" width="' +
-          this.width +
-          '" height="' +
-          this.height +
-          '" />\n',
+        x +
+        '" y="' +
+        y +
+        '" width="' +
+        this.width +
+        '" height="' +
+        this.height +
+        '" />\n',
         '</clipPath>\n'
       );
       clipPath = ' clip-path="url(#imageCrop_' + clipPathId + ')" ';
@@ -679,8 +774,8 @@ export class Image<
    */
   parsePreserveAspectRatioAttribute() {
     const pAR = parsePreserveAspectRatioAttribute(
-        this.preserveAspectRatio || ''
-      ),
+      this.preserveAspectRatio || ''
+    ),
       pWidth = this.width,
       pHeight = this.height,
       parsedAttributes = { width: pWidth, height: pHeight };

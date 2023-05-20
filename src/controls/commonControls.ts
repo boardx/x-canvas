@@ -172,3 +172,6 @@ export const createRectNotesDefaultControls = () => ({
 export const createPathDefaultControls = () => ({
   ...createObjectDefaultNoRotateControls(),
 });
+export const createFileDefaultControls = () => ({
+  ...createObjectDefaultNoRotateControls(),
+});
