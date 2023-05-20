@@ -2,23 +2,21 @@
 import { TClassProperties } from '../typedefs';
 import { Textbox } from './Textbox';
 import { classRegistry } from '../ClassRegistry';
-import { createRectNotesDefaultControls } from '../controls/commonControls';
+import { createShapeNotesDefaultControls } from '../controls/commonControls';
 
 // @TODO: Many things here are configuration related and shouldn't be on the class nor prototype
 // regexes, list of properties that are not suppose to change by instances, magic consts.
 // this will be a separated effort
-export const circleNotesDefaultValues: Partial<TClassProperties<CircleNotes>> = {
+export const shapeNotesDefaultValues: Partial<TClassProperties<ShapeNotes>> = {
   minWidth: 20,
   dynamicMinWidth: 2,
   lockScalingFlip: true,
   noScaleCache: false,
   _wordJoiners: /[ \t\r]/,
   splitByGrapheme: true,
-  obj_type: 'WBCricleNotes',
+  obj_type: 'WBShapeNotes',
   height: 138,
   maxHeight: 138,
-  cornerStyle: 'circle',
-  transparentCorners: false,
 };
 
 /**
@@ -27,7 +25,7 @@ export const circleNotesDefaultValues: Partial<TClassProperties<CircleNotes>> = 
  * user can only change width. Height is adjusted automatically based on the
  * wrapping of lines.
  */
-export class CircleNotes extends Textbox {
+export class ShapeNotes extends Textbox {
   /**selectable
    * Minimum width of textbox, in pixels.
    * @type Number
@@ -70,13 +68,13 @@ export class CircleNotes extends Textbox {
 
   static textLayoutProperties = [...Textbox.textLayoutProperties, 'width'];
 
-  static ownDefaults: Record<string, any> = circleNotesDefaultValues;
+  static ownDefaults: Record<string, any> = shapeNotesDefaultValues;
 
   static getDefaults() {
     return {
       ...super.getDefaults(),
-      controls: createRectNotesDefaultControls(),
-      ...CircleNotes.ownDefaults,
+      controls: createShapeNotesDefaultControls(),
+      ...ShapeNotes.ownDefaults,
     };
   }
 
@@ -606,35 +604,6 @@ export class CircleNotes extends Textbox {
     // should be casted
     this._removeShadow(ctx);
   }
-
-  drawRoundRectPath(cxt, width, height, radius) {
-    cxt.beginPath(0);
-    //从右下角顺时针绘制，弧度从0到1/2PI
-    cxt.arc(width - radius, height - radius, radius, 0, Math.PI / 2);
-
-    //矩形下边线
-    cxt.lineTo(radius, height);
-
-    //左下角圆弧，弧度从1/2PI到PI
-    cxt.arc(radius, height - radius, radius, Math.PI / 2, Math.PI);
-
-    //矩形左边线
-    cxt.lineTo(0, radius);
-
-    //左上角圆弧，弧度从PI到3/2PI
-    cxt.arc(radius, radius, radius, Math.PI, (Math.PI * 3) / 2);
-
-    //上边线
-    cxt.lineTo(width - radius, 0);
-
-    //右上角圆弧
-    cxt.arc(width - radius, radius, radius, (Math.PI * 3) / 2, Math.PI * 2);
-
-    //右边线
-    cxt.lineTo(width, height - radius);
-    cxt.closePath();
-  }
-
   renderEmoji(ctx) {
     if (this.emoji === undefined) {
       return;
@@ -694,4 +663,4 @@ export class CircleNotes extends Textbox {
   }
 }
 
-classRegistry.setClass(CircleNotes);
+classRegistry.setClass(ShapeNotes);
