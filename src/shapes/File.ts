@@ -27,12 +27,12 @@ import { WebGLFilterBackend } from '../filters/WebGLFilterBackend';
 import { createFileDefaultControls } from '../controls/commonControls';
 // @todo Would be nice to have filtering code not imported directly.
 
-export type ImageSource =
+export type FileSource =
   | HTMLImageElement
   | HTMLVideoElement
   | HTMLCanvasElement;
 
-interface UniqueImageProps {
+interface UniqueFileProps {
   srcFromAttribute: boolean;
   minimumScaleTrigger: number;
   cropX: number;
@@ -43,7 +43,7 @@ interface UniqueImageProps {
   resizeFilter?: BaseFilter;
 }
 
-export const imageDefaultValues: Partial<UniqueImageProps> &
+export const imageDefaultValues: Partial<UniqueFileProps> &
   Partial<FabricObjectProps> = {
   strokeWidth: 0,
   srcFromAttribute: false,
@@ -53,7 +53,7 @@ export const imageDefaultValues: Partial<UniqueImageProps> &
   imageSmoothing: true,
 };
 
-export interface SerializedImageProps extends SerializedObjectProps {
+export interface SerializedFileProps extends SerializedObjectProps {
   src: string;
   crossOrigin: string | null;
   filters: any[];
@@ -62,20 +62,20 @@ export interface SerializedImageProps extends SerializedObjectProps {
   cropY: number;
 }
 
-export interface ImageProps extends FabricObjectProps, UniqueImageProps { }
+export interface FileProps extends FabricObjectProps, UniqueFileProps { }
 
-const IMAGE_PROPS = ['cropX', 'cropY'] as const;
+const FILE_PROPS = ['cropX', 'cropY'] as const;
 
 /**
  * @tutorial {@link http://fabricjs.com/fabric-intro-part-1#images}
  */
-export class Image<
-  Props extends TProps<ImageProps> = Partial<ImageProps>,
-  SProps extends SerializedImageProps = SerializedImageProps,
+export class File<
+  Props extends TProps<FileProps> = Partial<FileProps>,
+  SProps extends SerializedFileProps = SerializedFileProps,
   EventSpec extends ObjectEvents = ObjectEvents
 >
   extends FabricObject<Props, SProps, EventSpec>
-  implements ImageProps {
+  implements FileProps {
   /**
    * When calling {@link Image.getSrc}, return value from element src with `element.getAttribute('src')`.
    * This allows for relative urls as image src.
@@ -184,11 +184,11 @@ export class Image<
 
   public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'verticalAlign', 'line', 'relationship'];
 
-  protected declare _element: ImageSource;
-  protected declare _originalElement: ImageSource;
-  protected declare _filteredEl: ImageSource;
+  protected declare _element: FileSource;
+  protected declare _originalElement: FileSource;
+  protected declare _filteredEl: FileSource;
 
-  static cacheProperties = [...cacheProperties, ...IMAGE_PROPS];
+  static cacheProperties = [...cacheProperties, ...FILE_PROPS];
 
   static ownDefaults: Record<string, any> = imageDefaultValues;
 
@@ -209,7 +209,7 @@ export class Image<
    * @param {Object} [options] Options object
    */
   constructor(elementId: string, options: Props);
-  constructor(element: ImageSource, options: Props);
+  constructor(element: FileSource, options: Props);
   constructor(arg0: ImageSource | string, options: Props = {} as Props) {
     super({ filters: [], ...options });
     this.cacheKey = `texture${uid()}`;
@@ -235,13 +235,13 @@ export class Image<
    * @param {HTMLImageElement} element
    * @param {Partial<TSize>} [size] Options object
    */
-  setElement(element: ImageSource, size: Partial<TSize> = {}) {
+  setElement(element: FileSource, size: Partial<TSize> = {}) {
     this.removeTexture(this.cacheKey);
     this.removeTexture(`${this.cacheKey}_filtered`);
     this._element = element;
     this._originalElement = element;
     this._setWidthHeight(size);
-    element.classList.add(Image.CSS_CANVAS);
+    element.classList.add(File.CSS_CANVAS);
     if (this.filters.length !== 0) {
       this.applyFilters();
     }
@@ -341,7 +341,7 @@ export class Image<
       filterObj && filters.push(filterObj.toObject());
     });
     return {
-      ...super.toObject([...IMAGE_PROPS, ...this.extendPropeties, ...propertiesToInclude]),
+      ...super.toObject([...FILE_PROPS, ...this.extendPropeties, ...propertiesToInclude]),
       src: this.getSrc(),
       crossOrigin: this.getCrossOrigin(),
       filters,
@@ -875,7 +875,7 @@ export class Image<
    * @param {AbortSignal} [options.signal] handle aborting, see https://developer.mozilla.org/en-US/docs/Web/API/AbortController/signal
    * @returns {Promise<Image>}
    */
-  static fromObject<T extends TProps<SerializedImageProps>>(
+  static fromObject<T extends TProps<SerializedFileProps>>(
     { filters: f, resizeFilter: rf, src, crossOrigin, ...object }: T,
     options: { signal: AbortSignal }
   ) {
@@ -904,10 +904,10 @@ export class Image<
    * @param {LoadImageOptions} [options] Options object
    * @returns {Promise<Image>}
    */
-  static fromURL<T extends TProps<SerializedImageProps>>(
+  static fromURL<T extends TProps<SerializedFileProps>>(
     url: string,
     options: T & LoadImageOptions = {}
-  ): Promise<Image> {
+  ): Promise<File> {
     return loadImage(url, options).then((img) => new this(img, options));
   }
 
@@ -921,7 +921,7 @@ export class Image<
    */
   static fromElement(
     element: SVGElement,
-    callback: (image: Image) => any,
+    callback: (image: File) => any,
     options: { signal?: AbortSignal } = {}
   ) {
     const parsedAttributes = parseAttributes(element, this.ATTRIBUTE_NAMES);
@@ -932,5 +932,5 @@ export class Image<
   }
 }
 
-classRegistry.setClass(Image);
-classRegistry.setSVGClass(Image);
+classRegistry.setClass(File);
+classRegistry.setSVGClass(File);

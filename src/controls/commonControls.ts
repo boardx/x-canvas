@@ -169,6 +169,13 @@ export const createRectNotesDefaultControls = () => ({
   ...createObjectDefaultNoRotateControls(),
   ...createResizeControls(),
 });
+export const createShapeNotesDefaultControls = () => ({
+  ...createObjectDefaultNoRotateControls(),
+  ...createResizeControls(),
+});
 export const createPathDefaultControls = () => ({
+  ...createObjectDefaultNoRotateControls(),
+});
+export const createFileDefaultControls = () => ({
   ...createObjectDefaultNoRotateControls(),
 });

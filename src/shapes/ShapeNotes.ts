@@ -2,19 +2,19 @@
 import { TClassProperties } from '../typedefs';
 import { Textbox } from './Textbox';
 import { classRegistry } from '../ClassRegistry';
-import { createCircleNotesDefaultControls } from '../controls/commonControls';
+import { createShapeNotesDefaultControls } from '../controls/commonControls';
 
 // @TODO: Many things here are configuration related and shouldn't be on the class nor prototype
 // regexes, list of properties that are not suppose to change by instances, magic consts.
 // this will be a separated effort
-export const circleNotesDefaultValues: Partial<TClassProperties<CircleNotes>> = {
+export const shapeNotesDefaultValues: Partial<TClassProperties<ShapeNotes>> = {
   minWidth: 20,
   dynamicMinWidth: 2,
   lockScalingFlip: true,
   noScaleCache: false,
   _wordJoiners: /[ \t\r]/,
   splitByGrapheme: true,
-  obj_type: 'WBCircleNotes',
+  obj_type: 'WBShapeNotes',
   height: 138,
   maxHeight: 138,
 };
@@ -25,7 +25,7 @@ export const circleNotesDefaultValues: Partial<TClassProperties<CircleNotes>> = 
  * user can only change width. Height is adjusted automatically based on the
  * wrapping of lines.
  */
-export class CircleNotes extends Textbox {
+export class ShapeNotes extends Textbox {
   /**selectable
    * Minimum width of textbox, in pixels.
    * @type Number
@@ -68,13 +68,13 @@ export class CircleNotes extends Textbox {
 
   static textLayoutProperties = [...Textbox.textLayoutProperties, 'width'];
 
-  static ownDefaults: Record<string, any> = rectNotesDefaultValues;
+  static ownDefaults: Record<string, any> = shapeNotesDefaultValues;
 
   static getDefaults() {
     return {
       ...super.getDefaults(),
-      controls: createCircleNotesDefaultControls(),
-      ...CircleNotes.ownDefaults,
+      controls: createShapeNotesDefaultControls(),
+      ...ShapeNotes.ownDefaults,
     };
   }
 
@@ -113,7 +113,6 @@ export class CircleNotes extends Textbox {
     this.height = this.maxHeight;
     return this.height;
   }
-
   /**
    * Generate an object that translates the style object so that it is
    * broken up by visual lines (new lines and automatic wrapping).
@@ -567,6 +566,24 @@ export class CircleNotes extends Textbox {
     const textHeight = this.height;
     return (rectHeight - textHeight) / 2;
   }
+  _getSelectionStartOffsetY() {
+    console.log('this.verticalAlign', this.verticalAlign)
+    switch (this.verticalAlign) {
+      case 'middle':
+        console.log('this.height / 2 - this._getTotalLineHeights() / 2', this.height / 2 - this._getTotalLineHeights() / 2)
+        return this.height / 2 - this._getTotalLineHeights() / 2;
+      case 'bottom':
+        return this.height - this._getTotalLineHeights();
+      default:
+        return 0;
+    }
+  }
+  _getTotalLineHeights() {
+    return this._textLines.reduce(
+      (total, _line, index) => total + this.getHeightOfLine(index),
+      0
+    );
+  }
 
   _renderBackground(ctx) {
     if (!this.backgroundColor) {
@@ -586,19 +603,6 @@ export class CircleNotes extends Textbox {
     // if there is background color no other shadows
     // should be casted
     this._removeShadow(ctx);
-  }
-  _getTopOffset() {
-    let topOffset = super._getTopOffset();
-    if (this.verticalAlign === 'middle') {
-      topOffset += (this.height - this._getTotalLineHeight()) / 2;
-    }
-    return topOffset;
-  }
-  _getTotalLineHeight() {
-    return this._textLines.reduce(
-      (total, _line, index) => total + this.getHeightOfLine(index),
-      0
-    );
   }
   renderEmoji(ctx) {
     if (this.emoji === undefined) {
@@ -659,4 +663,4 @@ export class CircleNotes extends Textbox {
   }
 }
 
-classRegistry.setClass(CircleNotes);
+classRegistry.setClass(ShapeNotes);

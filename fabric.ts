@@ -24,25 +24,29 @@ export { CircleBrush } from './src/brushes/CircleBrush';
 export { SprayBrush } from './src/brushes/SprayBrush';
 export { PatternBrush } from './src/brushes/PatternBrush';
 
-export { FabricObject as Object } from './src/shapes/Object/FabricObject';
+export { ActiveSelection } from './src/shapes/ActiveSelection';
 export { Arrow } from './src/shapes/Arrow';
-export { Line } from './src/shapes/Line';
+export { createCollectionMixin } from './src/Collection';
 export { Circle } from './src/shapes/Circle';
 export { CircleNotes } from './src/shapes/CircleNotes';
-export { Triangle } from './src/shapes/Triangle';
 export { Ellipse } from './src/shapes/Ellipse';
-export { Rect } from './src/shapes/Rect';
+export { FabricObject as Object } from './src/shapes/Object/FabricObject';
+export { File } from './src/shapes/File';
+export { Group } from './src/shapes/Group';
+export { Image } from './src/shapes/Image';
+export { IText } from './src/shapes/IText/IText';
+export { Line } from './src/shapes/Line';
 export { Path } from './src/shapes/Path';
 export { Polyline } from './src/shapes/Polyline';
 export { Polygon } from './src/shapes/Polygon';
-export { Text } from './src/shapes/Text/Text';
-export { IText } from './src/shapes/IText/IText';
+export { Rect } from './src/shapes/Rect';
 export { RectNotes } from './src/shapes/RectNotes';
+export { ShapeNotes } from './src/shapes/ShapeNotes';
+export { Text } from './src/shapes/Text/Text';
 export { Textbox } from './src/shapes/Textbox';
-export { Group } from './src/shapes/Group';
-export { ActiveSelection } from './src/shapes/ActiveSelection';
-export { Image } from './src/shapes/Image';
-export { createCollectionMixin } from './src/Collection';
+export { Triangle } from './src/shapes/Triangle';
+//export { Urlimage } from './src/shapes/Urlimage';
+
 
 export * as util from './src/util';
 

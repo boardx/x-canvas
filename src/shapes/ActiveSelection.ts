@@ -5,7 +5,7 @@ import type { FabricObject } from './Object/FabricObject';
 
 export class ActiveSelection extends Group {
   declare _objects: FabricObject[];
-
+  declare locked: boolean;
   /**
    * controls how selected objects are added during a multiselection event
    * - `canvas-stacking` adds the selected object to the active selection while respecting canvas object stacking order
@@ -55,7 +55,7 @@ export class ActiveSelection extends Group {
         const insertAt =
           index === -1
             ? //  `target` is in front of all other objects
-              this.size()
+            this.size()
             : index;
         this.insertAt(insertAt, target);
       });
@@ -182,6 +182,57 @@ export class ActiveSelection extends Group {
       this._objects[i]._renderControls(ctx, options);
     }
     ctx.restore();
+  }
+  /*boardx custom function*/
+  getContextMenuList() {
+    let menuList;
+    if (this.locked) {
+      menuList = ['Group'];
+    } else {
+      menuList = [
+        'Bring to front',
+        'Send to back',
+        'Group',
+        'Duplicate',
+        'Copy',
+        'Paste',
+        'Cut',
+        'Delete',
+      ];
+    }
+    if (this._objects.length > 1) {
+      if (this.locked) {
+        menuList.push('Unlock All');
+      } else {
+        menuList.push('Lock All');
+      }
+    } else if (this.locked) {
+      menuList.push('Unlock');
+    } else {
+      menuList.push('Lock');
+    }
+
+    return menuList;
+  }
+  _updateObjectsCoords(center: any) {
+    const _center = center || this.getCenterPoint();
+    for (let i = this._objects.length; i--;) {
+      this._updateObjectCoords(this._objects[i], _center);
+    }
+  }
+  _updateObjectCoords(object: any, center: any) {
+    let objectLeft = object.left - center.x;
+    let objectTop = object.top - center.y;
+    const skipControls = true;
+    if (Math.abs(objectLeft) < 0.1) objectLeft = 0.1;
+    if (Math.abs(objectTop) < 0.1) objectTop = 0.1;
+    object.set({
+      left: objectLeft,
+      top: objectTop,
+    });
+
+    object.group = this;
+    object.setCoords(skipControls);
   }
 }
 
