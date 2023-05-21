@@ -10,6 +10,8 @@ import type { Text } from '../shapes/Text/Text';
 import type { Pattern } from '../Pattern';
 import type { IText } from '../shapes/IText/IText';
 import type { Textbox } from '../shapes/Textbox';
+import { RectNotes } from '../shapes/RectNotes';
+import { CircleNotes } from '../shapes/CircleNotes';
 
 export const isFiller = (
   filler: TFiller | string | null
@@ -53,7 +55,7 @@ export const isTextObject = (
 
 export const isInteractiveTextObject = (
   fabricObject?: FabricObject
-): fabricObject is IText | Textbox => {
+): fabricObject is IText | Textbox | RectNotes | CircleNotes => {
   // we could use instanceof but that would mean pulling in Text code for a simple check
   // @todo discuss what to do and how to do
   return !!fabricObject && fabricObject.isType('IText', 'Textbox', 'RectNotes', 'CircleNotes');

@@ -1,13 +1,13 @@
 // @ts-nocheck
 import { TClassProperties } from '../typedefs';
-import { IText } from './IText/IText';
+import { Textbox } from './Textbox';
 import { classRegistry } from '../ClassRegistry';
-import { createTextboxDefaultControls } from '../controls/commonControls';
+import { createCircleNotesDefaultControls } from '../controls/commonControls';
 
 // @TODO: Many things here are configuration related and shouldn't be on the class nor prototype
 // regexes, list of properties that are not suppose to change by instances, magic consts.
 // this will be a separated effort
-export const textboxDefaultValues: Partial<TClassProperties<CircleNotes>> = {
+export const circleNotesDefaultValues: Partial<TClassProperties<CircleNotes>> = {
   minWidth: 20,
   dynamicMinWidth: 2,
   lockScalingFlip: true,
@@ -15,6 +15,8 @@ export const textboxDefaultValues: Partial<TClassProperties<CircleNotes>> = {
   _wordJoiners: /[ \t\r]/,
   splitByGrapheme: true,
   obj_type: 'WBCircleNotes',
+  height: 138,
+  maxHeight: 138,
 };
 
 /**
@@ -23,8 +25,8 @@ export const textboxDefaultValues: Partial<TClassProperties<CircleNotes>> = {
  * user can only change width. Height is adjusted automatically based on the
  * wrapping of lines.
  */
-export class CircleNotes extends IText {
-  /**
+export class CircleNotes extends Textbox {
+  /**selectable
    * Minimum width of textbox, in pixels.
    * @type Number
    * @default
@@ -33,6 +35,20 @@ export class CircleNotes extends IText {
 
   /* boardx cusotm function */
   declare obj_type: string;
+
+  declare locked: boolean;
+
+  declare whiteboardId: string;
+
+  declare userId: string;
+
+  declare timestamp: Date;
+
+  declare verticalAlign: string;
+
+  declare zIndex: number;
+
+  public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'verticalAlign'];
   /**
    * Minimum calculated width of a textbox, in pixels.
    * fixed to 2 so that an empty textbox cannot go to 0
@@ -50,14 +66,14 @@ export class CircleNotes extends IText {
    */
   declare splitByGrapheme: boolean;
 
-  static textLayoutProperties = [...IText.textLayoutProperties, 'width'];
+  static textLayoutProperties = [...Textbox.textLayoutProperties, 'width'];
 
-  static ownDefaults: Record<string, any> = textboxDefaultValues;
+  static ownDefaults: Record<string, any> = cirlceNotesDefaultValues;
 
   static getDefaults() {
     return {
       ...super.getDefaults(),
-      controls: createTextboxDefaultControls(),
+      controls: createCircleNotesDefaultControls(),
       ...CircleNotes.ownDefaults,
     };
   }
@@ -87,8 +103,17 @@ export class CircleNotes extends IText {
       this.enlargeSpaces();
     }
     // clear cache and re-calculate height
-    this.height = this.calcTextHeight();
+    const height = this.calcTextHeight();
+    if (height > this.maxHeight && this.fontSize > 6) {
+      this.set('fontSize', this.fontSize - 2);
+      this._splitTextIntoLines(this.text);
+      return;
+    }
+
+    this.height = this.maxHeight;
+    return this.height;
   }
+
   /**
    * Generate an object that translates the style object so that it is
    * broken up by visual lines (new lines and automatic wrapping).
@@ -471,8 +496,166 @@ export class CircleNotes extends IText {
    */
   toObject(propertiesToInclude: Array<any>): object {
     return super.toObject(
-      ['minWidth', 'splitByGrapheme'].concat(propertiesToInclude)
+      [...this.extendPropeties, 'minWidth', 'splitByGrapheme'].concat(propertiesToInclude)
     );
+
+  }
+  /**boardx custom function */
+
+  getWidgetMenuList() {
+    if (this.isDraw) {
+      return [
+        'textNote',
+        'borderLineIcon',
+        'backgroundColor',
+        'resetDraw',
+        'switchNoteType',
+        'drawOption',
+        'lineWidth',
+        'noteDrawColor', // strokeColor
+        'emojiMenu',
+        'more',
+        'objectLock',
+        'aiassist'
+      ];
+    }
+    if (this.locked) {
+      return ['objectLock'];
+    }
+    return [
+      'drawNote',
+      'more',
+      'borderLineIcon',
+      'switchNoteType',
+      'fontSize',
+      'textAlign',
+      'backgroundColor',
+      'emojiMenu',
+      'fontWeight',
+      'textBullet',
+      'objectLock',
+      'delete',
+      'aiassist'
+    ];
+  }
+  getWidgetMenuTouchList() {
+    if (this.isDraw) {
+      return ['emojiMenu', 'objectLock'];
+    }
+    if (this.locked) {
+      return ['objectLock'];
+    }
+    return [
+      'objectDelete',
+      'moreMenuStickyNote',
+      'backgroundColor',
+      'fontColor',
+      'emojiMenu',
+      'objectLock',
+      'aiassist'
+    ];
+  }
+  getWidgetMenuLength() {
+    if (this.locked) return 50;
+    if (this.isDraw) {
+      return 308;
+    }
+    return 420;
+  }
+  /* caculate cusor positon in the middle of the textbox */
+  getCenteredTop(rectHeight) {
+    const textHeight = this.height;
+    return (rectHeight - textHeight) / 2;
+  }
+
+  _renderBackground(ctx) {
+    if (!this.backgroundColor) {
+      return;
+    }
+    const dim = this._getNonTransformedDimensions();
+    ctx.fillStyle = this.backgroundColor;
+
+    ctx.shadowBlur = 20;
+    // ctx.shadowOffsetX = 2 * this.scaleX * canvas.getZoom();
+    // ctx.shadowOffsetY = 6 * this.scaleY * canvas.getZoom();
+    ctx.shadowColor = 'rgba(0,0,0,0.1)';
+    // ctx.shadowColor = 'rgba(0,0,0,1)';
+
+    ctx.fillRect(-dim.x / 2, -dim.y / 2, dim.x, dim.y);
+
+    // if there is background color no other shadows
+    // should be casted
+    this._removeShadow(ctx);
+  }
+  _getTopOffset() {
+    let topOffset = super._getTopOffset();
+    if (this.verticalAlign === 'middle') {
+      topOffset += (this.height - this._getTotalLineHeight()) / 2;
+    }
+    return topOffset;
+  }
+  _getTotalLineHeight() {
+    return this._textLines.reduce(
+      (total, _line, index) => total + this.getHeightOfLine(index),
+      0
+    );
+  }
+  renderEmoji(ctx) {
+    if (this.emoji === undefined) {
+      return;
+    }
+
+    let width = 0;
+    const imageList = [
+      this.canvas.emoji_thumb,
+      this.canvas.emoji_love,
+      this.canvas.emoji_smile,
+      this.canvas.emoji_shock,
+      this.canvas.emoji_question
+    ];
+    const imageListArray = [];
+    const emojiList = [];
+    for (let i = 0; i < 5; i++) {
+      if (this.emoji[i] !== 0) {
+        imageListArray.push(imageList[i]);
+        emojiList.push(this.emoji[i]);
+        width += 26.6;
+      }
+    }
+
+    if (emojiList.length === 0) return;
+
+    const x = this.width / 2 - width;
+    const y = this.height / 2 - 18;
+    ctx.font = '10px Inter ';
+    ctx.lineJoin = 'round';
+    ctx.save();
+    ctx.translate(x - 10, y);
+    this.drawRoundRectPath(ctx, width, 15, 2);
+    ctx.fillStyle = 'rgba(255, 255, 255, 1)';
+    ctx.fill();
+    ctx.restore();
+
+    //ctx.strokeRect(x - 10, y, width, 16);
+    //ctx.fillRect(x - 10 + 10 / 2, y + 10 / 2, width - 10, 16 - 10);
+    ctx.fillStyle = '#000';
+    const isEmojiThumbExist = !(this.canvas.emoji_thumb === undefined);
+    if (isEmojiThumbExist) {
+      let modifier = 0;
+      for (let i = 0; i < imageListArray.length; i++) {
+        const imageX = this.width / 2 - 33.6 + modifier + 2;
+        const imageY = this.height / 2 - 15;
+        const imageW = 10;
+        const imageH = 10;
+        ctx.drawImage(imageListArray[i], imageX, imageY, imageW, imageH);
+        ctx.fillText(
+          emojiList[i].toString(),
+          this.width / 2 - 20.6 + modifier + 1,
+          y + 12
+        );
+        modifier -= 23.6;
+      }
+    }
   }
 }
 
