@@ -2,7 +2,7 @@
 import { TClassProperties } from '../typedefs';
 import { Textbox } from './Textbox';
 import { classRegistry } from '../ClassRegistry';
-import { createCircleNotesDefaultControls } from '../controls/commonControls';
+import { createRectNotesDefaultControls } from '../controls/commonControls';
 
 // @TODO: Many things here are configuration related and shouldn't be on the class nor prototype
 // regexes, list of properties that are not suppose to change by instances, magic consts.
@@ -17,6 +17,9 @@ export const circleNotesDefaultValues: Partial<TClassProperties<CircleNotes>> = 
   obj_type: 'WBCircleNotes',
   height: 138,
   maxHeight: 138,
+  noteType: 'circle',
+  radius: 138
+
 };
 
 /**
@@ -68,12 +71,12 @@ export class CircleNotes extends Textbox {
 
   static textLayoutProperties = [...Textbox.textLayoutProperties, 'width'];
 
-  static ownDefaults: Record<string, any> = rectNotesDefaultValues;
+  static ownDefaults: Record<string, any> = circleNotesDefaultValues;
 
   static getDefaults() {
     return {
       ...super.getDefaults(),
-      controls: createCircleNotesDefaultControls(),
+      controls: createRectNotesDefaultControls(),
       ...CircleNotes.ownDefaults,
     };
   }
