@@ -580,9 +580,9 @@ export class CircleNotes extends IText {
     ctx.fillStyle = this.backgroundColor;
     ctx.shadowBlur = 20;
     ctx.shadowColor = 'rgba(0,0,0,0.1)';
-    ctx.beginPath(); // 开始一个新的路径
-    ctx.arc(0, 0, dim.x / 2, 0, 2 * Math.PI); // 绘制一个圆形路径
-    ctx.closePath(); // 封闭路径
+    ctx.beginPath(); // start new path
+    ctx.arc(0, 0, dim.x / 2, 0, 2 * Math.PI); // draw circle path
+    ctx.closePath(); // close path
     ctx.strokeStyle = this.backgroundColor;
     ctx.fillStyle = this.backgroundColor;
     this._removeShadow(ctx);
