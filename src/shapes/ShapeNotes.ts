@@ -2,7 +2,7 @@
 import { TClassProperties } from '../typedefs';
 import { Textbox } from './Textbox';
 import { classRegistry } from '../ClassRegistry';
-import { createShapeNotesDefaultControls } from '../controls/commonControls';
+import { createRectNotesDefaultControls } from '../controls/commonControls';
 
 // @TODO: Many things here are configuration related and shouldn't be on the class nor prototype
 // regexes, list of properties that are not suppose to change by instances, magic consts.
@@ -73,7 +73,7 @@ export class ShapeNotes extends Textbox {
   static getDefaults() {
     return {
       ...super.getDefaults(),
-      controls: createShapeNotesDefaultControls(),
+      controls: createRectNotesDefaultControls(),
       ...ShapeNotes.ownDefaults,
     };
   }
@@ -113,6 +113,7 @@ export class ShapeNotes extends Textbox {
     this.height = this.maxHeight;
     return this.height;
   }
+
   /**
    * Generate an object that translates the style object so that it is
    * broken up by visual lines (new lines and automatic wrapping).
@@ -566,24 +567,6 @@ export class ShapeNotes extends Textbox {
     const textHeight = this.height;
     return (rectHeight - textHeight) / 2;
   }
-  _getSelectionStartOffsetY() {
-    console.log('this.verticalAlign', this.verticalAlign)
-    switch (this.verticalAlign) {
-      case 'middle':
-        console.log('this.height / 2 - this._getTotalLineHeights() / 2', this.height / 2 - this._getTotalLineHeights() / 2)
-        return this.height / 2 - this._getTotalLineHeights() / 2;
-      case 'bottom':
-        return this.height - this._getTotalLineHeights();
-      default:
-        return 0;
-    }
-  }
-  _getTotalLineHeights() {
-    return this._textLines.reduce(
-      (total, _line, index) => total + this.getHeightOfLine(index),
-      0
-    );
-  }
 
   _renderBackground(ctx) {
     if (!this.backgroundColor) {
@@ -603,6 +586,19 @@ export class ShapeNotes extends Textbox {
     // if there is background color no other shadows
     // should be casted
     this._removeShadow(ctx);
+  }
+  _getTopOffset() {
+    let topOffset = super._getTopOffset();
+    if (this.verticalAlign === 'middle') {
+      topOffset += (this.height - this._getTotalLineHeight()) / 2;
+    }
+    return topOffset;
+  }
+  _getTotalLineHeight() {
+    return this._textLines.reduce(
+      (total, _line, index) => total + this.getHeightOfLine(index),
+      0
+    );
   }
   renderEmoji(ctx) {
     if (this.emoji === undefined) {
