@@ -1,6 +1,7 @@
 // @ts-nocheck
+import { getDocument } from '../env';
 import { TClassProperties } from '../typedefs';
-import { Textbox } from './Textbox';
+import { IText } from './IText/IText';
 import { classRegistry } from '../ClassRegistry';
 import { createRectNotesDefaultControls } from '../controls/commonControls';
 
@@ -25,7 +26,7 @@ export const shapeNotesDefaultValues: Partial<TClassProperties<ShapeNotes>> = {
  * user can only change width. Height is adjusted automatically based on the
  * wrapping of lines.
  */
-export class ShapeNotes extends Textbox {
+export class ShapeNotes extends IText {
   /**selectable
    * Minimum width of textbox, in pixels.
    * @type Number
@@ -50,7 +51,9 @@ export class ShapeNotes extends Textbox {
 
   declare lines: object[];
 
-  public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'verticalAlign', 'lines'];
+  declare icon: string;
+
+  public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'verticalAlign', 'lines', 'icon'];
   /**
    * Minimum calculated width of a textbox, in pixels.
    * fixed to 2 so that an empty textbox cannot go to 0
@@ -68,7 +71,7 @@ export class ShapeNotes extends Textbox {
    */
   declare splitByGrapheme: boolean;
 
-  static textLayoutProperties = [...Textbox.textLayoutProperties, 'width'];
+  static textLayoutProperties = [...IText.textLayoutProperties, 'width'];
 
   static ownDefaults: Record<string, any> = shapeNotesDefaultValues;
 
@@ -588,6 +591,61 @@ export class ShapeNotes extends Textbox {
     // if there is background color no other shadows
     // should be casted
     this._removeShadow(ctx);
+    /*
+      0: rect
+      1: diamond
+      2: rounded rect
+      3: circle
+      4: hexagon
+      5: triangle
+      6: parallelogramIcon
+      7: star
+      8: cross
+      9: leftside right triangle
+      10: rightside right triangle
+      11: topside semicirle circle
+      12: top-left quarter circle
+      13: Constallation Rect
+      14: Constellation Round
+    */
+
+    const shapeArray = [
+      'M-69,-69L69,-69 69,69 -69,69z',
+      'm-69,0 l69,-69 69,69 -69,69 -69,-69z',
+      'm51.14083,-70l-101.28163,0c-10.96794,0 -19.8592,8.76514 -19.8592,19.5775l0,99.84501c0,10.81235 8.89125,19.5775 19.8592,19.5775l101.28163,0c10.96792,0 19.8592,-8.76516 19.8592,-19.5775l0,-99.84501c0,-10.81237 -8.89127,-19.5775 -19.8592,-19.5775z',
+      'M-69,0a69,69 0 1,0 138,0a69,69 0 1,0 -138,0',
+      'm-60,-35.1325l60.3923,-34.8675l60.3923,34.8675l0,69.73493l-60.3923,34.86799l-60.3923,-34.86799l0,-69.73493z',
+      'm-71,70.74999l70.5,-139.74999l70.5,139.74999l-140.99999,0z',
+      'm-70.21501,70.82836l28,-140.00001l112,0l-28,140.00001l-112,0z',
+      'm-69,-16.38404l52.71168,0l16.28832,-52.61596l16.28833,52.61596l52.71167,0l-42.64457,32.51808l16.28916,52.61596l-42.64459,-32.51897l-42.64458,32.51897l16.28916,-52.61596l-42.64458,-32.51808z',
+      'm-70,-23.40091l46.59909,0l0,-46.59909l47.80182,0l0,46.59909l46.59909,0l0,47.80182l-46.59909,0l0,46.59909l-47.80182,0l0,-46.59909l-46.59909,0l0,-47.80182z',
+      'm69,69l-138,0l0,-138l138,138z',
+      'm-69,70l139,0l0,-139l-139,139z',
+      'm70.87066,36.0449l-140.87066,-0.00205c5.11499,-39.91161 35.12907,-69.54285 70.43538,-69.54285c35.30263,0 65.31841,29.63308 70.43528,69.5449z',
+      'm-69,68.5488c9.55735,-78.68015 68.34233,-137.52537 137.9372,-138.04693l0,90.66818l0,47.38267l-137.9372,-0.00392z',
+      'm30.81958,0.12008l37.68039,34.8592l0,35.52068l-139.99994,0l0,-141.99993l139.99994,0l0,34.81153l-37.68601,36.28619l-0.27367,0.26402l0.2793,0.25831l-0.00001,0z',
+      'm29.19742,0.94831c0.00348,0.00417 0.00696,0.00835 0.01948,0.00209c0.01113,0.01879 0.02435,0.03757 0.03896,0.05566l0,0l0.00139,0.0007l0.00765,0.00557l0.06123,0.04731l0.48914,0.37851l3.91657,3.02875l31.11617,24.06231c-10.70812,24.39489 -35.07657,41.43186 -63.42351,41.43186c-38.23501,0 -69.23061,-30.9958 -69.23061,-69.23053c0,-38.23494 30.9956,-69.23053 69.23061,-69.23053c28.07281,0 52.24365,16.70877 63.10832,40.72522c-17.77729,13.90775 -26.59983,20.96711 -30.9784,24.5504c-2.19729,1.79825 -3.27854,2.72365 -3.8122,3.20102c-0.26509,0.23754 -0.40077,0.36953 -0.47244,0.44593c-0.0334,0.03597 -0.06401,0.07132 -0.08767,0.1068c-0.00974,0.01524 -0.0334,0.05267 -0.04801,0.10465c-0.00765,0.02721 -0.01739,0.07466 -0.01113,0.13338c0.00348,0.03131 0.01113,0.0661 0.02714,0.10228c0.00417,0.01044 0.00905,0.02018 0.01461,0.02992c0.00417,0.00765 0.00905,0.016 0.01461,0.02366c0.00557,0.00835 0.01531,0.02087 0.01809,0.02505z'
+    ];
+
+    ctx.save();
+
+    const svgPath = new Path2D(shapeArray[this.icon]);
+    const m = getDocument().createElementNS('http://www.w3.org/2000/svg', 'svg').createSVGMatrix();
+    m.a = this.width / 138;
+    m.b = 0;
+    m.c = 0;
+    m.d = this.height / 138;
+    m.e = 0;
+    m.f = 0;
+    const path = new Path2D();
+    path.addPath(svgPath, m);
+    // ctx.lineWidth = this.lineWidth / (this.width / 138 + this.height / 138) / 2;
+    ctx.lineWidth = this.lineWidth;
+    ctx.strokeStyle = this.stroke;
+    ctx.stroke(path);
+    ctx.fillStyle = this.backgroundColor;
+    ctx.fill(path);
+    ctx.restore();
   }
   _getTopOffset() {
     let topOffset = super._getTopOffset();

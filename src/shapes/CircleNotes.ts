@@ -1,9 +1,8 @@
 // @ts-nocheck
 import { TClassProperties } from '../typedefs';
-import { Textbox } from './Textbox';
+import { IText } from './IText/IText';
 import { classRegistry } from '../ClassRegistry';
 import { createRectNotesDefaultControls } from '../controls/commonControls';
-
 // @TODO: Many things here are configuration related and shouldn't be on the class nor prototype
 // regexes, list of properties that are not suppose to change by instances, magic consts.
 // this will be a separated effort
@@ -28,7 +27,7 @@ export const circleNotesDefaultValues: Partial<TClassProperties<CircleNotes>> = 
  * user can only change width. Height is adjusted automatically based on the
  * wrapping of lines.
  */
-export class CircleNotes extends Textbox {
+export class CircleNotes extends IText {
   /**selectable
    * Minimum width of textbox, in pixels.
    * @type Number
@@ -71,7 +70,7 @@ export class CircleNotes extends Textbox {
    */
   declare splitByGrapheme: boolean;
 
-  static textLayoutProperties = [...Textbox.textLayoutProperties, 'width'];
+  static textLayoutProperties = [...IText.textLayoutProperties, 'width'];
 
   static ownDefaults: Record<string, any> = circleNotesDefaultValues;
 
@@ -579,19 +578,18 @@ export class CircleNotes extends Textbox {
     }
     const dim = this._getNonTransformedDimensions();
     ctx.fillStyle = this.backgroundColor;
-
     ctx.shadowBlur = 20;
-    // ctx.shadowOffsetX = 2 * this.scaleX * canvas.getZoom();
-    // ctx.shadowOffsetY = 6 * this.scaleY * canvas.getZoom();
     ctx.shadowColor = 'rgba(0,0,0,0.1)';
-    // ctx.shadowColor = 'rgba(0,0,0,1)';
-
-    ctx.fillRect(-dim.x / 2, -dim.y / 2, dim.x, dim.y);
-
-    // if there is background color no other shadows
-    // should be casted
+    ctx.beginPath(); // 开始一个新的路径
+    ctx.arc(0, 0, dim.x / 2, 0, 2 * Math.PI); // 绘制一个圆形路径
+    ctx.closePath(); // 封闭路径
+    ctx.strokeStyle = this.backgroundColor;
+    ctx.fillStyle = this.backgroundColor;
     this._removeShadow(ctx);
+    ctx.stroke();
+    ctx.fill();
   }
+
   _getTopOffset() {
     let topOffset = super._getTopOffset();
     if (this.verticalAlign === 'middle') {
