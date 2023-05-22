@@ -1,9 +1,8 @@
 // @ts-nocheck
 import { TClassProperties } from '../typedefs';
-import { Textbox } from './Textbox';
 import { classRegistry } from '../ClassRegistry';
 import { createRectNotesDefaultControls } from '../controls/commonControls';
-
+import { IText } from './IText/IText';
 // @TODO: Many things here are configuration related and shouldn't be on the class nor prototype
 // regexes, list of properties that are not suppose to change by instances, magic consts.
 // this will be a separated effort
@@ -25,7 +24,7 @@ export const rectNotesDefaultValues: Partial<TClassProperties<RectNotes>> = {
  * user can only change width. Height is adjusted automatically based on the
  * wrapping of lines.
  */
-export class RectNotes extends Textbox {
+export class RectNotes extends IText {
   /**selectable
    * Minimum width of textbox, in pixels.
    * @type Number
@@ -68,7 +67,7 @@ export class RectNotes extends Textbox {
    */
   declare splitByGrapheme: boolean;
 
-  static textLayoutProperties = [...Textbox.textLayoutProperties, 'width'];
+  static textLayoutProperties = [...IText.textLayoutProperties, 'width'];
 
   static ownDefaults: Record<string, any> = rectNotesDefaultValues;
 
