@@ -26,6 +26,7 @@ import {
   SerializedObjectProps,
   TProps,
 } from './Object/types';
+import { createPathDefaultControls } from '../controls/commonControls';
 
 export type LayoutContextType =
   | 'initialization'
@@ -159,6 +160,7 @@ export class Group extends createCollectionMixin(
   static getDefaults(): Record<string, any> {
     return {
       ...super.getDefaults(),
+      controls: createPathDefaultControls(),
       ...Group.ownDefaults,
     };
   }
