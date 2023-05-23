@@ -139,6 +139,29 @@ export class Group extends createCollectionMixin(
    */
   declare interactive: boolean;
 
+  /* boardx cusotm function */
+  declare subTargetCheck: boolean;
+
+  declare obj_type: string;
+
+  declare locked: boolean;
+
+  declare whiteboardId: string;
+
+  declare userId: string;
+
+  declare timestamp: Date;
+
+  declare verticalAlign: string;
+
+  declare zIndex: number;
+
+  declare lines: object[];
+
+  declare icon: string;
+
+  public extendPropeties = ['subTargetCheck', 'obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'verticalAlign', 'lines', 'icon'];
+
   /**
    * Used internally to optimize performance
    * Once an object is selected, instance is rendered without the selected object.
@@ -1087,6 +1110,71 @@ export class Group extends createCollectionMixin(
 
   getWidgetMenuLength() {
     return 60;
+  }
+
+  getCloneWidget() {
+    const widget = _.clone(this.getObject());
+    delete widget._id;
+    delete widget.emoji;
+    widget.isPanel = null;
+    if (this.getObject().lines) {
+      widget.lines = this.getObject().lines;
+    } else {
+      widget.lines = null;
+    }
+
+    widget.panelObj = null;
+    widget.relationship = null;
+    widget.selectable = true;
+    widget.userEmoji = null;
+    widget.zIndex = Date.now() * 100;
+    return widget;
+  }
+
+  getObject() {
+    const object = {};
+    this.keys.forEach(key => {
+      object[key] = this[key];
+    });
+
+    const objArr = [];
+    this.getObjects().forEach(obj => {
+      objArr.push(obj.getObject());
+    });
+    object.objectArr = objArr;
+    return object;
+  }
+
+  getContextMenuList() {
+    let menuList;
+    if (this.locked) {
+      menuList = [
+        'Bring forward',
+        'Bring to front',
+        'Send backward',
+        'Send to back'
+      ];
+    } else {
+      menuList = [
+        'Ungroup',
+        'Bring forward',
+        'Bring to front',
+        'Send backward',
+        'Send to back',
+        'Duplicate',
+        'Copy',
+        'Paste',
+        'Cut',
+        'Delete'
+      ];
+    }
+    if (this.locked) {
+      menuList.push('Unlock');
+    } else {
+      menuList.push('Lock');
+    }
+
+    return menuList;
   }
   /**boardx cusotm function */
   /**
