@@ -234,6 +234,16 @@ export class ActiveSelection extends Group {
     object.group = this;
     object.setCoords(skipControls);
   }
+  /*boardx custom function */
+
+  sortActiveSelectionObjs() {
+    const ASObjects = [];
+    for (let i = 0; i < this._objects.length; i++) {
+      if (this._objects[i]._id) ASObjects.push(this._objects[i]);
+    }
+    ASObjects.sort((a, b) => b.zIndex - a.zIndex);
+    return ASObjects;
+  }
 }
 
 classRegistry.setClass(ActiveSelection);
