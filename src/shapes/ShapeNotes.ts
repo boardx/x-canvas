@@ -119,7 +119,37 @@ export class ShapeNotes extends IText {
     this.height = this.maxHeight;
     return this.height;
   }
+  calcTextHeight() {
+    let lineHeight;
+    let height = 0;
+    for (let i = 0, len = this._textLines.length; i < len; i++) {
+      lineHeight = this.getHeightOfLine(i);
+      height += i === len - 1 ? lineHeight / this.lineHeight : lineHeight;
+    }
 
+    const desiredHeight = this.height * (100 / 138);
+
+    if (height > desiredHeight) {
+      this.set('fontSize', this.fontSize - 2);
+      //@ts-ignore
+      this._splitTextIntoLines(this.text);
+      height = this.maxHeight;
+      return Math.max(height, this.height);
+    }
+    if (
+      height < this.maxHeight &&
+      this.maxHeight - height > 60 &&
+      this.fontSize < 24
+    ) {
+      this.fontSize += 2;
+      //@ts-ignore
+      this._splitTextIntoLines(this.text.trim());
+
+      return Math.max(height, this.height);
+    }
+
+    this.height = this.maxHeight;
+  }
   /**
    * Generate an object that translates the style object so that it is
    * broken up by visual lines (new lines and automatic wrapping).
@@ -685,11 +715,15 @@ export class ShapeNotes extends IText {
     return lOffset;
   }
   _getTopOffset() {
-    let topOffset = super._getTopOffset();
-    if (this.verticalAlign === 'middle') {
-      topOffset += (this.height - this._getTotalLineHeight()) / 2;
+
+    switch (this.verticalAlign) {
+      case 'middle':
+        return -this._getTotalLineHeights() / 2;
+      case 'bottom':
+        return this.height / 2 - this._getTotalLineHeights();
+      default:
+        return -this.height / 2;
     }
-    return topOffset;
   }
   _getTotalLineHeight() {
     return this._textLines.reduce(
@@ -793,6 +827,32 @@ export class ShapeNotes extends IText {
         modifier -= 23.6;
       }
     }
+  }
+
+  setLockedShadow(locked) {
+    if (locked) {
+      this.shadow = new fabric.Shadow({
+        blur: 2,
+        offsetX: 0,
+        offsetY: 0,
+        color: 'rgba(0, 0, 0, 0.5)'
+      });
+    } else {
+      this.shadow = new fabric.Shadow({
+        blur: 8,
+        offsetX: 0,
+        offsetY: 4,
+        color: 'rgba(0,0,0,0.04)'
+      });
+    }
+  }
+
+  _getSVGLeftTopOffsets() {
+    return {
+      textLeft: -this.width / 2,
+      textTop: this._getTopOffset(),
+      lineTop: this.getHeightOfLine(0)
+    };
   }
 }
 
