@@ -118,91 +118,6 @@ export class CircleNotes extends IText {
     return this.height;
   }
 
-  calcTextHeight() {
-    let lineHeight;
-    let height = 0;
-    for (let i = 0, len = this._textLines.length; i < len; i++) {
-      lineHeight = this.getHeightOfLine(i);
-      height += i === len - 1 ? lineHeight / this.lineHeight : lineHeight;
-    }
-
-    const desiredHeight = this.height * (100 / this.height);
-
-    if (height > desiredHeight) {
-      this.set('fontSize', this.fontSize - 2);
-      this._splitTextIntoLines(this.text);
-      height = this.maxHeight;
-      this.saveState({
-        propertySet: '_dimensionAffectingProps'
-      });
-      return Math.max(height, this.height);
-    }
-
-    this.height = this.maxHeight;
-  }
-
-  getSelectionStartFromPointer(e) {
-    const mouseOffset = this.getLocalPointer(e);
-    let prevWidth = 0;
-    let width = 0;
-    let height = 0;
-    let charIndex = 0;
-    let lineIndex = 0;
-    const startY = this._getSelectionStartOffsetY() * (this.scaleY || 1);
-
-    for (let i = 0, len = this._textLines.length; i < len; i++) {
-      if (startY + height <= mouseOffset.y) {
-        height += this.getHeightOfLine(i) * (this.scaleY || 1);
-        lineIndex = i;
-        if (i > 0) {
-          charIndex +=
-            this._textLines[i - 1].length + this.missingNewlineOffset(i - 1);
-        }
-      } else {
-        break;
-      }
-    }
-    const lineLeftOffset = this._getLineLeftOffset(lineIndex);
-    width = lineLeftOffset * this.scaleX;
-    const line = this._textLines[lineIndex];
-    const jlen = line.length;
-    for (let j = 0; j < jlen; j++) {
-      prevWidth = width;
-      // i removed something about flipX here, check.
-      width += this.__charBounds[lineIndex][j].kernedWidth * this.scaleX;
-      if (width <= mouseOffset.x) {
-        charIndex++;
-      } else {
-        break;
-      }
-    }
-    return this._getNewSelectionStartFromOffset(
-      mouseOffset,
-      prevWidth,
-      width,
-      charIndex,
-      jlen
-    );
-  }
-
-  _getSelectionStartOffsetY() {
-    switch (this.verticalAlign) {
-      case 'middle':
-        return this.height / 2 - this._getTotalLineHeights() / 2;
-      case 'bottom':
-        return this.height - this._getTotalLineHeights();
-      default:
-        return 0;
-    }
-  }
-
-  _getSVGLeftTopOffsets() {
-    return {
-      textLeft: -this.width / 2,
-      textTop: this._getTopOffset(),
-      lineTop: this.getHeightOfLine(0)
-    };
-  }
   /**
    * Generate an object that translates the style object so that it is
    * broken up by visual lines (new lines and automatic wrapping).
@@ -675,54 +590,18 @@ export class CircleNotes extends IText {
     ctx.fill();
   }
 
-  // _getTopOffset() {
-
-  //   switch (this.verticalAlign) {
-  //     case 'middle':
-  //       return -this._getTotalLineHeights() / 2;
-  //     case 'bottom':
-  //       return this.height / 2 - this._getTotalLineHeights();
-  //     default:
-  //       return -this.height / 2;
-  //   }
-  // }
-  _getTotalLineHeights() {
+  _getTopOffset() {
+    let topOffset = super._getTopOffset();
+    if (this.verticalAlign === 'middle') {
+      topOffset += (this.height - this._getTotalLineHeight()) / 2;
+    }
+    return topOffset;
+  }
+  _getTotalLineHeight() {
     return this._textLines.reduce(
       (total, _line, index) => total + this.getHeightOfLine(index),
       0
     );
-  }
-  _renderTextCommon(ctx, method) {
-    ctx.save();
-    let lineHeights = 0;
-    const left = this._getLeftOffset();
-    const top = this._getTopOffset();
-    const offsets = this._applyPatternGradientTransform(
-      ctx,
-      method === 'fillText' ? this.fill : this.stroke
-    );
-
-    for (let i = 0, len = this._textLines.length; i < len; i++) {
-      const heightOfLine = this.getHeightOfLine(i);
-      const maxHeight = heightOfLine / this.lineHeight;
-      const leftOffset = this._getLineLeftOffset(i);
-      this._renderTextLine(
-        method,
-        ctx,
-        this._textLines[i],
-        left + leftOffset - offsets.offsetX,
-        top + lineHeights + maxHeight - offsets.offsetY,
-        i
-      );
-      lineHeights += heightOfLine;
-    }
-    ctx.restore();
-  }
-
-  update() {
-    if (this.selectionStart === this.selectionEnd) {
-      this._calcTextareaPosition();
-    }
   }
 
   renderEmoji(ctx) {
@@ -782,7 +661,6 @@ export class CircleNotes extends IText {
       }
     }
   }
-
 }
 
 classRegistry.setClass(CircleNotes);
