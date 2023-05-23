@@ -13,13 +13,16 @@ export interface FabricObject<
   Props extends TFabricObjectProps = Partial<FabricObjectProps>,
   SProps extends SerializedObjectProps = SerializedObjectProps,
   EventSpec extends ObjectEvents = ObjectEvents
-> extends FabricObjectSVGExportMixin {}
+> extends FabricObjectSVGExportMixin { }
 
 export class FabricObject<
   Props extends TFabricObjectProps = Partial<FabricObjectProps>,
   SProps extends SerializedObjectProps = SerializedObjectProps,
   EventSpec extends ObjectEvents = ObjectEvents
-> extends InteractiveFabricObject<Props, SProps, EventSpec> {}
+> extends InteractiveFabricObject<Props, SProps, EventSpec> {
+  _id: any;
+  zIndex: any;
+}
 
 applyMixins(FabricObject, [FabricObjectSVGExportMixin]);
 
