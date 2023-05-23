@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { getDocument } from '../env';
 import { TClassProperties } from '../typedefs';
-import { IText } from './IText/IText';
+import { Textbox } from './Textbox';
 import { classRegistry } from '../ClassRegistry';
 import { createRectNotesDefaultControls } from '../controls/commonControls';
 
@@ -27,7 +27,7 @@ export const shapeNotesDefaultValues: Partial<TClassProperties<ShapeNotes>> = {
  * user can only change width. Height is adjusted automatically based on the
  * wrapping of lines.
  */
-export class ShapeNotes extends IText {
+export class ShapeNotes extends Textbox {
   /**selectable
    * Minimum width of textbox, in pixels.
    * @type Number
@@ -72,7 +72,7 @@ export class ShapeNotes extends IText {
    */
   declare splitByGrapheme: boolean;
 
-  static textLayoutProperties = [...IText.textLayoutProperties, 'width'];
+  static textLayoutProperties = [...Textbox.textLayoutProperties, 'width'];
 
   static ownDefaults: Record<string, any> = shapeNotesDefaultValues;
 

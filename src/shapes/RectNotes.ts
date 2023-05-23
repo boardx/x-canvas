@@ -2,7 +2,7 @@
 import { TClassProperties } from '../typedefs';
 import { classRegistry } from '../ClassRegistry';
 import { createRectNotesDefaultControls } from '../controls/commonControls';
-import { IText } from './IText/IText';
+import { Textbox } from './Textbox';
 // @TODO: Many things here are configuration related and shouldn't be on the class nor prototype
 // regexes, list of properties that are not suppose to change by instances, magic consts.
 // this will be a separated effort
@@ -24,7 +24,7 @@ export const rectNotesDefaultValues: Partial<TClassProperties<RectNotes>> = {
  * user can only change width. Height is adjusted automatically based on the
  * wrapping of lines.
  */
-export class RectNotes extends IText {
+export class RectNotes extends Textbox {
   /**selectable
    * Minimum width of textbox, in pixels.
    * @type Number
@@ -33,6 +33,8 @@ export class RectNotes extends IText {
   declare minWidth: number;
 
   /* boardx cusotm function */
+  declare _id: string;
+
   declare obj_type: string;
 
   declare locked: boolean;
@@ -49,7 +51,7 @@ export class RectNotes extends IText {
 
   declare lines: object[];
 
-  public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'verticalAlign', 'lines'];
+  public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'verticalAlign', 'lines', '_id', 'zIndex'];
   /**
    * Minimum calculated width of a textbox, in pixels.
    * fixed to 2 so that an empty textbox cannot go to 0
@@ -67,7 +69,7 @@ export class RectNotes extends IText {
    */
   declare splitByGrapheme: boolean;
 
-  static textLayoutProperties = [...IText.textLayoutProperties, 'width'];
+  static textLayoutProperties = [...Textbox.textLayoutProperties, 'width'];
 
   static ownDefaults: Record<string, any> = rectNotesDefaultValues;
 
@@ -107,6 +109,7 @@ export class RectNotes extends IText {
     const height = this.calcTextHeight();
     if (height > this.maxHeight && this.fontSize > 6) {
       this.set('fontSize', this.fontSize - 2);
+      this.set('lineHeight', this.fontSize * 1.16);
       this._splitTextIntoLines(this.text);
       return;
     }

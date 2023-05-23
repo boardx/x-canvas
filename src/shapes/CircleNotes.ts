@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { TClassProperties } from '../typedefs';
-import { IText } from './IText/IText';
+import { Textbox } from './Textbox';
 import { classRegistry } from '../ClassRegistry';
 import { createRectNotesDefaultControls } from '../controls/commonControls';
 // @TODO: Many things here are configuration related and shouldn't be on the class nor prototype
@@ -27,7 +27,7 @@ export const circleNotesDefaultValues: Partial<TClassProperties<CircleNotes>> = 
  * user can only change width. Height is adjusted automatically based on the
  * wrapping of lines.
  */
-export class CircleNotes extends IText {
+export class CircleNotes extends Textbox {
   /**selectable
    * Minimum width of textbox, in pixels.
    * @type Number
@@ -70,7 +70,7 @@ export class CircleNotes extends IText {
    */
   declare splitByGrapheme: boolean;
 
-  static textLayoutProperties = [...IText.textLayoutProperties, 'width'];
+  static textLayoutProperties = [...Textbox.textLayoutProperties, 'width'];
 
   static ownDefaults: Record<string, any> = circleNotesDefaultValues;
 
@@ -110,6 +110,7 @@ export class CircleNotes extends IText {
     const height = this.calcTextHeight();
     if (height > this.maxHeight && this.fontSize > 6) {
       this.set('fontSize', this.fontSize - 2);
+      this.set('lineHeight', this.fontSize * 1.16);
       this._splitTextIntoLines(this.text);
       return;
     }
