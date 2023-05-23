@@ -107,5 +107,14 @@ export const fabricObjectDefaultValues = {
   absolutePositioned: true,
   FX_DURATION: 500,
   inverted: false,
-  obj_type: ''
+  obj_type: '',
+  zIndex: 0,
+  statefullCache: false,
+  isRemoteEditing: false,
+  RemoteUserWhoEditing: '',
+  NUM_FRACTION_DIGITS: 2,
+  hasRotatingPoint: false,
+  locked: false,
+  isLoading: false,
+
 } as const;
