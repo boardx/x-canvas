@@ -18,6 +18,7 @@ export const shapeNotesDefaultValues: Partial<TClassProperties<ShapeNotes>> = {
   obj_type: 'WBShapeNotes',
   height: 138,
   maxHeight: 138,
+  textAlign: 'center'
 };
 
 /**
@@ -586,7 +587,7 @@ export class ShapeNotes extends IText {
     ctx.shadowColor = 'rgba(0,0,0,0.1)';
     // ctx.shadowColor = 'rgba(0,0,0,1)';
 
-    ctx.fillRect(-dim.x / 2, -dim.y / 2, dim.x, dim.y);
+    //ctx.fillRect(-dim.x / 2, -dim.y / 2, dim.x, dim.y);
 
     // if there is background color no other shadows
     // should be casted
@@ -647,6 +648,42 @@ export class ShapeNotes extends IText {
     ctx.fill(path);
     ctx.restore();
   }
+  getTopOffset() {
+    let tOffset = 0;
+    switch (this.icon) {
+      case 0:
+      case 2:
+        tOffset = 40;
+        break;
+      case 1:
+      case 3:
+      case 5:
+        tOffset = this.height / 2;
+        break;
+      case 4:
+        tOffset = this.height / 3;
+        break;
+      default:
+    }
+    return tOffset;
+  }
+  getLeftOffset() {
+    let lOffset = 0;
+    switch (this.icon) {
+      case 0:
+      case 2:
+      case 4:
+        lOffset = 40;
+        break;
+      case 1:
+      case 3:
+      case 5:
+        lOffset = this.width / 2;
+        break;
+      default:
+    }
+    return lOffset;
+  }
   _getTopOffset() {
     let topOffset = super._getTopOffset();
     if (this.verticalAlign === 'middle') {
@@ -659,6 +696,46 @@ export class ShapeNotes extends IText {
       (total, _line, index) => total + this.getHeightOfLine(index),
       0
     );
+  }
+
+  _renderText(ctx) {
+    ctx.shadowOffsetX = ctx.shadowOffsetY = ctx.shadowBlur = 0;
+    ctx.shadowColor = '';
+
+    if (this.paintFirst === 'stroke') {
+      this._renderTextStroke(ctx);
+      this._renderTextFill(ctx);
+    } else {
+      this._renderTextFill(ctx);
+      this._renderTextStroke(ctx);
+    }
+  }
+
+  _renderTextCommon(ctx, method) {
+    ctx.save();
+    let lineHeights = 0;
+    const left = this._getLeftOffset();
+    const top = this._getTopOffset();
+    const offsets = this._applyPatternGradientTransform(
+      ctx,
+      method === 'fillText' ? this.fill : this.stroke
+    );
+
+    for (let i = 0, len = this._textLines.length; i < len; i++) {
+      const heightOfLine = this.getHeightOfLine(i);
+      const maxHeight = heightOfLine / this.lineHeight;
+      const leftOffset = this._getLineLeftOffset(i);
+      this._renderTextLine(
+        method,
+        ctx,
+        this._textLines[i],
+        left + leftOffset - offsets.offsetX,
+        top + lineHeights + maxHeight - offsets.offsetY,
+        i
+      );
+      lineHeights += heightOfLine;
+    }
+    ctx.restore();
   }
   renderEmoji(ctx) {
     if (this.emoji === undefined) {
