@@ -36,6 +36,8 @@ export class ShapeNotes extends Textbox {
   declare minWidth: number;
 
   /* boardx cusotm function */
+  declare _id: string;
+
   declare obj_type: string;
 
   declare locked: boolean;
@@ -52,9 +54,11 @@ export class ShapeNotes extends Textbox {
 
   declare lines: object[];
 
+  declare relationship: object[];
+
   declare icon: string;
 
-  public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'verticalAlign', 'lines', 'icon'];
+  public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'verticalAlign', 'lines', '_id', 'zIndex', 'relationship', 'icon'];
   /**
    * Minimum calculated width of a textbox, in pixels.
    * fixed to 2 so that an empty textbox cannot go to 0

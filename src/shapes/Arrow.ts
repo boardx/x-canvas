@@ -66,6 +66,8 @@ export class Arrow<
   declare y2: number;
 
   /*boardx custom declare*/
+  declare _id: string;
+
   declare obj_type: string;
 
   declare locked: boolean;
@@ -80,7 +82,7 @@ export class Arrow<
 
   declare connectorShape: string;
 
-  public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked'];
+  public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'connectorShape', '_id'];
 
   static cacheProperties = [...cacheProperties, ...coordProps];
   /**

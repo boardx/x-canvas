@@ -93,4 +93,6 @@ export interface BaseProps {
    * @default 0
    */
   angle: TDegree;
+
+  zIndex: number;
 }

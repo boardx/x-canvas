@@ -78,7 +78,9 @@ export class Line<
 
   declare zIndex: number;
 
-  public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked'];
+  declare _id: string;
+
+  public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', '_id'];
 
   static cacheProperties = [...cacheProperties, ...coordProps];
   /**

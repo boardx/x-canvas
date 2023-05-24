@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { getDocument, getEnv } from '../env';
+import { getDocument, getEnv, getWindow } from '../env';
 import type { BaseFilter } from '../filters/BaseFilter';
 import { getFilterBackend } from '../filters/FilterBackend';
 import { SHARED_ATTRIBUTES } from '../parser/attributes';
@@ -161,6 +161,7 @@ export class Image<
   protected declare src: string;
 
   declare filters: BaseFilter[];
+
   declare resizeFilter: BaseFilter;
 
   /* boardx cusotm function */
@@ -182,7 +183,9 @@ export class Image<
 
   declare relationship: object[];
 
-  public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'verticalAlign', 'line', 'relationship'];
+  declare _id: string;
+
+  public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'verticalAlign', 'line', 'relationship', '_id'];
 
   protected declare _element: ImageSource;
   protected declare _originalElement: ImageSource;
@@ -684,6 +687,9 @@ export class Image<
     }
     this._stroke(ctx);
     this._renderPaintInOrder(ctx);
+    if (this.isOnScreen && this.compressSize !== 1000) {
+      this.resizeImageAccordingToZoomAndOnScreen();
+    }
   }
 
   /**
@@ -930,6 +936,69 @@ export class Image<
       ...parsedAttributes,
     }).then(callback);
   }
+
+  initDoubleClickSimulation() {
+    this.__lastClickTime = +new Date();
+    this.on('mousedown', this.onMouseDown.bind(this));
+  }
+
+  onMouseDown(options) {
+    this.__newClickTime = +new Date();
+    if (this.__newClickTime - this.__lastClickTime < 500) {
+      this.fire('dblclick', options);
+      this._stopEvent(options.e);
+    }
+
+    this.__lastClickTime = this.__newClickTime;
+  }
+
+  _stopEvent(e) {
+    if (e.preventDefault) e.preventDefault();
+    if (e.stopPropagation) e.stopPropagation();
+  }
+
+  resizeImageAccordingToZoomAndOnScreen() {
+    const zoom = this.canvas.getZoom();
+    const realWidth = this.scaleX * this.width * zoom;
+
+    const originalWidth = this.width;
+    const originalHeight = this.height;
+    let originalSrc = "";
+    if (!this.src || this.src.indexOf('base64') !== -1) return;
+    if (
+      (zoom >= 0.4 && this.compressSize !== 1000) ||
+      realWidth > getWindow().innerWidth * 0.4
+    ) {
+      if (this.src.includes('oss-')) {
+        originalSrc =
+          this.src.indexOf('?') === -1 ? this.src : this.src.split('?')[0];
+
+      } else {
+        originalSrc = this.src.replace('smallPic/', 'bigPic/');
+      }
+      this.compressSize = 1000;
+      const targetSrc = originalSrc;
+
+      this.setSrc(
+        targetSrc,
+        () => {
+          //@ts-ignore
+          this.set({
+            width: originalWidth,
+            height: originalHeight,
+            dirty: true
+          });
+          if (canvas) {
+            canvas.requestRenderAll();
+          }
+
+        },
+        { crossOrigin: 'anonymous', ...this.toObject() }
+      );
+    }
+  }
+
+
 }
 
 classRegistry.setClass(Image);

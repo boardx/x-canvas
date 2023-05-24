@@ -28,6 +28,7 @@ export class ObjectOrigin<EventSpec>
   declare angle: TDegree;
   declare strokeWidth: number;
   declare strokeUniform: boolean;
+  declare zIndex: number;
 
   /**
    * Object containing this object.

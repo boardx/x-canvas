@@ -20,9 +20,6 @@ export class FabricObject<
   SProps extends SerializedObjectProps = SerializedObjectProps,
   EventSpec extends ObjectEvents = ObjectEvents
 > extends InteractiveFabricObject<Props, SProps, EventSpec> {
-  _id: any;
-  zIndex: any;
-  locked: any;
 }
 
 applyMixins(FabricObject, [FabricObjectSVGExportMixin]);

@@ -78,7 +78,13 @@ export class Path<
 
   declare zIndex: number;
 
-  public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked'];
+  declare lines: object[];
+
+  declare relationship: object[];
+
+  declare _id: string;
+
+  public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'lines', 'relationship', '_id'];
   /**
    * Constructor
    * @param {TComplexPathData} path Path data (sequence of coordinates and corresponding "command" tokens)
