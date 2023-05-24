@@ -51,6 +51,7 @@ export const imageDefaultValues: Partial<UniqueFileProps> &
   cropX: 0,
   cropY: 0,
   imageSmoothing: true,
+  obj_type: 'WBFile'
 };
 
 export interface SerializedFileProps extends SerializedObjectProps {

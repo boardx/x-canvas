@@ -109,7 +109,6 @@ export class RectNotes extends Textbox {
     const height = this.calcTextHeight();
     if (height > this.maxHeight && this.fontSize > 6) {
       this.set('fontSize', this.fontSize - 2);
-      this.set('lineHeight', this.fontSize * 1.16);
       this._splitTextIntoLines(this.text);
       return;
     }

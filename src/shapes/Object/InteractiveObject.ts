@@ -46,13 +46,12 @@ export type FabricObjectWithDragSupport = InteractiveFabricObject & DragMethods;
 const interactiveDefaults = {};
 
 export class InteractiveFabricObject<
-    Props extends TFabricObjectProps = Partial<FabricObjectProps>,
-    SProps extends SerializedObjectProps = SerializedObjectProps,
-    EventSpec extends ObjectEvents = ObjectEvents
-  >
+  Props extends TFabricObjectProps = Partial<FabricObjectProps>,
+  SProps extends SerializedObjectProps = SerializedObjectProps,
+  EventSpec extends ObjectEvents = ObjectEvents
+>
   extends FabricObject<Props, SProps, EventSpec>
-  implements FabricObjectProps
-{
+  implements FabricObjectProps {
   declare noScaleCache: boolean;
   declare centeredScaling: false;
 
@@ -459,8 +458,8 @@ export class InteractiveFabricObject<
           this.strokeUniform
             ? new Point().scalarAdd(this.canvas ? this.canvas.getZoom() : 1)
             : // this is extremely confusing. options comes from the upper function
-              // and is the qrDecompose of a matrix that takes in account zoom too
-              new Point(options.scaleX, options.scaleY)
+            // and is the qrDecompose of a matrix that takes in account zoom too
+            new Point(options.scaleX, options.scaleY)
         ).scalarMultiply(this.strokeWidth);
       size = bbox.add(stroke).scalarAdd(this.borderScaleFactor);
     } else {
@@ -669,4 +668,31 @@ export class InteractiveFabricObject<
   renderDropTargetEffect(this: AssertKeys<this, 'canvas'>, e: DragEvent) {
     // for subclasses
   }
+  /*BOARDX CUSTOM FUNCTIONS */
+  getWidgetMenuTouchList = () => [
+    'objectDelete',
+    'moreMenuStickyNote'
+  ]
+
+  extContainsPoint(point: { x: number; y: number }) {
+    if (this && this !== undefined && this.obj_type !== 'WBArrow') {
+      const minx = this.aCoords.tl.x;
+      const maxx = this.aCoords.br.x;
+      const miny = this.aCoords.tl.y;
+      const maxy = this.aCoords.br.y;
+
+      if (
+        point.x >= minx &&
+        point.x <= maxx &&
+        point.y >= miny &&
+        point.y <= maxy
+      ) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+
 }

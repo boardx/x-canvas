@@ -22,6 +22,7 @@ export class FabricObject<
 > extends InteractiveFabricObject<Props, SProps, EventSpec> {
   _id: any;
   zIndex: any;
+  locked: any;
 }
 
 applyMixins(FabricObject, [FabricObjectSVGExportMixin]);
