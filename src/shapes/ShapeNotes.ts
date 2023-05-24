@@ -113,7 +113,7 @@ export class ShapeNotes extends Textbox {
       this.enlargeSpaces();
     }
     // clear cache and re-calculate height
-    const height = this.calcTextHeight();
+    const height = this.height;
     if (height > this.maxHeight && this.fontSize > 6) {
       this.set('fontSize', this.fontSize - 2);
       this._splitTextIntoLines(this.text);
@@ -122,37 +122,6 @@ export class ShapeNotes extends Textbox {
 
     this.height = this.maxHeight;
     return this.height;
-  }
-  calcTextHeight() {
-    let lineHeight;
-    let height = 0;
-    for (let i = 0, len = this._textLines.length; i < len; i++) {
-      lineHeight = this.getHeightOfLine(i);
-      height += i === len - 1 ? lineHeight / this.lineHeight : lineHeight;
-    }
-
-    const desiredHeight = this.height * (100 / 138);
-
-    if (height > desiredHeight) {
-      this.set('fontSize', this.fontSize - 2);
-      //@ts-ignore
-      this._splitTextIntoLines(this.text);
-      height = this.maxHeight;
-      return Math.max(height, this.height);
-    }
-    if (
-      height < this.maxHeight &&
-      this.maxHeight - height > 60 &&
-      this.fontSize < 24
-    ) {
-      this.fontSize += 2;
-      //@ts-ignore
-      this._splitTextIntoLines(this.text.trim());
-
-      return Math.max(height, this.height);
-    }
-
-    this.height = this.maxHeight;
   }
   /**
    * Generate an object that translates the style object so that it is
