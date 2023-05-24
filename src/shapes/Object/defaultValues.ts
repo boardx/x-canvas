@@ -78,7 +78,7 @@ export const fabricObjectDefaultValues = {
   strokeMiterLimit: 4,
   shadow: null,
   borderOpacityWhenMoving: 0.4,
-  borderScaleFactor: 1,
+  borderScaleFactor: 1.5,
   minScaleLimit: 0,
   selectable: true,
   evented: true,
