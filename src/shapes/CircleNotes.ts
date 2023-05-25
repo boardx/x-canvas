@@ -16,9 +16,7 @@ export const circleNotesDefaultValues: Partial<TClassProperties<CircleNotes>> = 
   obj_type: 'WBCircleNotes',
   height: 138,
   maxHeight: 138,
-  noteType: 'circle',
-  radius: 138
-
+  noteType: 'circle'
 };
 
 /**
@@ -118,9 +116,29 @@ export class CircleNotes extends Textbox {
       return;
     }
 
+    this.height = this.maxHeight;
     return this.height;
   }
 
+  calcTextHeight() {
+    let lineHeight;
+    let height = 0;
+    for (let i = 0, len = this._textLines.length; i < len; i++) {
+      lineHeight = this.getHeightOfLine(i);
+      height += i === len - 1 ? lineHeight / this.lineHeight : lineHeight;
+    }
+
+    const desiredHeight = 82;
+
+    if (height > desiredHeight) {
+      this.set('fontSize', this.fontSize - 2);
+      this._splitTextIntoLines(this.text);
+      height = this.maxHeight;
+      return Math.max(height, this.height);
+    }
+
+    this.height = this.maxHeight;
+  }
   /**
    * Generate an object that translates the style object so that it is
    * broken up by visual lines (new lines and automatic wrapping).
@@ -569,6 +587,7 @@ export class CircleNotes extends Textbox {
     }
     return 420;
   }
+
   /* caculate cusor positon in the middle of the textbox */
   getCenteredTop(rectHeight) {
     const textHeight = this.height;
@@ -643,8 +662,6 @@ export class CircleNotes extends Textbox {
     ctx.fill();
     ctx.restore();
 
-    //ctx.strokeRect(x - 10, y, width, 16);
-    //ctx.fillRect(x - 10 + 10 / 2, y + 10 / 2, width - 10, 16 - 10);
     ctx.fillStyle = '#000';
     const isEmojiThumbExist = !(this.canvas.emoji_thumb === undefined);
     if (isEmojiThumbExist) {
