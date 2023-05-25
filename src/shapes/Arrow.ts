@@ -4,7 +4,6 @@ import { TClassProperties } from '../typedefs';
 import { classRegistry } from '../ClassRegistry';
 import { FabricObject, cacheProperties } from './Object/FabricObject';
 import { Point } from '../Point';
-import { isFiller } from '../util/types';
 import type {
   FabricObjectProps,
   SerializedObjectProps,
@@ -13,7 +12,7 @@ import type {
 import type { ObjectEvents } from '../EventTypeDefs';
 import { makeBoundingBoxFromPoints } from '../util';
 import { createPathDefaultControls } from '../controls/commonControls';
-
+import { transformPoint } from '../util/misc/matrix';
 // @TODO this code is terrible and Line should be a special case of polyline.
 
 const coordProps = ['x1', 'x2', 'y1', 'y2'] as const;
@@ -76,13 +75,19 @@ export class Arrow<
 
   declare userId: string;
 
+  declare userNo: string;
+
   declare timestamp: Date;
 
   declare zIndex: number;
 
   declare connectorShape: string;
 
-  public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'connectorShape', '_id'];
+  declare subType: string;
+
+  declare perPixelTargetFind: boolean;
+
+  public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'connectorShape', '_id', 'subType', 'perPixelTargetFind', 'userNo'];
 
   static cacheProperties = [...cacheProperties, ...coordProps];
   /**
@@ -98,6 +103,8 @@ export class Arrow<
     typeof left === 'number' && this.set('left', left);
     typeof top === 'number' && this.set('top', top);
   }
+
+
   static getDefaults() {
     return {
       ...super.getDefaults(),
@@ -144,28 +151,28 @@ export class Arrow<
    * @param {CanvasRenderingContext2D} ctx Context to render on
    */
 
-  _render(ctx: CanvasRenderingContext2D) {
-    ctx.beginPath();
+  // _render(ctx: CanvasRenderingContext2D) {
+  //   ctx.beginPath();
 
-    const p = this.calcLinePoints();
-    ctx.moveTo(p.x1, p.y1);
-    ctx.lineTo(p.x2, p.y2);
+  //   const p = this.calcLinePoints();
+  //   ctx.moveTo(p.x1, p.y1);
+  //   ctx.lineTo(p.x2, p.y2);
 
-    ctx.lineWidth = this.strokeWidth;
+  //   ctx.lineWidth = this.strokeWidth;
 
-    // TODO: test this
-    // make sure setting "fill" changes color of a line
-    // (by copying fillStyle to strokeStyle, since line is stroked, not filled)
-    const origStrokeStyle = ctx.strokeStyle;
-    if (isFiller(this.stroke)) {
-      ctx.strokeStyle = this.stroke.toLive(ctx)!;
-    } else {
-      ctx.strokeStyle = this.stroke ?? ctx.fillStyle;
-    }
-    this.stroke && this._renderStroke(ctx);
-    ctx.strokeStyle = origStrokeStyle;
+  //   // TODO: test this
+  //   // make sure setting "fill" changes color of a line
+  //   // (by copying fillStyle to strokeStyle, since line is stroked, not filled)
+  //   const origStrokeStyle = ctx.strokeStyle;
+  //   if (isFiller(this.stroke)) {
+  //     ctx.strokeStyle = this.stroke.toLive(ctx)!;
+  //   } else {
+  //     ctx.strokeStyle = this.stroke ?? ctx.fillStyle;
+  //   }
+  //   this.stroke && this._renderStroke(ctx);
+  //   ctx.strokeStyle = origStrokeStyle;
 
-  }
+  // }
 
   /**
    * This function is an helper for svg import. it returns the center of the object in the svg
@@ -331,6 +338,51 @@ export class Arrow<
     return menuList;
   }
 
+  getCloneLineWidget() {
+    const widget = this.toObject();
+    const rwidget = widget;
+    const lObjwidth = (widget.x1 - widget.x2) * widget.scaleX;
+    const lObjheight = (widget.y1 - widget.y2) * widget.scaleY;
+    rwidget.x1 = widget.left + 0.5 * lObjwidth;
+    rwidget.y1 = widget.top + 0.5 * lObjheight;
+    rwidget.x2 = widget.left - 0.5 * lObjwidth;
+    rwidget.y2 = widget.top - 0.5 * lObjheight;
+    rwidget.scaleX = 1;
+    rwidget.scaleY = 1;
+    rwidget.width = lObjwidth;
+    rwidget.height = lObjheight;
+    rwidget.left = widget.left;
+    rwidget.top = widget.top;
+    rwidget.zIndex = Date.now() * 100;
+    return rwidget;
+  }
+
+  recalcLinePoints(line: Arrow) {
+    const points = line.calcLinePoints();
+    const matrix = line.calcTransformMatrix();
+    // recalculate the line's start and end point coordinate by transform matrix
+    const point1 = transformPoint(
+      { x: points.x1, y: points.y1 },
+      matrix,
+    );
+    const point2 = transformPoint(
+      { x: points.x2, y: points.y2 },
+      matrix,
+    );
+    line.set('x1', point1.x).set('y1', point1.y);
+    line.set('x2', point2.x).set('y2', point2.y);
+  }
+
+  calculateEnds(lineObj: any, arrow: any) {
+    const position = {
+      x1: lineObj.left,
+      y1: lineObj.top,
+      x2: lineObj.left + (arrow.x2 - arrow.x1),
+      y2: lineObj.top + (arrow.y2 - arrow.y1),
+    };
+    return position;
+  }
+
   getArrowAngle() {
     const x = this.x2 - this.x1;
     const y = this.y2 - this.y1;
@@ -359,6 +411,26 @@ export class Arrow<
     angle = (angle * 180) / Math.PI + 90;
     return angle;
   }
+
+  removeArrowfromConnectObj(oldConnObj: any) {
+    oldConnObj.lines = oldConnObj.lines.filter((item: { _id: string; }) => item._id !== this._id);
+  }
+
+  drawSegments(ctx: any, keyPoints: any) {
+    for (let i = 0; i < keyPoints.length - 1; i++) {
+      //const colors = ['black', 'red', 'yellow', 'purple', 'green', 'blue'];
+      ctx.beginPath();
+      ctx.moveTo(keyPoints[i].x, keyPoints[i].y);
+      ctx.lineTo(keyPoints[i + 1].x, keyPoints[i + 1].y);
+      //ctx.strokeStyle = colors[i];
+      ctx.strokeStyle = this.stroke;
+      ctx.stroke();
+    }
+  }
+
+
+
+
   /**
    * Returns Line instance from an object representation
    * @static
