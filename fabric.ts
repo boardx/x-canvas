@@ -45,7 +45,7 @@ export { ShapeNotes } from './src/shapes/ShapeNotes';
 export { Text } from './src/shapes/Text/Text';
 export { Textbox } from './src/shapes/Textbox';
 export { Triangle } from './src/shapes/Triangle';
-//export { Urlimage } from './src/shapes/Urlimage';
+export { UrlImage } from './src/shapes/Urlimage';
 
 
 export * as util from './src/util';
