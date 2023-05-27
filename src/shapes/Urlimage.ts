@@ -4,7 +4,7 @@ import type { BaseFilter } from '../filters/BaseFilter';
 import { getFilterBackend } from '../filters/FilterBackend';
 import { SHARED_ATTRIBUTES } from '../parser/attributes';
 import { parseAttributes } from '../parser/parseAttributes';
-import { TClassProperties, TSize } from '../typedefs';
+import { TSize } from '../typedefs';
 import { uid } from '../util/internals/uid';
 import { createCanvasElement } from '../util/misc/dom';
 import { findScaleToCover, findScaleToFit } from '../util/misc/findScaleTo';
@@ -66,7 +66,7 @@ export interface SerializedFileProps extends SerializedObjectProps {
 
 export interface FileProps extends FabricObjectProps, UniqueFileProps { }
 
-const FILE_PROPS = ['cropX', 'cropY'] as const;
+const FILE_PROPS = ['cropX', 'cropY', 'obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'verticalAlign', 'line', 'relationship', '_id'] as const;
 
 /**
  * @tutorial {@link http://fabricjs.com/fabric-intro-part-1#images}
@@ -163,9 +163,12 @@ export class UrlImage<
     protected declare src: string;
 
     declare filters: BaseFilter[];
+
     declare resizeFilter: BaseFilter;
 
     /* boardx cusotm function */
+    declare _id: string;
+
     declare obj_type: string;
 
     declare locked: boolean;
@@ -184,7 +187,7 @@ export class UrlImage<
 
     declare relationship: object[];
 
-    public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'verticalAlign', 'line', 'relationship'];
+    public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'verticalAlign', 'line', 'relationship', '_id'];
 
     protected declare _element: FileSource;
     protected declare _originalElement: FileSource;
@@ -198,7 +201,7 @@ export class UrlImage<
         return {
             ...super.getDefaults(),
             controls: createFileDefaultControls(),
-            ...Image.ownDefaults,
+            ...UrlImage.ownDefaults,
         };
     }
     /**
@@ -328,23 +331,11 @@ export class UrlImage<
      * @param {Array} [propertiesToInclude] Any properties that you might want to additionally include in the output
      * @return {Object} Object representation of an instance
      */
-    toObject<
-        T extends Omit<Props & TClassProperties<this>, keyof SProps>,
-        K extends keyof T = never
-    >(propertiesToInclude: K[] = []): Pick<T, K> & SProps {
-        const filters: Record<string, any>[] = [];
-        this.filters.forEach((filterObj) => {
-            filterObj && filters.push(filterObj.toObject());
-        });
-        return {
-            ...super.toObject([...FILE_PROPS, ...this.extendPropeties, ...propertiesToInclude]),
-            src: this.getSrc(),
-            crossOrigin: this.getCrossOrigin(),
-            filters,
-            ...(this.resizeFilter
-                ? { resizeFilter: this.resizeFilter.toObject() }
-                : {}),
-        };
+    toObject(propertiesToInclude: Array<any>): object {
+        return super.toObject(
+            [...this.extendPropeties, 'minWidth', 'splitByGrapheme'].concat(propertiesToInclude)
+        );
+
     }
 
     /**
@@ -855,11 +846,13 @@ export class UrlImage<
      * @param {LoadImageOptions} [options] Options object
      * @returns {Promise<Image>}
      */
-    fromURL(url, resolve, reject, urlOptions?) {
+    fromURL<T extends TProps<SerializedFileProps>>(
+        url: string,
+        options: T & LoadImageOptions = {}
+    ): Promise<Image> {
+
         const img = getDocument().createElement('img');
         const cvs = getDocument().createElement('canvas');
-        console.log('cvs', cvs);
-        console.log('img', img);
         const ctx = cvs.getContext('2d');
         img.crossOrigin = '';
         img.onload = function () {
@@ -872,9 +865,11 @@ export class UrlImage<
                 cvs.toDataURL(),
                 (_img) => {
                     console.log('_img', _img);
-                    if (resolve) {
-                        resolve(new UrlImage(_img, urlOptions));
-                    }
+                    resolve(loadImage(url, options).then((img) => new this(img, options)));
+                },
+                (err) => {
+                    console.error('Error occurred while loading image from URL:', err);
+                    reject(err);
                 },
                 null,
                 //@ts-ignore
@@ -883,11 +878,7 @@ export class UrlImage<
                 }, // urlOptions && urlOptions.crossOrigin
             );
         };
-        img.onerror = function (error) {
-            reject(error);
-        };
-        img.src = `${url.split('?')[0]}`; // urlOptions.src;
-        console.log('img', img)
+
     }
 
     /**
