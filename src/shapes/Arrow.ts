@@ -87,7 +87,17 @@ export class Arrow<
 
   declare perPixelTargetFind: boolean;
 
-  public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'connectorShape', '_id', 'subType', 'perPixelTargetFind', 'userNo'];
+  declare connectorEnd: object;
+
+  declare connectorStart: object;
+
+  declare connectorType: string;
+
+  declare tips: string;
+
+  declare connectorStyle: string;
+
+  public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'connectorShape', '_id', 'subType', 'perPixelTargetFind', 'userNo', 'connectorEnd', 'connectorStart', 'connectorType', 'tips', 'connectorStyle'];
 
   static cacheProperties = [...cacheProperties, ...coordProps];
   /**
