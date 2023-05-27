@@ -61,10 +61,10 @@ export class Textbox extends IText {
       ...Textbox.ownDefaults,
     };
   }
-  constructor(text: string, options: any) {
-    super({ ...options, text, styles: options?.styles || {} });
-    this.addControls();
-  }
+  // constructor(text: string, options: any) {
+  //   super({ ...options, text, styles: options?.styles || {} });
+  //   this.addControls();
+  // }
 
   /**
    * Unlike superclass's version of this function, Textbox does not update

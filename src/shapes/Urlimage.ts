@@ -2,9 +2,10 @@
 import { TClassProperties } from '../typedefs';
 import { classRegistry } from '../ClassRegistry';
 import { createRectNotesDefaultControls } from '../controls/commonControls';
-import type { Shadow } from '../Shadow';
+import { Shadow } from '../Shadow';
 import { Rect } from '../shapes/Rect';
 import { loadImage } from '../util/misc/objectEnlive';
+import { getWindow } from '../env';
 export const rectNotesDefaultValues: Partial<TClassProperties<UrlImage>> = {
     minWidth: 20,
     dynamicMinWidth: 2,
@@ -54,8 +55,6 @@ export class UrlImage extends Image {
      */
     declare splitByGrapheme: boolean;
 
-    static textLayoutProperties = [...UrlImage.textLayoutProperties, 'width'];
-
     static ownDefaults: Record<string, any> = rectNotesDefaultValues;
 
     static getDefaults() {
@@ -65,7 +64,48 @@ export class UrlImage extends Image {
             ...UrlImage.ownDefaults,
         };
     }
+    //@ts-ignore
+    constructor(element, options: any = {}) {
+        super({ element, ...options });
+        this.filters = [];
+        this.resizeFilters = [];
 
+        this.url = options.url;
+        this.title = options.title;
+        this.description = options.description;
+
+        this.shadow = new Shadow({
+            color: 'rgba(217, 161, 177, 0.54)',
+            offsetX: 1,
+            offsetY: 2,
+            blur: 4,
+            //@ts-ignore
+            spread: -5,
+            id: 310,
+        });
+
+        this.clipPath = new Rect({
+            left: 0,
+            top: 0,
+            rx: 8,
+            ry: 8,
+            width: 230,
+            height: 248,
+            fill: '#000000',
+        }),
+
+            // double click
+            this.InitializeEvent();
+        this.initDoubleClickSimulation();
+        this.width = 230;
+        this.height = 248;
+    }
+    toObject(propertiesToInclude: Array<any>): object {
+        return super.toObject(
+            [...this.extendPropeties, 'minWidth', 'splitByGrapheme'].concat(propertiesToInclude)
+        );
+
+    }
     getWidgetMenuList() {
         if (this.locked) {
             return ['objectLock'];
@@ -106,66 +146,77 @@ export class UrlImage extends Image {
         }
         return menuList;
     }
-    //@ts-ignore
-    constructor(element, options: any = {}) {
-        this.filters = [];
-        this.resizeFilters = [];
-        this.callSuper('initialize', options);
-        this.url = options.url;
-        this.title = options.title;
-        this.description = options.description;
-        this.setControlsVisibility({
-            tr: false,
-            br: true,
-            bl: false,
-            ml: false,
-            mr: false,
-            mt: false,
-            mb: false,
-            mra: false,
-            mla: false,
-            mta: false,
-            mba: false,
-            tl: true,
-            mtr: false,
+
+    InitializeEvent = () => {
+        let zoom = this.canvas?.getZoom() || 1;
+        this.on('doubleClick', (memo) => {
+            const offsetX = memo.e.offsetX - (this.left - this.width / 2);
+            const offsetY = memo.e.offsetY - (this.top - this.height / 2);
+
+            if (
+                offsetX < 20 ||
+                offsetX > 480 ||
+                offsetY < 20 ||
+                offsetY > 480 ||
+                (offsetY > 64 && offsetY < 446)
+            ) {
+                getWindow().open(this.url, '_blank').focus();
+            } else {
+                let text = this.title;
+                const textarea = $('#urlTextarea');
+                const cvsPosition = $('#canvasContainer').offset();
+                let fontSize =
+                    20 * this.scaleX * zoom;
+                const left = `${cvsPosition.left +
+                    (this.left - (this.width / 2 - 22) * this.scaleX) *
+                    zoom
+                    }px`;
+                let top = `${cvsPosition.top +
+                    (this.top - (this.height / 2 - 22) * this.scaleY) *
+                    zoom
+                    }px`;
+                const newWidth =
+                    (this.width - 44) *
+                    this.scaleX *
+                    zoom;
+                const width = `${newWidth}px`;
+                let height = `${40 * this.scaleY * zoom
+                    }px`;
+                const paddingLeft = `${10 * this.scaleY * zoom
+                    }px`;
+                let lineHeight = '40px';
+                textarea.data('type', 'title');
+                if (offsetY >= 446) {
+                    text = this.description;
+                    fontSize =
+                        15 * this.scaleX * zoom;
+                    top = `${cvsPosition.top +
+                        (this.top + (this.height / 2 - 52) * this.scaleY) *
+                        zoom
+                        }px`;
+                    height = `${30 * this.scaleY * zoom
+                        }px`;
+                    lineHeight = '30px';
+                    textarea.data('type', 'description');
+                }
+                textarea
+                    .data('widget', this)
+                    .css('left', left)
+                    .css('top', top)
+                    .css('padding-left', paddingLeft)
+                    .css('width', width)
+                    .css('height', height)
+                    .css('background-color', 'white')
+                    .css('font-size', `${fontSize}px`)
+                    .css('font-family', 'Arial')
+                    .css('line-height', lineHeight)
+                    .val(text)
+                    .show()
+                    .focus();
+            }
         });
-
-        this.shadow = new Shadow({
-            color: 'rgba(217, 161, 177, 0.54)',
-            offsetX: 1,
-            offsetY: 2,
-            blur: 4,
-            //@ts-ignore
-            spread: -5,
-            id: 310,
-        });
-
-        this._initElement(element, options);
-        this._initConfig(options);
-
-        if (options.filters) {
-            this.filters = options.filters;
-            this.applyFilters();
-        }
-
-        this.set({
-            clipPath: new Rect({
-                left: 0,
-                top: 0,
-                rx: 8,
-                ry: 8,
-                width: 230,
-                height: 248,
-                fill: '#000000',
-            }),
-        });
-
-        // double click
-        InitializeEvent(this);
-        this.initDoubleClickSimulation();
-        this.width = 230;
-        this.height = 248;
-    }
+        this.on('removed', this.removedListener);
+    };
     removedListener() {
         if (this.loading) {
             this.loading.remove();
