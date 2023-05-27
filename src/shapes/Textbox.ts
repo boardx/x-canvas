@@ -61,6 +61,10 @@ export class Textbox extends IText {
       ...Textbox.ownDefaults,
     };
   }
+  constructor(text: string, options: any) {
+    super({ ...options, text, styles: options?.styles || {} });
+    this.addControls();
+  }
 
   /**
    * Unlike superclass's version of this function, Textbox does not update
@@ -462,7 +466,69 @@ export class Textbox extends IText {
       }
     }
   }
+  addControls() {
+    function renderCustomControl(ctx, left, top, fabricObject) {
+      // styleOverride = styleOverride || {};
+      const styleOverride1 = {
+        cornerSize: 10,
+        cornerStrokeColor: this.isHovering ? '#31A4F5' : '#b3cdfd',
+        cornerColor: this.isHovering ? '#31A4F5' : '#b3cdfd',
+        lineWidth: 2
+      };
+      fabric.controlsUtils.renderCircleControl.call(
+        fabricObject,
+        ctx,
+        left,
+        top,
+        styleOverride1,
+        fabricObject
+      );
+    }
 
+    fabric.WBTextbox.prototype.controls.mtaStart = new fabric.Control({
+      x: 0,
+      y: -0.5,
+      render: renderCustomControl,
+      mouseDownHandler: (eventData, transformData) => {
+        this.controlMousedownProcess(transformData, 0.0, -0.5);
+        return true;
+      },
+      name: 'mtaStart'
+    });
+
+    fabric.WBTextbox.prototype.controls.mbaStart = new fabric.Control({
+      x: 0,
+      y: 0.5,
+      render: renderCustomControl,
+      mouseDownHandler: (eventData, transformData) => {
+        this.controlMousedownProcess(transformData, 0.0, 0.5);
+        return true;
+      },
+      name: 'mbaStart'
+    });
+
+    fabric.WBTextbox.prototype.controls.mlaStart = new fabric.Control({
+      x: -0.5,
+      y: 0,
+      render: renderCustomControl,
+      mouseDownHandler: (eventData, transformData) => {
+        this.controlMousedownProcess(transformData, -0.5, 0.0);
+        return true;
+      },
+      name: 'mlaStart'
+    });
+
+    fabric.WBTextbox.prototype.controls.mraStart = new fabric.Control({
+      x: 0.5,
+      y: 0,
+      render: renderCustomControl,
+      mouseDownHandler: (eventData, transformData) => {
+        this.controlMousedownProcess(transformData, 0.5, 0.0);
+        return true;
+      },
+      name: 'mraStart'
+    });
+  }
   /**
    * Returns object representation of an instance
    * @method toObject
