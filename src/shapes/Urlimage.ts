@@ -5,7 +5,7 @@ import { createRectNotesDefaultControls } from '../controls/commonControls';
 import { Shadow } from '../Shadow';
 import { Rect } from '../shapes/Rect';
 import { loadImage } from '../util/misc/objectEnlive';
-import { getWindow } from '../env';
+import { getWindow, getDocument } from '../env';
 export const rectNotesDefaultValues: Partial<TClassProperties<UrlImage>> = {
     minWidth: 20,
     dynamicMinWidth: 2,
@@ -66,7 +66,7 @@ export class UrlImage extends Image {
     }
     //@ts-ignore
     constructor(element, options: any = {}) {
-        super({ element, ...options });
+        super(element, options);
         this.filters = [];
         this.resizeFilters = [];
 
@@ -95,9 +95,9 @@ export class UrlImage extends Image {
         }),
 
             // double click
-            this.InitializeEvent();
-        this.initDoubleClickSimulation();
-        this.width = 230;
+            //this.InitializeEvent();
+            //this.initDoubleClickSimulation();
+            this.width = 230;
         this.height = 248;
     }
     toObject(propertiesToInclude: Array<any>): object {
@@ -148,8 +148,8 @@ export class UrlImage extends Image {
     }
 
     InitializeEvent = () => {
-        let zoom = this.canvas?.getZoom() || 1;
-        this.on('doubleClick', (memo) => {
+        const zoom = this.canvas?.getZoom() || 1;
+        this.canvas.on('mouse:dblclick', (memo) => {
             const offsetX = memo.e.offsetX - (this.left - this.width / 2);
             const offsetY = memo.e.offsetY - (this.top - this.height / 2);
 
@@ -416,7 +416,7 @@ export class UrlImage extends Image {
 
     fromURL(url, callback, urlOptions?) {
         const img = new Image();
-        const cvs = document.createElement('canvas');
+        const cvs = getDocument().createElement('canvas');
         const ctx = cvs.getContext('2d');
         img.crossOrigin = '';
         img.onload = function () {
