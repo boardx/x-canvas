@@ -1,12 +1,39 @@
 // @ts-nocheck
-import { TClassProperties } from '../typedefs';
+import { TClassProperties, TSize } from '../typedefs';
 import { classRegistry } from '../ClassRegistry';
 import { createRectNotesDefaultControls } from '../controls/commonControls';
 import { Shadow } from '../Shadow';
 import { Rect } from '../shapes/Rect';
-import { loadImage } from '../util/misc/objectEnlive';
-import { getWindow, getDocument } from '../env';
-export const rectNotesDefaultValues: Partial<TClassProperties<UrlImage>> = {
+import { getWindow } from '../env';
+import { Image as FbricImage } from './Image';
+import { getDocument } from '../env';
+
+import type {
+    FabricObjectProps,
+    SerializedObjectProps,
+    TProps,
+} from './Object/types';
+import {
+    loadImage,
+    LoadImageOptions,
+} from '../util/misc/objectEnlive';
+
+export type ImageSource =
+    | string
+    | HTMLImageElement
+    | HTMLVideoElement
+    | HTMLCanvasElement;
+
+interface UniqueImageProps {
+    srcFromAttribute: boolean;
+    minimumScaleTrigger: number;
+    cropX: number;
+    cropY: number;
+    imageSmoothing: boolean;
+    crossOrigin: string | null;
+}
+
+export const UrlImageDefaultValues: Partial<TClassProperties<UrlImage>> = {
     minWidth: 20,
     dynamicMinWidth: 2,
     lockScalingFlip: true,
@@ -18,7 +45,19 @@ export const rectNotesDefaultValues: Partial<TClassProperties<UrlImage>> = {
     maxHeight: 200,
 };
 
-export class UrlImage extends Image {
+export interface SerializedImageProps extends SerializedObjectProps {
+    src: string;
+    crossOrigin: string | null;
+    filters: any[];
+    resizeFilter?: any;
+    cropX: number;
+    cropY: number;
+}
+export interface UrlImageProps extends FabricObjectProps, UniqueImageProps { }
+
+export class UrlImage<
+    Props extends TProps<UrlImageProps> = Partial<UrlImageProps>,
+> extends FbricImage {
 
     declare minWidth: number;
 
@@ -55,7 +94,7 @@ export class UrlImage extends Image {
      */
     declare splitByGrapheme: boolean;
 
-    static ownDefaults: Record<string, any> = rectNotesDefaultValues;
+    static ownDefaults: Record<string, any> = UrlImageDefaultValues;
 
     static getDefaults() {
         return {
@@ -64,8 +103,10 @@ export class UrlImage extends Image {
             ...UrlImage.ownDefaults,
         };
     }
+
+
     //@ts-ignore
-    constructor(element, options: any = {}) {
+    constructor(element: ImageSource, options: Props) {
         super(element, options);
         this.filters = [];
         this.resizeFilters = [];
@@ -100,6 +141,25 @@ export class UrlImage extends Image {
             this.width = 230;
         this.height = 248;
     }
+    setElement(element: ImageSource, size: Partial<TSize> = {}) {
+        this.removeTexture(this.cacheKey);
+        this.removeTexture(`${this.cacheKey}_filtered`);
+        this._element = element;
+        this._originalElement = element;
+        this._setWidthHeight(size);
+        element.classList.add(UrlImage.CSS_CANVAS);
+        if (this.filters.length !== 0) {
+            this.applyFilters();
+        }
+        // resizeFilters work on the already filtered copy.
+        // we need to apply resizeFilters AFTER normal filters.
+        // applyResizeFilters is run more often than normal filters
+        // and is triggered by user interactions rather than dev code
+        if (this.resizeFilter) {
+            this.applyResizeFilters();
+        }
+    }
+
     toObject(propertiesToInclude: Array<any>): object {
         return super.toObject(
             [...this.extendPropeties, 'minWidth', 'splitByGrapheme'].concat(propertiesToInclude)
@@ -247,7 +307,7 @@ export class UrlImage extends Image {
         e.stopPropagation();
     }
     //@ts-ignore
-    _render(ctx) {
+    _render(ctx: CanvasRenderingContext2D) {
         let elementToDraw = null;
 
         // draw border
@@ -414,33 +474,43 @@ export class UrlImage extends Image {
         if (lineCount < 3) context.fillText(line, x, _y);
     }
 
-    fromURL(url, callback, urlOptions?) {
-        const img = new Image();
-        const cvs = getDocument().createElement('canvas');
-        const ctx = cvs.getContext('2d');
-        img.crossOrigin = '';
-        img.onload = function () {
-            // fix size version
-            cvs.width = 230;
-            cvs.height = 160; // 230 / img.width * img.height;
-            ctx.drawImage(img, 0, 0, 230, 160);
+    fromURL<T extends TProps<SerializedImageProps>>(
+        url: string,
+        options: T & LoadImageOptions = {}
+    ): Promise<UrlImage> {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            const cvs = getDocument().createElement('canvas');
+            const ctx = cvs.getContext('2d');
+            img.crossOrigin = '';
 
-            loadImage(
-                cvs.toDataURL(),
-                (_img) => {
-                    if (callback) {
-                        callback(new UrlImage(_img, urlOptions));
-                    }
-                },
-                null,
-                //@ts-ignore
-                {
+            img.onload = async function () {
+                // fix size version
+                cvs.width = 230;
+                cvs.height = 160; // 230 / img.width * img.height;
+                ctx.drawImage(img, 0, 0, 230, 160);
+
+                const imgOptions = {
                     crossOrigin: 'anonymous',
-                }, // urlOptions && urlOptions.crossOrigin
-            );
-        };
-        img.src = `${url.split('?')[0]}`; // urlOptions.src;
+                    ...options,
+                };
+
+                try {
+                    const loadedImg = await loadImage(cvs.toDataURL(), imgOptions);
+                    resolve(new UrlImage(loadedImg, options));
+                } catch (error) {
+                    reject(error);
+                }
+            };
+
+            img.onerror = function (error) {
+                reject(error);
+            };
+
+            img.src = url;
+        });
     }
+
 }
 
 classRegistry.setClass(UrlImage);
