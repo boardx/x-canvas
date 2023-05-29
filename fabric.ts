@@ -31,7 +31,7 @@ export { Circle } from './src/shapes/Circle';
 export { CircleNotes } from './src/shapes/CircleNotes';
 export { Ellipse } from './src/shapes/Ellipse';
 export { FabricObject as Object } from './src/shapes/Object/FabricObject';
-export { File } from './src/shapes/File';
+export { WBFile } from './src/shapes/File';
 export { Group } from './src/shapes/Group';
 export { Image } from './src/shapes/Image';
 export { IText } from './src/shapes/IText/IText';
