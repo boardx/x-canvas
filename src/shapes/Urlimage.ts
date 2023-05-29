@@ -136,9 +136,9 @@ export class UrlImage<
         }),
 
             // double click
-            //this.InitializeEvent();
-            //this.initDoubleClickSimulation();
-            this.width = 230;
+            this.InitializeEvent();
+        this.initDoubleClickSimulation();
+        this.width = 230;
         this.height = 248;
     }
     setElement(element: ImageSource, size: Partial<TSize> = {}) {
@@ -209,7 +209,7 @@ export class UrlImage<
 
     InitializeEvent = () => {
         const zoom = this.canvas?.getZoom() || 1;
-        this.canvas.on('mouse:dblclick', (memo) => {
+        this.on('mousedblclick', (memo) => {
             const offsetX = memo.e.offsetX - (this.left - this.width / 2);
             const offsetY = memo.e.offsetY - (this.top - this.height / 2);
 
@@ -307,7 +307,7 @@ export class UrlImage<
         e.stopPropagation();
     }
     //@ts-ignore
-    _render(ctx: CanvasRenderingContext2D) {
+    drawObject(ctx: CanvasRenderingContext2D) {
         let elementToDraw = null;
 
         // draw border
