@@ -16,6 +16,8 @@ import { transformPoint } from '../util/misc/matrix';
 // @TODO this code is terrible and Line should be a special case of polyline.
 
 const coordProps = ['x1', 'x2', 'y1', 'y2'] as const;
+let fromnull = false;
+let tonull = false;
 
 interface UniqueLineProps {
   x1: number;
