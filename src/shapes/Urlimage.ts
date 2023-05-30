@@ -1,13 +1,12 @@
 // @ts-nocheck
 import { TClassProperties, TSize } from '../typedefs';
 import { classRegistry } from '../ClassRegistry';
-import { createRectNotesDefaultControls } from '../controls/commonControls';
 import { Shadow } from '../Shadow';
 import { Rect } from '../shapes/Rect';
 import { getWindow } from '../env';
 import { Image as FbricImage } from './Image';
 import { getDocument } from '../env';
-
+import { createFileDefaultControls } from '../controls/commonControls';
 import type {
     FabricObjectProps,
     SerializedObjectProps,
@@ -99,7 +98,7 @@ export class UrlImage<
     static getDefaults() {
         return {
             ...super.getDefaults(),
-            controls: createRectNotesDefaultControls(),
+            controls: createFileDefaultControls(),
             ...UrlImage.ownDefaults,
         };
     }

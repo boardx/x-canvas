@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { TClassProperties, TSize } from '../typedefs';
 import { classRegistry } from '../ClassRegistry';
-import { createRectNotesDefaultControls } from '../controls/commonControls';
+import { createFileDefaultControls } from '../controls/commonControls';
 import { Shadow } from '../Shadow';
 import { Rect } from '../shapes/Rect';
 import { getWindow } from '../env';
@@ -98,7 +98,7 @@ export class WBFile<
   static getDefaults() {
     return {
       ...super.getDefaults(),
-      controls: createRectNotesDefaultControls(),
+      controls: createFileDefaultControls(),
       ...WBFile.ownDefaults,
     };
   }
@@ -532,7 +532,6 @@ export class WBFile<
       const url = fileOptions.previewImage ? fileOptions.previewImage : this.getFileIconURL(fileOptions.name);
       try {
         const loadedImg = await loadImage(url, fileOptions && fileOptions.crossOrigin);
-        console.log('loadedImg', loadedImg)
         resolve(new WBFile(loadedImg, fileOptions));
       } catch (error) {
         reject(error);

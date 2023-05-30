@@ -112,6 +112,51 @@ export const createObjectDefaultNoRotateControls = () => ({
   }),
 
 });
+export const createObjectImageControls = () => ({
+  tl: new Control({
+    x: -0.5,
+    y: -0.5,
+    cursorStyleHandler: scaleCursorStyleHandler,
+    actionHandler: scalingEqually,
+  }),
+
+  tr: new Control({
+    x: 0.5,
+    y: -0.5,
+    cursorStyleHandler: scaleCursorStyleHandler,
+    actionHandler: scalingEqually,
+  }),
+
+  bl: new Control({
+    x: -0.5,
+    y: 0.5,
+    cursorStyleHandler: scaleCursorStyleHandler,
+    actionHandler: scalingEqually,
+  }),
+
+  br: new Control({
+    x: 0.5,
+    y: 0.5,
+    cursorStyleHandler: scaleCursorStyleHandler,
+    actionHandler: scalingEqually,
+  }),
+
+});
+export const createObjectFileControls = () => ({
+  tl: new Control({
+    x: -0.5,
+    y: -0.5,
+    cursorStyleHandler: scaleCursorStyleHandler,
+    actionHandler: scalingEqually,
+  }),
+  br: new Control({
+    x: 0.5,
+    y: 0.5,
+    cursorStyleHandler: scaleCursorStyleHandler,
+    actionHandler: scalingEqually,
+  }),
+
+});
 
 export const createResizeControls = () => ({
   mr: new Control({
@@ -176,6 +221,9 @@ export const createShapeNotesDefaultControls = () => ({
 export const createPathDefaultControls = () => ({
   ...createObjectDefaultNoRotateControls(),
 });
+export const createImageDefaultControls = () => ({
+  ...createObjectImageControls(),
+});
 export const createFileDefaultControls = () => ({
-  ...createObjectDefaultNoRotateControls(),
+  ...createObjectFileControls(),
 });
