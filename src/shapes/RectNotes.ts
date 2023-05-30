@@ -593,11 +593,7 @@ export class RectNotes extends Textbox {
     this._removeShadow(ctx);
   }
   _getTopOffset() {
-    let topOffset = super._getTopOffset();
-    if (this.verticalAlign === 'middle') {
-      topOffset += (this.height - this._getTotalLineHeight()) / 2;
-    }
-    return topOffset;
+    return -this._getTotalLineHeights() / 2;
   }
   _getTotalLineHeight() {
     return this._textLines.reduce(
