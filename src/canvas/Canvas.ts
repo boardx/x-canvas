@@ -1604,4 +1604,9 @@ export class Canvas extends SelectableCanvas {
     super.destroy();
     this.textEditingManager.dispose();
   }
+  findById(id: string) {
+    const obj = this.getObjects().filter((_obj) => _obj._id === id);
+
+    return obj[0];
+  }
 }
