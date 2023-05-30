@@ -116,7 +116,7 @@ export class CircleNotes extends Textbox {
       return;
     }
 
-    this.height = this.maxHeight;
+
     return this.height;
   }
 
