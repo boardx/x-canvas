@@ -92,7 +92,7 @@ export class FabricObject<
   extends AnimatableObject<EventSpec>
   implements ObjectProps {
   declare minScaleLimit: number;
-
+  declare _id: string;
   declare opacity: number;
   declare obj_type: string;
   declare lastEditedBy: string;
