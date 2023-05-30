@@ -708,6 +708,13 @@ export class IText<
       'delete',
     ];
   }
+
+  onChangedListener() {
+    this.initDimensions();
+    this.dirty = true;
+    this.top = this.tempTop;
+  }
+
 }
 
 classRegistry.setClass(IText);
