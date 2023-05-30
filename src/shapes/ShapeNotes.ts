@@ -120,7 +120,6 @@ export class ShapeNotes extends Textbox {
       return;
     }
 
-    this.height = this.maxHeight;
     return this.height;
   }
   /**
@@ -691,9 +690,9 @@ export class ShapeNotes extends Textbox {
 
     switch (this.verticalAlign) {
       case 'middle':
-        return -this._getTotalLineHeights() / 2;
+        return -this._getTotalLineHeight() / 2;
       case 'bottom':
-        return this.height / 2 - this._getTotalLineHeights();
+        return this.height / 2 - this._getTotalLineHeight();
       default:
         return -this.height / 2;
     }

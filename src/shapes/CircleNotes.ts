@@ -611,7 +611,32 @@ export class CircleNotes extends Textbox {
     ctx.stroke();
     ctx.fill();
   }
+  _renderTextCommon(ctx, method) {
+    ctx.save();
+    let lineHeights = 0;
+    const left = 0;
+    const top = this._getTopOffset();
+    const offsets = this._applyPatternGradientTransform(
+      ctx,
+      method === 'fillText' ? this.fill : this.stroke
+    );
 
+    for (let i = 0, len = this._textLines.length; i < len; i++) {
+      const heightOfLine = this.getHeightOfLine(i);
+      const maxHeight = heightOfLine / this.lineHeight;
+      const leftOffset = this._getLineLeftOffset(i);
+      this._renderTextLine(
+        method,
+        ctx,
+        this._textLines[i],
+        left + leftOffset - offsets.offsetX,
+        top + lineHeights + maxHeight - offsets.offsetY,
+        i
+      );
+      lineHeights += heightOfLine;
+    }
+    ctx.restore();
+  }
   _getTopOffset() {
     let topOffset = super._getTopOffset();
     if (this.verticalAlign === 'middle') {
