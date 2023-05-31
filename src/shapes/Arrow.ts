@@ -11,6 +11,8 @@ import type {
 import { cacheProperties } from './Object/FabricObject';
 import { transformPoint } from '../util/misc/matrix';
 import { multiplyTransformMatrices } from '../util/misc/matrix';
+
+
 const coordProps = ['x1', 'x2', 'y1', 'y2'] as const;
 
 interface UniqueArrowProps {
@@ -23,16 +25,17 @@ export interface SerializedLineProps
   extends SerializedObjectProps,
   UniqueArrowProps {
 }
-export const UrlImageDefaultValues: Partial<TClassProperties<Arrow>> = {
+export const ArrowDefaultValues: Partial<TClassProperties<Arrow>> = {
   minWidth: 20,
   dynamicMinWidth: 2,
   lockScalingFlip: true,
   noScaleCache: false,
   _wordJoiners: /[ \t\r]/,
   splitByGrapheme: true,
-  obj_type: 'WBUrlImage',
+  obj_type: 'WBArrow',
   height: 200,
   maxHeight: 200,
+  subType: 'arrow'
 };
 
 export interface ArrowProps extends FabricObjectProps, UniqueArrowProps { }
@@ -100,6 +103,15 @@ export class Arrow<
   public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'connectorShape', '_id', 'subType', 'perPixelTargetFind', 'userNo', 'connectorEnd', 'connectorStart', 'connectorType', 'tips', 'connectorStyle'];
 
   static cacheProperties = [...cacheProperties, ...coordProps];
+
+  static ownDefaults: Record<string, any> = ArrowDefaultValues;
+
+  static getDefaults() {
+    return {
+      ...super.getDefaults(),
+      ...Arrow.ownDefaults,
+    };
+  }
 
   /**
  * Constructor
@@ -1973,6 +1985,7 @@ export class Arrow<
     return transformPoint({ x, y }, matrix);
   }
   mousedownProcess() {
+    console.log('mousedownProcess')
     return;
   }
   mouseupProcess(transformData, eventData, isStart) {
