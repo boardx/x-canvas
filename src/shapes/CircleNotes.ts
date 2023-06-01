@@ -3,6 +3,12 @@ import { TClassProperties } from '../typedefs';
 import { Textbox } from './Textbox';
 import { classRegistry } from '../ClassRegistry';
 import { createRectNotesDefaultControls } from '../controls/commonControls';
+type CursorBoundaries = {
+  left: number;
+  top: number;
+  leftOffset: number;
+  topOffset: number;
+};
 // @TODO: Many things here are configuration related and shouldn't be on the class nor prototype
 // regexes, list of properties that are not suppose to change by instances, magic consts.
 // this will be a separated effort
@@ -614,7 +620,7 @@ export class CircleNotes extends Textbox {
   _renderTextCommon(ctx, method) {
     ctx.save();
     let lineHeights = 0;
-    const left = 0;
+    const left = this._getLeftOffset();
     const top = this._getTopOffset();
     const offsets = this._applyPatternGradientTransform(
       ctx,
@@ -637,11 +643,14 @@ export class CircleNotes extends Textbox {
     }
     ctx.restore();
   }
+
   _getTopOffset() {
     let topOffset = super._getTopOffset();
+    console.log('super topoffset', topOffset)
     if (this.verticalAlign === 'middle') {
       topOffset += (this.height - this._getTotalLineHeight()) / 2;
     }
+    console.log('origin topoffset', topOffset)
     return topOffset;
   }
   _getTotalLineHeight() {
@@ -706,6 +715,86 @@ export class CircleNotes extends Textbox {
       }
     }
   }
+  recalcCursorPostion(position, textLines, text) {
+    if (!textLines || !text) return;
+    let positionOffset = position > text.length ? text.length : position;
+    let lineIndex = 0;
+    let charIndex = 0;
+    let cursorOffset = 0;
+    let tmpInputTextArray = text;
+
+    if (position === 0 || textLines.length === 0 || text.length === 0) {
+      return { lineIndex, charIndex, cursorOffset };
+    }
+
+    if (positionOffset > 0 && textLines.length > 0 && text.length > 0) {
+      for (let i = 0; i < textLines.length; i++) {
+        const line = textLines[i];
+        lineIndex = i;
+        charIndex = positionOffset;
+        if (positionOffset < line.length) {
+          // 光标在当前行首或行内
+          return { lineIndex, charIndex, cursorOffset };
+        }
+        tmpInputTextArray = _.drop(tmpInputTextArray, line.length);
+        positionOffset -= line.length;
+        if (positionOffset === 0) {
+          return { lineIndex, charIndex, cursorOffset };
+        }
+        if (
+          tmpInputTextArray.length > 0 &&
+          (tmpInputTextArray[0] === '\n' || tmpInputTextArray[0] === ' ')
+        ) {
+          positionOffset--;
+          tmpInputTextArray = _.drop(tmpInputTextArray, 1);
+        } else {
+          cursorOffset--;
+        }
+      }
+      console.log('charIndex', charIndex)
+      return { lineIndex, charIndex, cursorOffset };
+    }
+  }
+  _setSelectionStyles(ctx, char, left, top) {
+    const topOffset = this._getTopOffset(); // 获取覆盖后的 top offset 值
+    top += topOffset; // 从原方法中减去 topOffset 以确保 top 的正确值
+    super._setSelectionStyles(ctx, char, left, top); // 调用父类方法
+  }
+  // _renderCursor(
+  //   ctx: CanvasRenderingContext2D,
+  //   boundaries: CursorBoundaries,
+  //   selectionStart: number
+  // ) {
+  //   const cursorLocation = this.get2DCursorLocation(selectionStart),
+  //     lineIndex = cursorLocation.lineIndex,
+  //     charIndex =
+  //       cursorLocation.charIndex > 0 ? cursorLocation.charIndex - 1 : 0,
+  //     charHeight = this.getValueOfPropertyAt(lineIndex, charIndex, 'fontSize'),
+  //     multiplier = this.scaleX * this.canvas!.getZoom(),
+  //     cursorWidth = this.cursorWidth / multiplier,
+  //     dy = this.getValueOfPropertyAt(lineIndex, charIndex, 'deltaY'),
+  //     topOffset =
+  //       boundaries.topOffset + this._getTopOffset() +
+  //       ((1 - this._fontSizeFraction) * this.getHeightOfLine(lineIndex)) /
+  //       this.lineHeight -
+  //       charHeight * (1 - this._fontSizeFraction);
+
+  //   if (this.inCompositionMode) {
+  //     // TODO: investigate why there isn't a return inside the if,
+  //     // and why can't happen at the top of the function
+  //     this.renderSelection(ctx, boundaries);
+  //   }
+  //   ctx.fillStyle =
+  //     this.cursorColor ||
+  //     this.getValueOfPropertyAt(lineIndex, charIndex, 'fill');
+  //   ctx.globalAlpha = this._currentCursorOpacity;
+  //   ctx.fillRect(
+  //     boundaries.left + boundaries.leftOffset - cursorWidth / 2,
+  //     topOffset + boundaries.top + dy,
+  //     cursorWidth,
+  //     charHeight
+  //   );
+  // }
 }
 
 classRegistry.setClass(CircleNotes);

@@ -35,7 +35,8 @@ export const ArrowDefaultValues: Partial<TClassProperties<Arrow>> = {
   obj_type: 'WBArrow',
   height: 200,
   maxHeight: 200,
-  subType: 'arrow'
+  subType: 'arrow',
+  hasBorders: false,
 };
 
 export interface ArrowProps extends FabricObjectProps, UniqueArrowProps { }
@@ -100,7 +101,9 @@ export class Arrow<
 
   declare connectorStyle: string;
 
-  public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'connectorShape', '_id', 'subType', 'perPixelTargetFind', 'userNo', 'connectorEnd', 'connectorStart', 'connectorType', 'tips', 'connectorStyle'];
+  declare timestamp: number;
+
+  public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'connectorShape', '_id', 'subType', 'perPixelTargetFind', 'userNo', 'connectorEnd', 'connectorStart', 'connectorType', 'tips', 'connectorStyle', 'timestamp'];
 
   static cacheProperties = [...cacheProperties, ...coordProps];
 
@@ -148,7 +151,7 @@ export class Arrow<
           if (target.locked) return;
 
           const hoverTarget = this.canvas.findTarget(eventData);
-          // console.log(hoverTarget, target, hoverTarget === target);
+          console.log('hoverTarget', hoverTarget, target, hoverTarget === target);
           if (hoverTarget && hoverTarget.obj_type === 'WBArrow') return;
 
           if (hoverTarget) {
@@ -310,6 +313,7 @@ export class Arrow<
   }
 
   initEvents(options) {
+    console.log('initEvents')
     return;
   }
   toObject(propertiesToInclude: Array<any>): object {
@@ -1984,7 +1988,7 @@ export class Arrow<
     //@ts-ignore
     return transformPoint({ x, y }, matrix);
   }
-  mousedownProcess() {
+  mousedownProcess(transformData, eventData, isStart) {
     console.log('mousedownProcess')
     return;
   }
