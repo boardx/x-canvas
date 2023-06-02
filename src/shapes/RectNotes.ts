@@ -1,7 +1,6 @@
 // @ts-nocheck
 import { TClassProperties } from '../typedefs';
 import { classRegistry } from '../ClassRegistry';
-import { createRectNotesDefaultControls } from '../controls/commonControls';
 import { Textbox } from './Textbox';
 // @TODO: Many things here are configuration related and shouldn't be on the class nor prototype
 // regexes, list of properties that are not suppose to change by instances, magic consts.
@@ -78,7 +77,6 @@ export class RectNotes extends Textbox {
   static getDefaults() {
     return {
       ...super.getDefaults(),
-      controls: createRectNotesDefaultControls(),
       ...RectNotes.ownDefaults,
     };
   }

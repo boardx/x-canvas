@@ -1,15 +1,9 @@
 // @ts-nocheck
+import { XY } from '../Point';
 import { TClassProperties } from '../typedefs';
 import { Textbox } from './Textbox';
 import { classRegistry } from '../ClassRegistry';
-import { createRectNotesDefaultControls } from '../controls/commonControls';
-import { XY } from '../Point';
-type CursorBoundaries = {
-  left: number;
-  top: number;
-  leftOffset: number;
-  topOffset: number;
-};
+
 // @TODO: Many things here are configuration related and shouldn't be on the class nor prototype
 // regexes, list of properties that are not suppose to change by instances, magic consts.
 // this will be a separated effort
@@ -86,7 +80,6 @@ export class CircleNotes extends Textbox {
   static getDefaults() {
     return {
       ...super.getDefaults(),
-      controls: createRectNotesDefaultControls(),
       ...CircleNotes.ownDefaults,
     };
   }
@@ -116,36 +109,12 @@ export class CircleNotes extends Textbox {
       this.enlargeSpaces();
     }
     // clear cache and re-calculate height
-    const height = this.calcTextHeight();
-    if (height > this.maxHeight && this.fontSize > 6) {
-      this.set('fontSize', this.fontSize - 2);
-      this._splitTextIntoLines(this.text);
-      return;
-    }
-
+    this.calcTextHeight();
 
     return this.height;
+
   }
 
-  calcTextHeight() {
-    let lineHeight;
-    let height = 0;
-    for (let i = 0, len = this._textLines.length; i < len; i++) {
-      lineHeight = this.getHeightOfLine(i);
-      height += i === len - 1 ? lineHeight / this.lineHeight : lineHeight;
-    }
-
-    const desiredHeight = 82;
-
-    if (height > desiredHeight) {
-      this.set('fontSize', this.fontSize - 2);
-      this._splitTextIntoLines(this.text);
-      height = this.maxHeight;
-      return Math.max(height, this.height);
-    }
-
-    this.height = this.maxHeight;
-  }
   /**
    * Generate an object that translates the style object so that it is
    * broken up by visual lines (new lines and automatic wrapping).
@@ -618,6 +587,19 @@ export class CircleNotes extends Textbox {
     ctx.stroke();
     ctx.fill();
   }
+  _renderText(ctx) {
+    ctx.shadowOffsetX = ctx.shadowOffsetY = ctx.shadowBlur = 0;
+    ctx.shadowColor = '';
+
+    if (this.paintFirst === 'stroke') {
+      this._renderTextStroke(ctx);
+      this._renderTextFill(ctx);
+    } else {
+      this._renderTextFill(ctx);
+      this._renderTextStroke(ctx);
+    }
+  };
+
   _renderTextCommon(ctx, method) {
     ctx.save();
     let lineHeights = 0;
@@ -645,20 +627,91 @@ export class CircleNotes extends Textbox {
     ctx.restore();
   }
 
-  _getTopOffset() {
-    let topOffset = super._getTopOffset();
-    console.log('super topoffset', topOffset)
-    if (this.verticalAlign === 'middle') {
-      topOffset += (this.height - this._getTotalLineHeight()) / 2;
+  calcTextHeight() {
+    let lineHeight;
+    let height = 0;
+    for (let i = 0, len = this._textLines.length; i < len; i++) {
+      lineHeight = this.getHeightOfLine(i);
+      height += i === len - 1 ? lineHeight / this.lineHeight : lineHeight;
     }
-    console.log('origin topoffset', topOffset)
-    return topOffset;
+
+    const desiredHeight = 82;
+
+    if (height > desiredHeight) {
+      this.set('fontSize', this.fontSize - 2);
+      this._splitTextIntoLines(this.text);
+      height = this.maxHeight;
+      const result = Math.max(height, this.height);
+      //console.log('result of height', result);
+      return result;
+    }
+
+    this.height = this.maxHeight;
   }
+
+  _getSelectionStartOffsetY() {
+    switch (this.verticalAlign) {
+      case 'middle':
+        return this.height / 2 - this._getTotalLineHeights() / 2;
+      case 'bottom':
+        return this.height - this._getTotalLineHeights();
+      default:
+        return 0;
+    }
+  }
+
+  _getSVGLeftTopOffsets() {
+    return {
+      textLeft: -this.width / 2,
+      textTop: this._getTopOffset(),
+      lineTop: this.getHeightOfLine(0)
+    };
+  }
+
+  _getTopOffset() {
+    switch (this.verticalAlign) {
+      case 'middle':
+        return -this._getTotalLineHeights() / 2;
+      case 'bottom':
+        return this.height / 2 - this._getTotalLineHeights();
+      default:
+        return -this.height / 2;
+    }
+  }
+
   _getTotalLineHeight() {
     return this._textLines.reduce(
       (total, _line, index) => total + this.getHeightOfLine(index),
       0
     );
+  }
+
+  _getNewSelectionStartFromOffset(
+    mouseOffset: XY,
+    prevWidth: number,
+    width: number,
+    index: number,
+    jlen: number
+  ) {
+    const distanceBtwLastCharAndCursor = mouseOffset.x - prevWidth,
+      distanceBtwNextCharAndCursor = width - mouseOffset.x,
+      offset =
+        distanceBtwNextCharAndCursor > distanceBtwLastCharAndCursor ||
+          distanceBtwNextCharAndCursor < 0
+          ? 0
+          : 1;
+
+    let newSelectionStart = index + offset;
+    // if object is horizontally flipped, mirror cursor location from the end
+    if (this.flipX) {
+      newSelectionStart = jlen - newSelectionStart;
+    }
+
+    if (newSelectionStart > this._text.length) {
+      newSelectionStart = this._text.length;
+    }
+
+    return newSelectionStart;
   }
 
   renderEmoji(ctx) {
@@ -715,90 +768,6 @@ export class CircleNotes extends Textbox {
         modifier -= 23.6;
       }
     }
-  }
-  recalcCursorPostion(position, textLines, text) {
-    if (!textLines || !text) return;
-    let positionOffset = position > text.length ? text.length : position;
-    let lineIndex = 0;
-    let charIndex = 0;
-    let cursorOffset = 0;
-    let tmpInputTextArray = text;
-
-    if (position === 0 || textLines.length === 0 || text.length === 0) {
-      return { lineIndex, charIndex, cursorOffset };
-    }
-
-    if (positionOffset > 0 && textLines.length > 0 && text.length > 0) {
-      for (let i = 0; i < textLines.length; i++) {
-        const line = textLines[i];
-        lineIndex = i;
-        charIndex = positionOffset;
-        if (positionOffset < line.length) {
-          // 光标在当前行首或行内
-          return { lineIndex, charIndex, cursorOffset };
-        }
-        tmpInputTextArray = _.drop(tmpInputTextArray, line.length);
-        positionOffset -= line.length;
-        if (positionOffset === 0) {
-          return { lineIndex, charIndex, cursorOffset };
-        }
-        if (
-          tmpInputTextArray.length > 0 &&
-          (tmpInputTextArray[0] === '\n' || tmpInputTextArray[0] === ' ')
-        ) {
-          positionOffset--;
-          tmpInputTextArray = _.drop(tmpInputTextArray, 1);
-        } else {
-          cursorOffset--;
-        }
-      }
-      console.log('charIndex', charIndex)
-      return { lineIndex, charIndex, cursorOffset };
-    }
-  }
-  _setSelectionStyles(ctx, char, left, top) {
-    const topOffset = this._getTopOffset(); // 获取覆盖后的 top offset 值
-    top += topOffset; // 从原方法中减去 topOffset 以确保 top 的正确值
-    super._setSelectionStyles(ctx, char, left, top); // 调用父类方法
-  }
-
-  _getNewSelectionStartFromOffset(
-    mouseOffset: XY,
-    prevWidth: number,
-    width: number,
-    index: number,
-    jlen: number
-  ) {
-    const distanceBtwLastCharAndCursor = mouseOffset.x - prevWidth;
-    const distanceBtwNextCharAndCursor = width - mouseOffset.x;
-    const offset =
-      distanceBtwNextCharAndCursor > distanceBtwLastCharAndCursor ||
-        distanceBtwNextCharAndCursor < 0
-        ? 0
-        : 1;
-
-    // 获取 topOffset 变量以计算垂直偏移
-    const topOffset = this._getTopOffset();
-    const lineHeight = this._getTotalLineHeight() / this._textLines.length;
-
-    // 计算当前鼠标点击的行
-    const clickedLine = Math.floor((mouseOffset.y - topOffset) / lineHeight);
-
-    // 如果点击的行超出文本边界，设置为文本的最后一个字符
-    if (clickedLine >= this._textLines.length) {
-      return this._text.length;
-    } else if (clickedLine < 0) {
-      return 0;
-    }
-
-    let newSelectionStart = index + offset;
-
-    // 如果对象水平翻转，镜像光标位置从末尾
-    if (this.flipX) {
-      newSelectionStart = jlen - newSelectionStart;
-    }
-
-    return newSelectionStart;
   }
 }
 

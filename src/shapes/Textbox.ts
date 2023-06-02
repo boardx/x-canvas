@@ -2,8 +2,8 @@
 import { TClassProperties } from '../typedefs';
 import { IText } from './IText/IText';
 import { classRegistry } from '../ClassRegistry';
-import { createTextboxDefaultControls } from '../controls/commonControls';
-
+import { renderCircleControl } from '../controls/controlRendering';
+import { Control } from '../controls/Control';
 // @TODO: Many things here are configuration related and shouldn't be on the class nor prototype
 // regexes, list of properties that are not suppose to change by instances, magic consts.
 // this will be a separated effort
@@ -57,14 +57,13 @@ export class Textbox extends IText {
   static getDefaults() {
     return {
       ...super.getDefaults(),
-      controls: createTextboxDefaultControls(),
       ...Textbox.ownDefaults,
     };
   }
-  // constructor(text: string, options: any) {
-  //   super({ ...options, text, styles: options?.styles || {} });
-  //   this.addControls();
-  // }
+  constructor(text: string, options: any) {
+    super(text, options);
+    this.addControls();
+  }
 
   /**
    * Unlike superclass's version of this function, Textbox does not update
@@ -468,14 +467,13 @@ export class Textbox extends IText {
   }
   addControls() {
     function renderCustomControl(ctx, left, top, fabricObject) {
-      // styleOverride = styleOverride || {};
       const styleOverride1 = {
         cornerSize: 10,
         cornerStrokeColor: this.isHovering ? '#31A4F5' : '#b3cdfd',
         cornerColor: this.isHovering ? '#31A4F5' : '#b3cdfd',
         lineWidth: 2
       };
-      fabric.controlsUtils.renderCircleControl.call(
+      renderCircleControl.call(
         fabricObject,
         ctx,
         left,
@@ -485,9 +483,11 @@ export class Textbox extends IText {
       );
     }
 
-    fabric.WBTextbox.prototype.controls.mtaStart = new fabric.Control({
+    this.controls.mtaStart = new Control({
       x: 0,
       y: -0.5,
+      offsetX: 0,
+      offsetY: -20,
       render: renderCustomControl,
       mouseDownHandler: (eventData, transformData) => {
         this.controlMousedownProcess(transformData, 0.0, -0.5);
@@ -496,9 +496,11 @@ export class Textbox extends IText {
       name: 'mtaStart'
     });
 
-    fabric.WBTextbox.prototype.controls.mbaStart = new fabric.Control({
+    this.controls.mbaStart = new Control({
       x: 0,
       y: 0.5,
+      offsetX: 0,
+      offsetY: 20,
       render: renderCustomControl,
       mouseDownHandler: (eventData, transformData) => {
         this.controlMousedownProcess(transformData, 0.0, 0.5);
@@ -507,9 +509,11 @@ export class Textbox extends IText {
       name: 'mbaStart'
     });
 
-    fabric.WBTextbox.prototype.controls.mlaStart = new fabric.Control({
+    this.controls.mlaStart = new Control({
       x: -0.5,
       y: 0,
+      offsetX: -20,
+      offsetY: 0,
       render: renderCustomControl,
       mouseDownHandler: (eventData, transformData) => {
         this.controlMousedownProcess(transformData, -0.5, 0.0);
@@ -518,9 +522,11 @@ export class Textbox extends IText {
       name: 'mlaStart'
     });
 
-    fabric.WBTextbox.prototype.controls.mraStart = new fabric.Control({
+    this.controls.mraStart = new Control({
       x: 0.5,
       y: 0,
+      offsetX: 20,
+      offsetY: 0,
       render: renderCustomControl,
       mouseDownHandler: (eventData, transformData) => {
         this.controlMousedownProcess(transformData, 0.5, 0.0);
@@ -528,6 +534,10 @@ export class Textbox extends IText {
       },
       name: 'mraStart'
     });
+  }
+
+  controlMousedownProcess(transformData, rx, ry) {
+    return;
   }
   /**
    * Returns object representation of an instance
