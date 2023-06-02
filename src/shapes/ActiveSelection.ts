@@ -2,6 +2,8 @@ import type { ControlRenderingStyleOverride } from '../controls/controlRendering
 import { classRegistry } from '../ClassRegistry';
 import { Group } from './Group';
 import type { FabricObject } from './Object/FabricObject';
+import { ObjectEvents } from '../EventTypeDefs';
+import { FabricObjectProps, SerializedObjectProps } from './Object/types';
 
 export class ActiveSelection extends Group {
   declare _objects: FabricObject[];
@@ -23,9 +25,9 @@ export class ActiveSelection extends Group {
   ) {
     super(objects, options, objectsRelativeToGroup);
 
-    this.initialize();
+    this.initialize(objects, options);
   }
-  initialize() {
+  initialize(objects: FabricObject<Partial<FabricObjectProps>, SerializedObjectProps, ObjectEvents>[] | undefined, options: any) {
     this.setCoords();
   }
   /**
