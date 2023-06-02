@@ -1917,55 +1917,8 @@ export class Arrow<
     }
     ctx.stroke();
   }
-
   setConnectorObj(targetObject, pointer, isInOneObj, isStart) {
-    let oldConnObj;
-    const rPoint = targetObject.convertACoordToRCoord(pointer.x, pointer.y);
-    const aPoint = targetObject.convertRCoordToACoord(Math.round(rPoint.x * 10) / 10, Math.round(rPoint.y * 10) / 10);
-    if (isStart) {
-      oldConnObj =
-        //@ts-ignore
-        this.connectorStart && this.connectorStart._id
-          ? //@ts-ignore
-          this.canvas.findById(this.connectorStart._id)
-          : null;
-      this.connectorStart = {
-        _id: targetObject._id,
-        rx: rPoint.x,
-        ry: rPoint.y
-      };
-      //@ts-ignore
-      this.set({
-        x1: pointer.x,
-        y1: pointer.y
-      });
-    } else {
-      oldConnObj =
-        //@ts-ignore
-        this.connectorEnd && this.connectorEnd._id
-          ? //@ts-ignore
-          this.canvas.findById(this.connectorEnd._id)
-          : null;
-      this.connectorEnd = { _id: targetObject._id, rx: rPoint.x, ry: rPoint.y };
-
-      this.set({
-        x2: aPoint.x,
-        y2: aPoint.y
-      });
-
-
-    }
-
-    if (oldConnObj && oldConnObj._id && oldConnObj.lines) {
-      this.removeArrowfromConnectObj(oldConnObj);
-    }
-
-    if (!targetObject.lines) {
-      targetObject.lines = [{ _id: this._id }];
-    } else {
-      targetObject.lines.push({ _id: this._id });
-    }
-    targetObject.saveData('MODIFIED', ['lines']);
+    return;
   }
 
   positionProcess(fabricObject, isStart) {
