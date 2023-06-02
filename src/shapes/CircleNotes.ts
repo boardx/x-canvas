@@ -3,6 +3,7 @@ import { TClassProperties } from '../typedefs';
 import { Textbox } from './Textbox';
 import { classRegistry } from '../ClassRegistry';
 import { createRectNotesDefaultControls } from '../controls/commonControls';
+import { XY } from '../Point';
 type CursorBoundaries = {
   left: number;
   top: number;
@@ -760,41 +761,45 @@ export class CircleNotes extends Textbox {
     top += topOffset; // 从原方法中减去 topOffset 以确保 top 的正确值
     super._setSelectionStyles(ctx, char, left, top); // 调用父类方法
   }
-  // _renderCursor(
-  //   ctx: CanvasRenderingContext2D,
-  //   boundaries: CursorBoundaries,
-  //   selectionStart: number
-  // ) {
-  //   const cursorLocation = this.get2DCursorLocation(selectionStart),
-  //     lineIndex = cursorLocation.lineIndex,
-  //     charIndex =
-  //       cursorLocation.charIndex > 0 ? cursorLocation.charIndex - 1 : 0,
-  //     charHeight = this.getValueOfPropertyAt(lineIndex, charIndex, 'fontSize'),
-  //     multiplier = this.scaleX * this.canvas!.getZoom(),
-  //     cursorWidth = this.cursorWidth / multiplier,
-  //     dy = this.getValueOfPropertyAt(lineIndex, charIndex, 'deltaY'),
-  //     topOffset =
-  //       boundaries.topOffset + this._getTopOffset() +
-  //       ((1 - this._fontSizeFraction) * this.getHeightOfLine(lineIndex)) /
-  //       this.lineHeight -
-  //       charHeight * (1 - this._fontSizeFraction);
 
-  //   if (this.inCompositionMode) {
-  //     // TODO: investigate why there isn't a return inside the if,
-  //     // and why can't happen at the top of the function
-  //     this.renderSelection(ctx, boundaries);
-  //   }
-  //   ctx.fillStyle =
-  //     this.cursorColor ||
-  //     this.getValueOfPropertyAt(lineIndex, charIndex, 'fill');
-  //   ctx.globalAlpha = this._currentCursorOpacity;
-  //   ctx.fillRect(
-  //     boundaries.left + boundaries.leftOffset - cursorWidth / 2,
-  //     topOffset + boundaries.top + dy,
-  //     cursorWidth,
-  //     charHeight
-  //   );
-  // }
+  _getNewSelectionStartFromOffset(
+    mouseOffset: XY,
+    prevWidth: number,
+    width: number,
+    index: number,
+    jlen: number
+  ) {
+    const distanceBtwLastCharAndCursor = mouseOffset.x - prevWidth;
+    const distanceBtwNextCharAndCursor = width - mouseOffset.x;
+    const offset =
+      distanceBtwNextCharAndCursor > distanceBtwLastCharAndCursor ||
+        distanceBtwNextCharAndCursor < 0
+        ? 0
+        : 1;
+
+    // 获取 topOffset 变量以计算垂直偏移
+    const topOffset = this._getTopOffset();
+    const lineHeight = this._getTotalLineHeight() / this._textLines.length;
+
+    // 计算当前鼠标点击的行
+    const clickedLine = Math.floor((mouseOffset.y - topOffset) / lineHeight);
+
+    // 如果点击的行超出文本边界，设置为文本的最后一个字符
+    if (clickedLine >= this._textLines.length) {
+      return this._text.length;
+    } else if (clickedLine < 0) {
+      return 0;
+    }
+
+    let newSelectionStart = index + offset;
+
+    // 如果对象水平翻转，镜像光标位置从末尾
+    if (this.flipX) {
+      newSelectionStart = jlen - newSelectionStart;
+    }
+
+    return newSelectionStart;
+  }
 }
 
 classRegistry.setClass(CircleNotes);
