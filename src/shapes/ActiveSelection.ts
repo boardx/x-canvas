@@ -22,9 +22,12 @@ export class ActiveSelection extends Group {
     objectsRelativeToGroup?: boolean
   ) {
     super(objects, options, objectsRelativeToGroup);
+
+    this.initialize();
+  }
+  initialize() {
     this.setCoords();
   }
-
   /**
    * @private
    */
@@ -234,8 +237,57 @@ export class ActiveSelection extends Group {
     object.group = this;
     object.setCoords(skipControls);
   }
-  /*boardx custom function */
 
+  sendObjToBack() {
+    return;
+  };
+  bringObjToFront() {
+    return;
+  };
+
+  saveUpdatedzIndex(ASObjects: any, newZindexArr: any, isTrue: boolean) {
+    return;
+  }
+
+  resetBorderAndControls() {
+    const activeSelection = this;
+    if (activeSelection && activeSelection._objects) {
+      activeSelection.setControlVisible('mtr', false);
+      activeSelection.setControlVisible('mtr2', false);
+      if (activeSelection._objects.length > 0) {
+        activeSelection.setControlVisible('tl', true);
+        activeSelection.setControlVisible('tr', true);
+        activeSelection.setControlVisible('br', true);
+        activeSelection.setControlVisible('bl', true);
+        activeSelection.hasBorders = true;
+      } else {
+        activeSelection.setControlVisible('tl', false);
+        activeSelection.setControlVisible('tr', false);
+        activeSelection.setControlVisible('br', false);
+        activeSelection.setControlVisible('bl', false);
+        activeSelection.hasBorders = false;
+      }
+      activeSelection.setControlVisible('ml', false);
+      activeSelection.setControlVisible('mr', false);
+      activeSelection.setControlVisible('mt', false);
+      activeSelection.setControlVisible('mb', false);
+      activeSelection.setControlVisible('mla', false);
+      activeSelection.setControlVisible('mra', false);
+      activeSelection.setControlVisible('mta', false);
+      activeSelection.setControlVisible('mba', false);
+
+    }
+  };
+
+  sortActiveSelectionObjs() {
+    const obj = this;
+    const ASObjects = [];
+    for (let i = 0; i < obj._objects.length; i++) {
+      if (obj._objects[i]._id) ASObjects.push(obj._objects[i]);
+    }
+    ASObjects.sort((a, b) => b.zIndex - a.zIndex);
+    return ASObjects;
+  };
 }
 
 classRegistry.setClass(ActiveSelection);
