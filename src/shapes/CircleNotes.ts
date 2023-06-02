@@ -65,6 +65,42 @@ export class CircleNotes extends Textbox {
    */
   declare dynamicMinWidth: number;
 
+  declare keys: [
+    '_id',
+    'angle',
+    'backgroundColor',
+    'fill',
+    'fontFamily',
+    'fontSize',
+    'height',
+    'width',
+    'left',
+    'lines', // the arrows array [{…}]
+    'lockUniScaling',
+    'locked',
+    'fontWeight',
+    'lineHeight',
+    'obj_type',
+    'originX',
+    'originY',
+    'panelObj', // the parent panel string
+    'relationship', // relationship with panel for transform  [1.43, 0, 0, 1.43, 7.031931057304291, 16.531768328466796]
+    'scaleX',
+    'scaleY',
+    'selectable',
+    'text',
+    'textAlign',
+    'top',
+    'userNo',
+    'userId',
+    'whiteboardId',
+    'zIndex',
+    'version',
+    'type',
+    'isPanel',
+    'editable'
+  ];
+
   /**
    * Use this boolean property in order to split strings that have no white space concept.
    * this is a cheap way to help with chinese/japanese
@@ -487,6 +523,14 @@ export class CircleNotes extends Textbox {
         delete this.styles[prop];
       }
     }
+  }
+
+  getObject() {
+    const object = {};
+    this.keys.forEach((key) => {
+      object[key] = this[key];
+    });
+    return object;
   }
 
   /**

@@ -116,6 +116,48 @@ export class Arrow<
     };
   }
 
+  declare keys: [
+    '_id', // string, the id of the object
+    'angle', //  integer, angle for recording rotating
+    'backgroundColor', // string,  background color, works when the image is transparent
+    'fill', // the font color
+    'width', // integer, width of the object
+    'height', // integer, height of the object
+    'left', // integer left for position
+    'locked', // boolean, lock status for the widget， this is connected to lock
+    'lockScalingX',
+    'lockScalingY',
+    'lockMovementX', // boolean, lock the verticle movement
+    'lockMovementY', // boolean, lock the horizontal movement
+    'lockScalingFlip', // boolean,  make it can not be inverted by pulling the width to the negative side
+    'obj_type', // object type
+    'originX', // string, Horizontal origin of transformation of an object (one of "left", "right", "center") See http://jsfiddle.net/1ow02gea/244/ on how originX/originY affect objects in groups
+    'originY', // string, Vertical origin of transformation of an object (one of "top", "bottom", "center") See http://jsfiddle.net/1ow02gea/244/ on how originX/originY affect objects in groups
+    'scaleX', // nunber, Object scale factor (horizontal)
+    'scaleY', // number, Object scale factor (vertical)
+    'selectable', // boolean, When set to `false`, an object can not be selected for modification (using either point-click-based or group-based selection). But events still fire on it.
+    'top', // integer, Top position of an object. Note that by default it's relative to object top. You can change this by setting originY={top/center/bottom}
+    'userNo', // string, the unique id for the user, one user id could open mutiple browser, each browser has unique user no
+    'userId', // string, user identity
+    'whiteboardId', // whiteboard id, string
+    'zIndex', // the index for the object on whiteboard, integer
+    'version', // version of the app, string
+    'type', // widget type, string
+    'panelObj', // if this is a panel, the id of the panel, string
+    'relationship', // array, viewporttransform
+    'stroke', // line color
+    'strokeWidth', // line width
+    'strokeUniform', // set up to true then strokewidth doesn't change when scaling
+    'connectorEnd', // connectorEnd: {_id: "F8B6zJQv8LFQyP8ux", relativeX: 0.5, relativeY: 0.5}
+    'connectorStart', // connectorStart: {_id: "aAodW5XBxPwPZqDNc", relativeX: 0.0, relativeY: -0.5}
+    'x1', // : 534.2749784296807
+    'x2', // : 418.5215421268829
+    'y1', // : 352.6321915444349
+    'y2', // : 311.233166726342
+    'connectorShape', // straight, angled, curved
+    'connectorStyle', // solid, dashed, dotted
+    'tips', // string, both, start, end, none
+  ]
   /**
  * Constructor
  * @param {Array} [points] Array of points
@@ -316,6 +358,15 @@ export class Arrow<
     console.log('initEvents')
     return;
   }
+
+  getObject() {
+    const object = {};
+    this.keys.forEach((key) => {
+      object[key] = this[key];
+    });
+    return object;
+  }
+
   toObject(propertiesToInclude: Array<any>): object {
     return super.toObject(
       [...this.extendPropeties, 'minWidth', 'splitByGrapheme'].concat(propertiesToInclude)

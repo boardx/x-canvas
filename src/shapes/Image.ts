@@ -187,6 +187,53 @@ export class Image<
 
   public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'verticalAlign', 'line', 'relationship', '_id'];
 
+  declare keys: [
+    '_id',
+    'angle',
+    'backgroundColor',
+    'fill',
+    'width',
+    'height',
+    'left',
+    'locked',
+    'lockScalingX',
+    'lockScalingY',
+    'lockMovementX',
+    'lockMovementY',
+    'lockScalingFlip',
+    'obj_type',
+    'originX',
+    'originY',
+    'scaleX',
+    'scaleY',
+    'selectable',
+    'top',
+    'userNo',
+    'userId',
+    'whiteboardId',
+    'zIndex',
+    'version',
+    'type',
+    'isPanel',
+    'panelObj',
+    'relationship',
+    'flipX',
+    'flipY',
+    'stroke',
+    'strokeWidth',
+    'lines',
+    'src',
+    'name',
+    'progressBar',
+    'isUploading',
+    'initedProgressBar',
+    'hoverCursor',
+    'lockUniScaling',
+    'cornerStyle',
+    'lightbox',
+    'cropSelectionRect',
+  ];
+
   protected declare _element: ImageSource;
   protected declare _originalElement: ImageSource;
   protected declare _filteredEl: ImageSource;
@@ -353,6 +400,15 @@ export class Image<
         : {}),
     };
   }
+
+  getObject() {
+    const object = {};
+    this.keys.forEach((key) => {
+      object[key] = this[key];
+    });
+    return object;
+  }
+
   /*boardx custom function */
   getWidgetMenuList() {
     if (this.locked) {

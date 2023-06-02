@@ -67,6 +67,59 @@ export class ShapeNotes extends Textbox {
    */
   declare dynamicMinWidth: number;
 
+  declare keys: [
+    '_id',
+    'angle',
+    'backgroundColor',
+    'fill',
+    'fontFamily',
+    'fontSize',
+    'height',
+    'width',
+    'left',
+    'lines', // the arrows array [{…}]
+    'lockUniScaling',
+    'locked',
+    'lockMovementX', // boolean, lock the verticle movement
+    'lockMovementY', // boolean, lock the horizontal movement
+    'lockScalingFlip', // boolean,  make it can not be inverted by pulling the width to the negative side
+    'fontWeight',
+    'lineHeight',
+    'obj_type',
+    'originX',
+    'originY',
+    'panelObj', // the parent panel string
+    'relationship', // relationship with panel for transform  [1.43, 0, 0, 1.43, 7.031931057304291, 16.531768328466796]
+    'scaleX',
+    'scaleY',
+    'selectable',
+    'text',
+    'textAlign',
+    'top',
+    'userNo',
+    'userId',
+    'whiteboardId',
+    'zIndex',
+    'version',
+    'type',
+    'isPanel',
+    'editable',
+    'path',
+    'strokeWidth',
+    'strokeUniform', // set up to true then strokewidth doesn't change when scaling
+    'stroke', // border color
+    'selectable', // boolean, When set to `false`, an object can not be selected for modification (using either point-click-based or group-based selection). But events still fire on it.
+    'icon',
+    'lineWidth',
+    'fixedLineWidth',
+    'aCoords',
+    'shapeScaleX',
+    'shapeScaleY',
+    'verticalAlign',
+    'maxHeight',
+    'shadow',
+    'subObjs'
+  ];
   /**
    * Use this boolean property in order to split strings that have no white space concept.
    * this is a cheap way to help with chinese/japanese
@@ -492,6 +545,14 @@ export class ShapeNotes extends Textbox {
         delete this.styles[prop];
       }
     }
+  }
+
+  getObject() {
+    const object = {};
+    this.keys.forEach((key) => {
+      object[key] = this[key];
+    });
+    return object;
   }
 
   /**

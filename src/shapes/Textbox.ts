@@ -50,6 +50,51 @@ export class Textbox extends IText {
    */
   declare splitByGrapheme: boolean;
 
+  declare keys: [
+    '_id', // string, the id of the object
+    'angle', //  integer, angle for recording rotating
+    'backgroundColor', // string,  background color, works when the image is transparent
+    'fill', // the font color
+    'width', // integer, width of the object
+    'height', // integer, height of the object
+    'left', // integer left for position
+    'lines', // array, the arrows array [{…}]
+    'locked', // boolean, lock status for the widget， this is connected to lock
+    'lockMovementX', // boolean, lock the verticle movement
+    'lockMovementY', // boolean, lock the horizontal movement
+    'lockScalingFlip', // boolean,  make it can not be inverted by pulling the width to the negative side
+    'obj_type', // object type
+    'originX', // string, Horizontal origin of transformation of an object (one of "left", "right", "center") See http://jsfiddle.net/1ow02gea/244/ on how originX/originY affect objects in groups
+    'originY', // string, Vertical origin of transformation of an object (one of "top", "bottom", "center") See http://jsfiddle.net/1ow02gea/244/ on how originX/originY affect objects in groups
+    'scaleX', // nunber, Object scale factor (horizontal)
+    'scaleY', // number, Object scale factor (vertical)
+    'selectable', // boolean, When set to `false`, an object can not be selected for modification (using either point-click-based or group-based selection). But events still fire on it.
+    'top', // integer, Top position of an object. Note that by default it's relative to object top. You can change this by setting originY={top/center/bottom}
+    'userNo', // string, the unique id for the user, one user id could open mutiple browser, each browser has unique user no
+    'userId', // string, user identity
+    'whiteboardId', // whiteboard id, string
+    'zIndex', // the index for the object on whiteboard, integer
+    'version', // version of the app, string
+    'type', // widget type, string
+    'isPanel', // is this a panel, boolean
+    'panelObj', // if this is a panel, the id of the panel, string
+    'relationship', // array, viewporttransform
+    'subObjList', // ["5H9qYfNGt4vizhcuS"] array list _id for sub objects
+    'fontFamily', // string, font family
+    'fontSize', // integer, font size
+    'fontWeight', // integer, font weight
+    'lineHeight', // integer, font height
+    'text', // string, text
+    'textAlign', // string, alignment
+    'editable',
+    'shapeScaleX',
+    'shapeScaleY',
+    'maxHeight',
+    'tempTop',
+    'fixedScaleChange',
+    'preTop'
+  ];
+
   static textLayoutProperties = [...IText.textLayoutProperties, 'width'];
 
   static ownDefaults: Record<string, any> = textboxDefaultValues;
@@ -545,6 +590,15 @@ export class Textbox extends IText {
    * @param {Array} [propertiesToInclude] Any properties that you might want to additionally include in the output
    * @return {Object} object representation of an instance
    */
+
+  getObject() {
+    const object = {};
+    this.keys.forEach((key) => {
+      object[key] = this[key];
+    });
+    return object;
+  }
+
   toObject(propertiesToInclude: Array<any>): object {
     return super.toObject(
       ['minWidth', 'splitByGrapheme'].concat(propertiesToInclude)
