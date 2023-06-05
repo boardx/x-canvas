@@ -9,37 +9,6 @@ import {
 
 // use this function if you want to generate new controls for every instance
 export const createObjectDefaultControls = () => ({
-  // ml: new Control({
-  //   x: -0.5,
-  //   y: 0,
-  //   cursorStyleHandler: scaleSkewCursorStyleHandler,
-  //   actionHandler: scalingXOrSkewingY,
-  //   getActionName: scaleOrSkewActionName,
-  // }),
-
-  // mr: new Control({
-  //   x: 0.5,
-  //   y: 0,
-  //   cursorStyleHandler: scaleSkewCursorStyleHandler,
-  //   actionHandler: scalingXOrSkewingY,
-  //   getActionName: scaleOrSkewActionName,
-  // }),
-
-  // mb: new Control({
-  //   x: 0,
-  //   y: 0.5,
-  //   cursorStyleHandler: scaleSkewCursorStyleHandler,
-  //   actionHandler: scalingYOrSkewingX,
-  //   getActionName: scaleOrSkewActionName,
-  // }),
-
-  // mt: new Control({
-  //   x: 0,
-  //   y: -0.5,
-  //   cursorStyleHandler: scaleSkewCursorStyleHandler,
-  //   actionHandler: scalingYOrSkewingX,
-  //   getActionName: scaleOrSkewActionName,
-  // }),
 
   tl: new Control({
     x: -0.5,

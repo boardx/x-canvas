@@ -1133,7 +1133,41 @@ export class Group extends createCollectionMixin(
 
   getObject() {
     const object = {};
-    this.keys.forEach(key => {
+    const keys = [
+      '_id',
+      'angle',
+      'backgroundColor',
+      'fill',
+      'fontFamily',
+      'fontSize',
+      'height',
+      'width',
+      'left',
+      'lines', // the arrows array [{…}]
+      'lockUniScaling',
+      'locked',
+      'fontWeight',
+      'lineHeight',
+      'obj_type',
+      'originX',
+      'originY',
+      'panelObj', // the parent panel string
+      'relationship', // relationship with panel for transform  [1.43, 0, 0, 1.43, 7.031931057304291, 16.531768328466796]
+      'scaleX',
+      'scaleY',
+      'selectable',
+      'text',
+      'textAlign',
+      'top',
+      'userNo',
+      'userId',
+      'whiteboardId',
+      'zIndex',
+      'version',
+      'isPanel',
+      'editable'
+    ];
+    keys.forEach(key => {
       object[key] = this[key];
     });
 
@@ -1176,6 +1210,7 @@ export class Group extends createCollectionMixin(
 
     return menuList;
   }
+
   /**boardx cusotm function */
   /**
    * @todo support loading from svg

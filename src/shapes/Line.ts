@@ -23,6 +23,7 @@ interface UniqueLineProps {
   x2: number;
   y1: number;
   y2: number;
+
 }
 
 export interface SerializedLineProps
