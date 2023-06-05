@@ -2,9 +2,6 @@
 import { TClassProperties } from '../typedefs';
 import { classRegistry } from '../ClassRegistry';
 import { Textbox } from './Textbox';
-import type {
-  SerializedObjectProps,
-} from './Object/types';
 
 // @TODO: Many things here are configuration related and shouldn't be on the class nor prototype
 // regexes, list of properties that are not suppose to change by instances, magic consts.
@@ -22,9 +19,6 @@ export const rectNotesDefaultValues: Partial<TClassProperties<RectNotes>> = {
 
 };
 
-export interface SerializedRectNotesProps extends SerializedObjectProps {
-  lines: any[];
-}
 /**
  * Textbox class, based on IText, allows the user to resize the text rectangle
  * and wraps lines automatically. Textboxes have their Y scaling locked, the
