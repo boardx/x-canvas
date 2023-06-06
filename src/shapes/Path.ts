@@ -84,7 +84,21 @@ export class Path<
 
   declare _id: string;
 
-  public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'lines', 'relationship', '_id'];
+  declare userNo: string;
+
+  declare version: string;
+
+  declare isPanel: boolean;
+
+  declare panelObj: any;
+
+  declare subObjList: any;
+
+  declare lineWidth: any;
+
+  declare radius: any;
+
+  public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'lines', 'relationship', '_id', 'userNo', 'version', 'isPanel', 'panelObj', 'subObjList', 'lineWidth', 'radius'];
   /**
    * Constructor
    * @param {TComplexPathData} path Path data (sequence of coordinates and corresponding "command" tokens)
@@ -513,6 +527,49 @@ export class Path<
     // }
 
     return menuList;
+  }
+
+  getObject(): Object {
+    const object = {
+      _id: this._id,
+      angle: this.angle,
+      backgroundColor: this.backgroundColor,
+      fill: this.fill,
+      width: this.width,
+      height: this.height,
+      left: this.left,
+      locked: this.locked,
+      lockMovementX: this.lockMovementX,
+      lockMovementY: this.lockMovementY,
+      lockScalingFlip: this.lockScalingFlip,
+      obj_type: this.obj_type,
+      originX: this.originX,
+      originY: this.originY,
+      scaleX: this.scaleX,
+      scaleY: this.scaleY,
+      selectable: this.selectable,
+      top: this.top,
+      userNo: this.userNo,
+      userId: this.userId,
+      whiteboardId: this.whiteboardId,
+      zIndex: this.zIndex,
+      version: this.version,
+      isPanel: this.isPanel,
+      panelObj: this.panelObj,
+      relationship: this.relationship,
+      subObjList: this.subObjList,
+      lineWidth: this.lineWidth,
+      lines: this.lines,
+      stroke: this.stroke,
+      strokeWidth: this.strokeWidth,
+      radius: this.radius,
+      path: this.path,
+      pathOffset: this.pathOffset,
+      shadow: this.shadow,
+      cornerStyle: this.cornerStyle,
+      perPixelTargetFind: this.perPixelTargetFind
+    };
+    return object;
   }
 }
 
