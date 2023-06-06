@@ -4,6 +4,7 @@ import { Group } from './Group';
 import type { FabricObject } from './Object/FabricObject';
 import { ObjectEvents } from '../EventTypeDefs';
 import { FabricObjectProps, SerializedObjectProps } from './Object/types';
+import { createPathDefaultControls } from '../controls/commonControls';
 
 export class ActiveSelection extends Group {
   declare _objects: FabricObject[];
@@ -27,6 +28,14 @@ export class ActiveSelection extends Group {
 
     this.initialize(objects, options);
   }
+
+  static getDefaults() {
+    return {
+      ...super.getDefaults(),
+      controls: createPathDefaultControls(),
+    };
+  }
+
   initialize(objects: FabricObject<Partial<FabricObjectProps>, SerializedObjectProps, ObjectEvents>[] | undefined, options: any) {
     this.setCoords();
   }
