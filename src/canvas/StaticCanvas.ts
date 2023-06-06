@@ -82,7 +82,7 @@ type TCanvasHydrationOption = {
 };
 
 export const StaticCanvasDefaults = {
-  backgroundColor: '#ffffff',
+  //backgroundColor: '#ffffff',
   backgroundImage: null,
   overlayColor: '',
   overlayImage: null,
@@ -686,7 +686,7 @@ export class StaticCanvas<
     this.remove(...this.getObjects());
     this.backgroundImage = null;
     this.overlayImage = null;
-    this.backgroundColor = '#ffffff';
+    //this.backgroundColor = '#ffffff';
     this.showBackgroundDots = true;
     this.overlayColor = '';
     this.clearContext(this.contextContainer);
