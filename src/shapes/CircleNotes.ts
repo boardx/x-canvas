@@ -1,8 +1,7 @@
 // @ts-nocheck
-import { XY } from '../Point';
 import { TClassProperties } from '../typedefs';
-import { Textbox } from './Textbox';
 import { classRegistry } from '../ClassRegistry';
+import { Textbox } from './Textbox';
 
 // @TODO: Many things here are configuration related and shouldn't be on the class nor prototype
 // regexes, list of properties that are not suppose to change by instances, magic consts.
@@ -15,9 +14,12 @@ export const circleNotesDefaultValues: Partial<TClassProperties<CircleNotes>> = 
   _wordJoiners: /[ \t\r]/,
   splitByGrapheme: true,
   obj_type: 'WBCircleNotes',
-  height: 138,
-  maxHeight: 138,
-  noteType: 'circle'
+  height: 99.5,
+  maxHeight: 99.5,
+  noteType: 'circle',
+  padding: 30,
+  radius: 69
+
 };
 
 /**
@@ -109,10 +111,15 @@ export class CircleNotes extends Textbox {
       this.enlargeSpaces();
     }
     // clear cache and re-calculate height
-    this.calcTextHeight();
+    const height = this.calcTextHeight();
+    if (height > this.maxHeight && this.fontSize > 2) {
+      this.set('fontSize', this.fontSize - 2);
+      this._splitTextIntoLines(this.text);
+      return;
+    }
 
+    this.height = this.maxHeight;
     return this.height;
-
   }
 
   /**
@@ -492,38 +499,47 @@ export class CircleNotes extends Textbox {
   getObject() {
     const object = {};
     const keys = [
-      '_id',
-      'angle',
-      'backgroundColor',
-      'fill',
-      'fontFamily',
-      'fontSize',
-      'height',
-      'width',
-      'left',
-      'lines', // the arrows array [{…}]
-      'lockUniScaling',
-      'locked',
-      'fontWeight',
-      'lineHeight',
-      'obj_type',
-      'originX',
-      'originY',
-      'panelObj', // the parent panel string
-      'relationship', // relationship with panel for transform  [1.43, 0, 0, 1.43, 7.031931057304291, 16.531768328466796]
-      'scaleX',
-      'scaleY',
-      'selectable',
-      'text',
-      'textAlign',
-      'top',
-      'userNo',
-      'userId',
-      'whiteboardId',
-      'zIndex',
-      'version',
-      'isPanel',
-      'editable'
+      '_id', // string, the id of the object
+      'angle', //  integer, angle for recording rotating
+      'backgroundColor', // string,  background color, works when the image is transparent
+      'fill', // the font color
+      'width', // integer, width of the object
+      'height', // integer, height of the object
+      'left', // integer left for position
+      'lines', // array, the arrows array [{…}]
+      'locked', // boolean, lock status for the widget， this is connected to lock
+      'lockMovementX', // boolean, lock the verticle movement
+      'lockMovementY', // boolean, lock the horizontal movement
+      'lockScalingFlip', // boolean,  make it can not be inverted by pulling the width to the negative side
+      'obj_type', // object type
+      'originX', // string, Horizontal origin of transformation of an object (one of "left", "right", "center") See http://jsfiddle.net/1ow02gea/244/ on how originX/originY affect objects in groups
+      'originY', // string, Vertical origin of transformation of an object (one of "top", "bottom", "center") See http://jsfiddle.net/1ow02gea/244/ on how originX/originY affect objects in groups
+      'scaleX', // nunber, Object scale factor (horizontal)
+      'scaleY', // number, Object scale factor (vertical)
+      'selectable', // boolean, When set to `false`, an object can not be selected for modification (using either point-click-based or group-based selection). But events still fire on it.
+      'top', // integer, Top position of an object. Note that by default it's relative to object top. You can change this by setting originY={top/center/bottom}
+      'userNo', // string, the unique id for the user, one user id could open mutiple browser, each browser has unique user no
+      'userId', // string, user identity
+      'whiteboardId', // whiteboard id, string
+      'zIndex', // the index for the object on whiteboard, integer
+      'version', // version of the app, string
+      'isPanel', // is this a panel, boolean
+      'panelObj', // if this is a panel, the id of the panel, string
+      'relationship', // array, viewporttransform
+      'subObjList', // ["5H9qYfNGt4vizhcuS"] array list _id for sub objects
+      'fontFamily', // string, font family
+      'fontSize', // integer, font size
+      'fontWeight', // integer, font weight
+      'lineHeight', // integer, font height
+      'strokeWidth', //
+      'text', // string, text
+      'textAlign', // string, alignment
+      'imageSrc', // src for the note draw
+      'isDraw', // is this a draw note
+      'emoji', // [0,0,0,0,0], record the emoji
+      'userEmoji', // [{userid,[0,0,0,0,1]},{userid,[0,0,0,0,1]}], record who vote the emoji
+      'editable', // text editable,
+      'lastEditedBy' // last edited by
     ];
     keys.forEach((key) => {
       object[key] = this[key];
@@ -605,157 +621,21 @@ export class CircleNotes extends Textbox {
     }
     return 420;
   }
-
   /* caculate cusor positon in the middle of the textbox */
   getCenteredTop(rectHeight) {
     const textHeight = this.height;
     return (rectHeight - textHeight) / 2;
   }
 
-  _renderBackground(ctx) {
-    if (!this.backgroundColor) {
-      return;
-    }
-    const dim = this._getNonTransformedDimensions();
-    ctx.fillStyle = this.backgroundColor;
-    ctx.shadowBlur = 20;
-    ctx.shadowColor = 'rgba(0,0,0,0.1)';
-    ctx.beginPath(); // start new path
-    ctx.arc(0, 0, dim.x / 2, 0, 2 * Math.PI); // draw circle path
-    ctx.closePath(); // close path
-    ctx.strokeStyle = this.backgroundColor;
-    ctx.fillStyle = this.backgroundColor;
-    this._removeShadow(ctx);
-    ctx.stroke();
-    ctx.fill();
-  }
-  _renderText(ctx) {
-    ctx.shadowOffsetX = ctx.shadowOffsetY = ctx.shadowBlur = 0;
-    ctx.shadowColor = '';
-
-    if (this.paintFirst === 'stroke') {
-      this._renderTextStroke(ctx);
-      this._renderTextFill(ctx);
-    } else {
-      this._renderTextFill(ctx);
-      this._renderTextStroke(ctx);
-    }
-  };
-
-  _renderTextCommon(ctx, method) {
-    ctx.save();
-    let lineHeights = 0;
-    const left = this._getLeftOffset();
-    const top = this._getTopOffset();
-    const offsets = this._applyPatternGradientTransform(
-      ctx,
-      method === 'fillText' ? this.fill : this.stroke
-    );
-
-    for (let i = 0, len = this._textLines.length; i < len; i++) {
-      const heightOfLine = this.getHeightOfLine(i);
-      const maxHeight = heightOfLine / this.lineHeight;
-      const leftOffset = this._getLineLeftOffset(i);
-      this._renderTextLine(
-        method,
-        ctx,
-        this._textLines[i],
-        left + leftOffset - offsets.offsetX,
-        top + lineHeights + maxHeight - offsets.offsetY,
-        i
-      );
-      lineHeights += heightOfLine;
-    }
-    ctx.restore();
-  }
-
-  calcTextHeight() {
-    let lineHeight;
-    let height = 0;
-    for (let i = 0, len = this._textLines.length; i < len; i++) {
-      lineHeight = this.getHeightOfLine(i);
-      height += i === len - 1 ? lineHeight / this.lineHeight : lineHeight;
-    }
-
-    const desiredHeight = 82;
-
-    if (height > desiredHeight) {
-      this.set('fontSize', this.fontSize - 2);
-      this._splitTextIntoLines(this.text);
-      height = this.maxHeight;
-      const result = Math.max(height, this.height);
-      //console.log('result of height', result);
-      return result;
-    }
-
-    this.height = this.maxHeight;
-  }
-
-  _getSelectionStartOffsetY() {
-    switch (this.verticalAlign) {
-      case 'middle':
-        return this.height / 2 - this._getTotalLineHeights() / 2;
-      case 'bottom':
-        return this.height - this._getTotalLineHeights();
-      default:
-        return 0;
-    }
-  }
-
-  _getSVGLeftTopOffsets() {
-    return {
-      textLeft: -this.width / 2,
-      textTop: this._getTopOffset(),
-      lineTop: this.getHeightOfLine(0)
-    };
-  }
-
   _getTopOffset() {
-    switch (this.verticalAlign) {
-      case 'middle':
-        return -this._getTotalLineHeights() / 2;
-      case 'bottom':
-        return this.height / 2 - this._getTotalLineHeights();
-      default:
-        return -this.height / 2;
-    }
+    return -this._getTotalLineHeights() / 2;
   }
-
   _getTotalLineHeight() {
     return this._textLines.reduce(
       (total, _line, index) => total + this.getHeightOfLine(index),
       0
     );
   }
-
-  _getNewSelectionStartFromOffset(
-    mouseOffset: XY,
-    prevWidth: number,
-    width: number,
-    index: number,
-    jlen: number
-  ) {
-    const distanceBtwLastCharAndCursor = mouseOffset.x - prevWidth,
-      distanceBtwNextCharAndCursor = width - mouseOffset.x,
-      offset =
-        distanceBtwNextCharAndCursor > distanceBtwLastCharAndCursor ||
-          distanceBtwNextCharAndCursor < 0
-          ? 0
-          : 1;
-
-    let newSelectionStart = index + offset;
-    // if object is horizontally flipped, mirror cursor location from the end
-    if (this.flipX) {
-      newSelectionStart = jlen - newSelectionStart;
-    }
-
-    if (newSelectionStart > this._text.length) {
-      newSelectionStart = this._text.length;
-    }
-
-    return newSelectionStart;
-  }
-
   renderEmoji(ctx) {
     if (this.emoji === undefined) {
       return;
@@ -792,6 +672,8 @@ export class CircleNotes extends Textbox {
     ctx.fill();
     ctx.restore();
 
+    //ctx.strokeRect(x - 10, y, width, 16);
+    //ctx.fillRect(x - 10 + 10 / 2, y + 10 / 2, width - 10, 16 - 10);
     ctx.fillStyle = '#000';
     const isEmojiThumbExist = !(this.canvas.emoji_thumb === undefined);
     if (isEmojiThumbExist) {
@@ -811,6 +693,33 @@ export class CircleNotes extends Textbox {
       }
     }
   }
+  _renderBackground(ctx) {
+    if (!this.backgroundColor) {
+      return;
+    }
+    const dim = this._getNonTransformedDimensions();
+    ctx.fillStyle = this.backgroundColor;
+    ctx.beginPath(); // start new path
+    const radius = dim.x / 2 + this.padding / this.scaleX / this.canvas?.getZoom();
+    ctx.arc(0, 0, radius, 0, 2 * Math.PI); // draw circle path
+    ctx.closePath(); // close path
+    ctx.strokeStyle = this.backgroundColor;
+    ctx.fillStyle = this.backgroundColor;
+    ctx.stroke();
+    ctx.fill();
+  }
+  _renderText(ctx) {
+    ctx.shadowOffsetX = ctx.shadowOffsetY = ctx.shadowBlur = 0;
+    ctx.shadowColor = '';
+
+    if (this.paintFirst === 'stroke') {
+      this._renderTextStroke(ctx);
+      this._renderTextFill(ctx);
+    } else {
+      this._renderTextFill(ctx);
+      this._renderTextStroke(ctx);
+    }
+  };
 }
 
 classRegistry.setClass(CircleNotes);
