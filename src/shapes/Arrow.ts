@@ -179,7 +179,10 @@ export class Arrow extends Line {
             target.set('x1', x + 5).set('y1', y + 5);
             target.connectorStart = null;
           }
-          target.setCoords();
+          if (target) {
+            target.setCoords();
+          }
+
           this.canvas.requestRenderAll();
           return true;
         }
@@ -231,7 +234,9 @@ export class Arrow extends Line {
             target.set('x2', x - 5).set('y2', y - 5);
             target.connectorEnd = null;
           }
-          target.setCoords();
+          if (target) {
+            target.setCoords();
+          }
           this.canvas.requestRenderAll();
 
           return true;
@@ -289,7 +294,9 @@ export class Arrow extends Line {
             target.set('(x2+x1)/2', x - 5).set('(y1+y2)/2', y - 5);
             //target.connectorEnd = null;
           }
-          target.setCoords();
+          if (target) {
+            target.setCoords();
+          }
           this.canvas.requestRenderAll();
 
           return true;
