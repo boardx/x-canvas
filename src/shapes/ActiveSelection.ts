@@ -188,7 +188,7 @@ export class ActiveSelection extends Group {
     ctx.globalAlpha = this.isMoving ? this.borderOpacityWhenMoving : 1;
     super._renderControls(ctx, styleOverride);
     const options = {
-      hasControls: false,
+      //hasControls: false,
       ...childrenOverride,
       forActiveSelection: true,
     };
@@ -261,40 +261,39 @@ export class ActiveSelection extends Group {
   }
 
   resetBorderAndControls() {
-    const activeSelection = this;
-    if (activeSelection && activeSelection._objects) {
-      activeSelection.setControlVisible('mtr', false);
-      activeSelection.setControlVisible('mtr2', false);
-      if (activeSelection._objects.length > 0) {
-        activeSelection.setControlVisible('tl', true);
-        activeSelection.setControlVisible('tr', true);
-        activeSelection.setControlVisible('br', true);
-        activeSelection.setControlVisible('bl', true);
-        activeSelection.hasBorders = true;
+    if (this && this._objects) {
+      this.setControlVisible('mtr', false);
+      this.setControlVisible('mtr2', false);
+      if (this._objects.length > 0) {
+        this.setControlVisible('tl', true);
+        this.setControlVisible('tr', true);
+        this.setControlVisible('br', true);
+        this.setControlVisible('bl', true);
+        this.hasBorders = true;
       } else {
-        activeSelection.setControlVisible('tl', false);
-        activeSelection.setControlVisible('tr', false);
-        activeSelection.setControlVisible('br', false);
-        activeSelection.setControlVisible('bl', false);
-        activeSelection.hasBorders = false;
+        this.setControlVisible('tl', false);
+        this.setControlVisible('tr', false);
+        this.setControlVisible('br', false);
+        this.setControlVisible('bl', false);
+        this.hasBorders = true;
       }
-      activeSelection.setControlVisible('ml', false);
-      activeSelection.setControlVisible('mr', false);
-      activeSelection.setControlVisible('mt', false);
-      activeSelection.setControlVisible('mb', false);
-      activeSelection.setControlVisible('mla', false);
-      activeSelection.setControlVisible('mra', false);
-      activeSelection.setControlVisible('mta', false);
-      activeSelection.setControlVisible('mba', false);
+      this.setControlVisible('ml', false);
+      this.setControlVisible('mr', false);
+      this.setControlVisible('mt', false);
+      this.setControlVisible('mb', false);
+      this.setControlVisible('mla', false);
+      this.setControlVisible('mra', false);
+      this.setControlVisible('mta', false);
+      this.setControlVisible('mba', false);
 
     }
   };
 
   sortActiveSelectionObjs() {
-    const obj = this;
+
     const ASObjects = [];
-    for (let i = 0; i < obj._objects.length; i++) {
-      if (obj._objects[i]._id) ASObjects.push(obj._objects[i]);
+    for (let i = 0; i < this._objects.length; i++) {
+      if (this._objects[i]._id) ASObjects.push(this._objects[i]);
     }
     ASObjects.sort((a, b) => b.zIndex - a.zIndex);
     return ASObjects;
