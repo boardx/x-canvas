@@ -5,8 +5,7 @@ import { Line } from './Line';
 import { Control } from '../controls/Control';
 import type {
   FabricObjectProps,
-  SerializedObjectProps,
-  TProps,
+  SerializedObjectProps
 } from './Object/types';
 import { cacheProperties } from './Object/FabricObject';
 import { transformPoint } from '../util/misc/matrix';
@@ -41,9 +40,7 @@ export const ArrowDefaultValues: Partial<TClassProperties<Arrow>> = {
 
 export interface ArrowProps extends FabricObjectProps, UniqueArrowProps { }
 
-export class Arrow<
-  Props extends TProps<ArrowProps> = Partial<ArrowProps>,
-> extends Line {
+export class Arrow extends Line {
 
   declare x1: number;
 
@@ -122,7 +119,7 @@ export class Arrow<
  * @param {Object} [options] Options object
  * @return {Line} thisArg
  */
-  constructor([x1, y1, x2, y2] = [0, 0, 0, 0], options: Props = {} as Props) {
+  constructor([x1, y1, x2, y2] = [0, 0, 0, 0], options) {
     super([x1, y1, x2, y2], options);
     this._setWidthHeight();
 
@@ -138,7 +135,7 @@ export class Arrow<
     }
     this.controls = {
       start: new Control({
-        cursorStyle: 'crosshair', //
+        cursorStyle: 'crosshair',
         //@ts-ignore
         mouseDownHandler: (eventData, transformData) => {
           this.mousedownProcess(transformData, eventData, true);
@@ -299,6 +296,27 @@ export class Arrow<
         }
       });
     }
+
+    this.setControlsVisibility({
+      mra: false,
+      mla: false,
+      mta: false,
+      mba: false,
+      tr: false,
+      br: false,
+      bl: false,
+      mt: false,
+      mb: false,
+      tl: false,
+      mtr: false,
+      mtr2: false,
+      mbaStart: false,
+      mlaStart: false,
+      mraStart: false,
+      mtaStart: false,
+      start: true,
+      end: true,
+    });
     this.lockScalingX = true;
     this.lockScalingY = true;
     this.lockScalingFlip = true;
@@ -1985,12 +2003,16 @@ export class Arrow<
       y = fabricObject.y2 - offsetY;
     }
     // recalculate control's coordinate by viewportTransform and line's transform matrix
-    const matrix = multiplyTransformMatrices(
-      this.canvas.viewportTransform,
-      fabricObject.calcTransformMatrix()
-    );
-    //@ts-ignore
-    return transformPoint({ x, y }, matrix);
+    if (this.canvas && this.canvas.viewportTransform && fabricObject.calcTransformMatrix) {
+      const matrix = multiplyTransformMatrices(
+        this.canvas.viewportTransform,
+        fabricObject.calcTransformMatrix()
+      );
+      //@ts-ignore
+      return transformPoint({ x, y }, matrix);
+    }
+
+
   }
   mousedownProcess(transformData, eventData, isStart) {
     console.log('mousedownProcess')
