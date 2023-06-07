@@ -494,7 +494,7 @@ export class Group extends createCollectionMixin(
           object.calcTransformMatrix()
         )
       );
-      object.setCoords();
+      //object.setCoords();
     }
     this._watchObject(false, object);
     const index =
