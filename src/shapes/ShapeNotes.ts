@@ -17,7 +17,8 @@ export const shapeNotesDefaultValues: Partial<TClassProperties<ShapeNotes>> = {
   obj_type: 'WBShapeNotes',
   height: 138,
   maxHeight: 138,
-  textAlign: 'center'
+  textAlign: 'center',
+  padding: 15
 };
 
 /**
@@ -93,15 +94,67 @@ export class ShapeNotes extends Textbox {
    * @override
    */
   initDimensions() {
-    if (!this.initialized) {
+    if (this.__skipDimension) {
       return;
     }
-    this.isEditing && this.initDelayedCursor();
+
+    this.clearContextTop();
     this._clearCache();
+
+    const newLines = this._splitText();
+
+    if (this.isEditing) {
+      this.initDelayedCursor();
+
+      const preHeight = this.height;
+      const total = this._getTotalLineHeights() + this.getTopOffset();
+      this.height = Math.max(this.maxHeight, total);
+      const yOffset = this.height - preHeight;
+      this.top += yOffset / 2;
+    } else if (this._textLines && this._textLines.length > 0) {
+      if (this.height === this.maxHeight) {
+        /**
+         * scaling
+         * total height of _textLines < maxHeight
+         */
+        let lineHeights = 0;
+        const tmp = [];
+        for (let i = 0, len = this._textLines.length; i < len; i++) {
+          const heightOfLine = this.getHeightOfLine(i);
+          lineHeights += heightOfLine;
+          if (lineHeights <= this.height - this.getTopOffset()) {
+            tmp.push(this._textLines[i]);
+          }
+        }
+        if (tmp.length > 0) {
+          const preLines = this._textLines.length;
+          this._textLines = tmp;
+          if (tmp.length !== preLines) {
+            // need add ellipsis at last line
+            const lastIndex = this._textLines.length - 1,
+              lastLine = this._textLines[lastIndex];
+            let preWidth = this._measureLine(lastIndex).width;
+            lastLine.pop();
+            lastLine.pop();
+            lastLine.pop();
+            lastLine.push('.');
+            lastLine.push('.');
+            lastLine.push('.');
+          }
+        }
+      } else if (this.height > this.maxHeight) {
+        /**
+         * height > maxHeight
+         * exit editing and _textlines total height > maxHeight
+         */
+        // console.log('### exit editing & initDimensions');
+      }
+    }
+
     // clear dynamicMinWidth as it will be different after we re-wrap line
     this.dynamicMinWidth = 0;
     // wrap lines
-    this._styleMap = this._generateStyleMap(this._splitText());
+    this._styleMap = this._generateStyleMap(newLines);
     // if after wrapping, the width is smaller than dynamicMinWidth, change the width and re-wrap
     if (this.dynamicMinWidth > this.width) {
       this._set('width', this.dynamicMinWidth);
@@ -109,13 +162,6 @@ export class ShapeNotes extends Textbox {
     if (this.textAlign.indexOf('justify') !== -1) {
       // once text is measured we need to make space fatter to make justified text.
       this.enlargeSpaces();
-    }
-    // clear cache and re-calculate height
-    const height = this.height;
-    if (height > this.maxHeight && this.fontSize > 6) {
-      this.set('fontSize', this.fontSize - 2);
-      this._splitTextIntoLines(this.text);
-      return;
     }
 
     return this.height;
@@ -501,45 +547,53 @@ export class ShapeNotes extends Textbox {
       'angle',
       'backgroundColor',
       'fill',
-      'width',
+      'fontFamily',
+      'fontSize',
       'height',
+      'width',
       'left',
+      'lines', // the arrows array [{…}]
+      'lockUniScaling',
       'locked',
-      'lockScalingX',
-      'lockScalingY',
-      'lockMovementX',
-      'lockMovementY',
-      'lockScalingFlip',
+      'lockMovementX', // boolean, lock the verticle movement
+      'lockMovementY', // boolean, lock the horizontal movement
+      'lockScalingFlip', // boolean,  make it can not be inverted by pulling the width to the negative side
+      'fontWeight',
+      'lineHeight',
       'obj_type',
       'originX',
       'originY',
+      'panelObj', // the parent panel string
+      'relationship', // relationship with panel for transform  [1.43, 0, 0, 1.43, 7.031931057304291, 16.531768328466796]
       'scaleX',
       'scaleY',
       'selectable',
+      'text',
+      'textAlign',
       'top',
       'userNo',
       'userId',
       'whiteboardId',
       'zIndex',
       'version',
+      'type',
       'isPanel',
-      'panelObj',
-      'relationship',
-      'flipX',
-      'flipY',
-      'stroke',
+      'editable',
+      'path',
       'strokeWidth',
-      'lines',
-      'src',
-      'name',
-      'progressBar',
-      'isUploading',
-      'initedProgressBar',
-      'hoverCursor',
-      'lockUniScaling',
-      'cornerStyle',
-      'lightbox',
-      'cropSelectionRect',
+      'strokeUniform', // set up to true then strokewidth doesn't change when scaling
+      'stroke', // border color
+      'selectable', // boolean, When set to `false`, an object can not be selected for modification (using either point-click-based or group-based selection). But events still fire on it.
+      'icon',
+      'lineWidth',
+      'fixedLineWidth',
+      'aCoords',
+      'shapeScaleX',
+      'shapeScaleY',
+      'verticalAlign',
+      'maxHeight',
+      'shadow',
+      'subObjs'
     ];
     keys.forEach((key) => {
       object[key] = this[key];
@@ -560,6 +614,13 @@ export class ShapeNotes extends Textbox {
 
   }
   /**boardx custom function */
+  getObjectsIntersected() {
+    const objects = this.canvas._getIntersectedObjects(this);
+    objects.filter(obj => {
+      return obj._id !== this._id && obj.obj_type !== 'WBArrow';
+    });
+    return objects;
+  }
 
   getWidgetMenuList() {
     if (this.isDraw) {
@@ -614,6 +675,49 @@ export class ShapeNotes extends Textbox {
       'aiassist'
     ];
   }
+
+  getContextMenuList() {
+    let menuList;
+    if (this.locked) {
+      menuList = [
+        'Export board',
+        'Exporting selected area',
+        'Create Share Back',
+        'Bring forward',
+        'Bring to front',
+        'Send backward',
+        'Send to back',
+        'Copy as image',
+        'Copy As Text'
+      ];
+    } else {
+      menuList = [
+        'Export board',
+        'Exporting selected area',
+        'Create Share Back',
+        'Bring forward',
+        'Bring to front',
+        'Send backward',
+        'Send to back',
+        'Duplicate',
+        'Copy',
+        'Copy as image',
+        'Copy As Text',
+        'Paste',
+        'Cut',
+        'Edit',
+        'Delete'
+      ];
+    }
+    menuList.push('Select All');
+    if (this.locked) {
+      menuList.push('Unlock');
+    } else {
+      menuList.push('Lock');
+    }
+    return menuList;
+  }
+
   getWidgetMenuLength() {
     if (this.locked) return 50;
     if (this.isDraw) {
@@ -621,6 +725,25 @@ export class ShapeNotes extends Textbox {
     }
     return 420;
   }
+
+  setLockedShadow(locked) {
+    if (locked) {
+      this.shadow = new fabric.Shadow({
+        blur: 2,
+        offsetX: 0,
+        offsetY: 0,
+        color: 'rgba(0, 0, 0, 0.5)'
+      });
+    } else {
+      this.shadow = new fabric.Shadow({
+        blur: 8,
+        offsetX: 0,
+        offsetY: 4,
+        color: 'rgba(0,0,0,0.04)'
+      });
+    }
+  }
+
   /* caculate cusor positon in the middle of the textbox */
   getCenteredTop(rectHeight) {
     const textHeight = this.height;
@@ -882,22 +1005,11 @@ export class ShapeNotes extends Textbox {
     }
   }
 
-  setLockedShadow(locked) {
-    if (locked) {
-      this.shadow = new fabric.Shadow({
-        blur: 2,
-        offsetX: 0,
-        offsetY: 0,
-        color: 'rgba(0, 0, 0, 0.5)'
-      });
-    } else {
-      this.shadow = new fabric.Shadow({
-        blur: 8,
-        offsetX: 0,
-        offsetY: 4,
-        color: 'rgba(0,0,0,0.04)'
-      });
-    }
+  _getTotalLineHeights() {
+    return this._textLines.reduce(
+      (total, _line, index) => total + this.getHeightOfLine(index),
+      0,
+    );
   }
 
   _getSVGLeftTopOffsets() {
