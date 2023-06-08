@@ -18,7 +18,6 @@ export const shapeNotesDefaultValues: Partial<TClassProperties<ShapeNotes>> = {
   height: 138,
   maxHeight: 138,
   textAlign: 'center',
-  padding: 15
 };
 
 /**
@@ -509,9 +508,28 @@ export class ShapeNotes extends Textbox {
    * @returns {Array} Array of lines in the Textbox.
    * @override
    */
-  _splitTextIntoLines(text: string) {
-    const newText = super._splitTextIntoLines(text),
-      graphemeLines = this._wrapText(newText.lines, this.width),
+  textSplitTextIntoLines(text: string) {
+    const lines = text.split(this._reNewline),
+      newLines = new Array<string[]>(lines.length),
+      newLine = ['\n'];
+    let newText: string[] = [];
+    for (let i = 0; i < lines.length; i++) {
+      newLines[i] = this.graphemeSplit(lines[i]);
+      newText = newText.concat(newLines[i], newLine);
+    }
+    newText.pop();
+    return {
+      _unwrappedLines: newLines,
+      lines: lines,
+      graphemeText: newText,
+      graphemeLines: newLines,
+    };
+  }
+  _splitTextIntoLines(text) {
+    const width = this.width - this.getLeftOffset();
+
+    const newText = this.textSplitTextIntoLines(text),
+      graphemeLines = this._wrapText(newText.lines, width),
       lines = new Array(graphemeLines.length);
     for (let i = 0; i < graphemeLines.length; i++) {
       lines[i] = graphemeLines[i].join('');
