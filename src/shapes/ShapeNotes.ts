@@ -133,7 +133,6 @@ export class ShapeNotes extends Textbox {
             // need add ellipsis at last line
             const lastIndex = this._textLines.length - 1,
               lastLine = this._textLines[lastIndex];
-            let preWidth = this._measureLine(lastIndex).width;
             lastLine.pop();
             lastLine.pop();
             lastLine.pop();
@@ -576,7 +575,6 @@ export class ShapeNotes extends Textbox {
       'whiteboardId',
       'zIndex',
       'version',
-      'type',
       'isPanel',
       'editable',
       'path',
