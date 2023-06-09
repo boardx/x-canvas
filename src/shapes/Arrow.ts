@@ -165,7 +165,7 @@ export class Arrow extends Line {
             target.setConnectorObj(hoverTarget, minPoint, false, true);
             // target.set('x1', minPoint.x).set('y1', minPoint.y);
           } else {
-            this.canvas.discardActiveObject();
+            //this.canvas.discardActiveObject();
             const oldConnObj =
               target.connectorStart && target.connectorStart._id
                 ? this.canvas.findById(target.connectorStart._id)
@@ -219,7 +219,7 @@ export class Arrow extends Line {
             target.setConnectorObj(hoverTarget, minPoint, false, false);
             // target.set('x2', minPoint.x).set('y2', minPoint.y);
           } else {
-            this.canvas.discardActiveObject();
+            //this.canvas.discardActiveObject();
 
             const oldConnObj =
               target.connectorEnd && target.connectorEnd._id
@@ -279,7 +279,7 @@ export class Arrow extends Line {
             target.setConnectorObj(hoverTarget, minPoint, false, false);
             // target.set('x2', minPoint.x).set('y2', minPoint.y);
           } else {
-            this.canvas.discardActiveObject();
+            //this.canvas.discardActiveObject();
 
             const oldConnObj =
               target.connectorEnd && target.connectorEnd._id
