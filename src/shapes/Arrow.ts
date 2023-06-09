@@ -159,10 +159,14 @@ export class Arrow extends Line {
               return;
 
             this.canvas.setActiveObject(hoverTarget);
-            const minPoint = this.calcDistanceToTarget({ x, y }, hoverTarget);
+            const calcPointer = this.calcDistanceToTarget(hoverTarget, target);
+            target.setConnectorObj(
+              target,
+              calcPointer,
+              false,
+              false
+            );
             hoverTarget.__corner = minPoint.dot;
-
-            target.setConnectorObj(hoverTarget, minPoint, false, true);
             // target.set('x1', minPoint.x).set('y1', minPoint.y);
           } else {
             //this.canvas.discardActiveObject();
@@ -213,10 +217,14 @@ export class Arrow extends Line {
               return;
 
             this.canvas.setActiveObject(hoverTarget);
-            const minPoint = this.calcDistanceToTarget({ x, y }, hoverTarget);
+            const calcPointer = this.calcDistanceToTarget(hoverTarget, target);
+            target.setConnectorObj(
+              target,
+              calcPointer,
+              false,
+              false
+            );
             hoverTarget.__corner = minPoint.dot;
-
-            target.setConnectorObj(hoverTarget, minPoint, false, false);
             // target.set('x2', minPoint.x).set('y2', minPoint.y);
           } else {
             //this.canvas.discardActiveObject();
@@ -273,10 +281,14 @@ export class Arrow extends Line {
               return;
 
             this.canvas.setActiveObject(hoverTarget);
-            const minPoint = this.calcDistanceToTarget({ x, y }, hoverTarget);
+            const calcPointer = this.calcDistanceToTarget(hoverTarget, target);
+            target.setConnectorObj(
+              currentTarget,
+              calcPointer,
+              false,
+              false
+            );
             hoverTarget.__corner = minPoint.dot;
-
-            target.setConnectorObj(hoverTarget, minPoint, false, false);
             // target.set('x2', minPoint.x).set('y2', minPoint.y);
           } else {
             //this.canvas.discardActiveObject();
@@ -2131,22 +2143,24 @@ export class Arrow extends Line {
       'zIndex'
     ]);
   }
-  calcDistanceToTarget(current, target: any) {
+
+  calcDistanceToTarget(current, target) {
     const { left, top, width, height, scaleX, scaleY } = target;
-    const range = 30;
+    const canvasZoom = this.canvas.getZoom();
+    const range = 50 * scaleX * canvasZoom; // 计算范围时包括画布缩放
 
-    const ml = { x: left - (width * scaleX) / 2, y: top };
-    const mr = { x: left + (width * scaleX) / 2, y: top };
-    const mt = { x: left, y: top - (height * scaleY) / 2 };
-    const mb = { x: left, y: top + (height * scaleY) / 2 };
-
+    const ml = { x: left - (width * scaleX) / 2 - 20 * scaleX * canvasZoom + 0.5, y: top };
+    const mr = { x: left + (width * scaleX) / 2 + 20 * scaleX * canvasZoom - 0.5, y: top };
+    const mt = { x: left, y: top - (height * scaleY) / 2 - 20 * scaleY * canvasZoom + 0.5 };
+    const mb = { x: left, y: top + (height * scaleY) / 2 + 20 * scaleY * canvasZoom - 0.5 };
 
     if (current.y > mt.y && current.y < mb.y) {
       if (current.x > ml.x && current.x < ml.x + range) {
         return {
           x: ml.x,
           y: ml.y,
-
+          // x: target.controls.mla.x,
+          // y: target.controls.mla.y,
           dot: 'mla'
         };
       }
@@ -2155,7 +2169,8 @@ export class Arrow extends Line {
         return {
           x: mr.x,
           y: mr.y,
-
+          // x: target.controls.mra.x,
+          // y: target.controls.mra.y,
           dot: 'mra'
         };
       }
@@ -2166,7 +2181,8 @@ export class Arrow extends Line {
         return {
           x: mt.x,
           y: mt.y,
-
+          // x: target.controls.mta.x,
+          // y: target.controls.mta.y,
           dot: 'mta'
         };
       }
@@ -2175,19 +2191,20 @@ export class Arrow extends Line {
         return {
           x: mb.x,
           y: mb.y,
-
+          // x: target.controls.mba.x,
+          // y: target.controls.mba.y,
           dot: 'mba'
         };
       }
     }
 
     return {
-
+      // ax: current.x - 5,
+      // ay: current.y - 5,
       x: current.x - 5,
       y: current.y - 5,
       dot: 0
     };
-
 
   }
 }
