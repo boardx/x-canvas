@@ -1052,6 +1052,9 @@ export class Image<
     }
   }
 
+  cloneWidget() {
+    return this.getObject();
+  }
 
 }
 
