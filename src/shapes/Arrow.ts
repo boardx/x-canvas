@@ -159,14 +159,10 @@ export class Arrow extends Line {
               return;
 
             this.canvas.setActiveObject(hoverTarget);
-            const calcPointer = this.calcDistanceToTarget(hoverTarget, target);
-            target.setConnectorObj(
-              target,
-              calcPointer,
-              false,
-              false
-            );
+            const minPoint = this.calcDistanceToTarget({ x, y }, hoverTarget);
             hoverTarget.__corner = minPoint.dot;
+
+            target.setConnectorObj(hoverTarget, minPoint, false, true);
             // target.set('x1', minPoint.x).set('y1', minPoint.y);
           } else {
             //this.canvas.discardActiveObject();
@@ -217,14 +213,10 @@ export class Arrow extends Line {
               return;
 
             this.canvas.setActiveObject(hoverTarget);
-            const calcPointer = this.calcDistanceToTarget(hoverTarget, target);
-            target.setConnectorObj(
-              target,
-              calcPointer,
-              false,
-              false
-            );
+            const minPoint = this.calcDistanceToTarget({ x, y }, hoverTarget);
             hoverTarget.__corner = minPoint.dot;
+
+            target.setConnectorObj(hoverTarget, minPoint, false, false);
             // target.set('x2', minPoint.x).set('y2', minPoint.y);
           } else {
             //this.canvas.discardActiveObject();
@@ -281,14 +273,10 @@ export class Arrow extends Line {
               return;
 
             this.canvas.setActiveObject(hoverTarget);
-            const calcPointer = this.calcDistanceToTarget(hoverTarget, target);
-            target.setConnectorObj(
-              currentTarget,
-              calcPointer,
-              false,
-              false
-            );
+            const minPoint = this.calcDistanceToTarget({ x, y }, hoverTarget);
             hoverTarget.__corner = minPoint.dot;
+
+            target.setConnectorObj(hoverTarget, minPoint, false, false);
             // target.set('x2', minPoint.x).set('y2', minPoint.y);
           } else {
             //this.canvas.discardActiveObject();
@@ -2159,8 +2147,6 @@ export class Arrow extends Line {
         return {
           x: ml.x,
           y: ml.y,
-          // x: target.controls.mla.x,
-          // y: target.controls.mla.y,
           dot: 'mla'
         };
       }
@@ -2169,8 +2155,6 @@ export class Arrow extends Line {
         return {
           x: mr.x,
           y: mr.y,
-          // x: target.controls.mra.x,
-          // y: target.controls.mra.y,
           dot: 'mra'
         };
       }
@@ -2181,8 +2165,6 @@ export class Arrow extends Line {
         return {
           x: mt.x,
           y: mt.y,
-          // x: target.controls.mta.x,
-          // y: target.controls.mta.y,
           dot: 'mta'
         };
       }
@@ -2191,16 +2173,12 @@ export class Arrow extends Line {
         return {
           x: mb.x,
           y: mb.y,
-          // x: target.controls.mba.x,
-          // y: target.controls.mba.y,
           dot: 'mba'
         };
       }
     }
 
     return {
-      // ax: current.x - 5,
-      // ay: current.y - 5,
       x: current.x - 5,
       y: current.y - 5,
       dot: 0
