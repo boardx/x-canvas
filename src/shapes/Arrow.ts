@@ -36,6 +36,7 @@ export const ArrowDefaultValues: Partial<TClassProperties<Arrow>> = {
   maxHeight: 200,
   subType: 'arrow',
   hasBorders: false,
+  perPixelTargetFind: true
 };
 
 export interface ArrowProps extends FabricObjectProps, UniqueArrowProps { }
