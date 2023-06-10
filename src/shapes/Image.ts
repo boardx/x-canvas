@@ -1055,6 +1055,19 @@ export class Image<
   cloneWidget() {
     return this.getObject();
   }
+  startCrop() {
+    if (this.cropSelectionRect) {
+      this.cancelCrop();
+    }
+    this.addSelectionRect();
+  }
+  cancelCrop() {
+    return;
+  }
+  addSelectionRect() {
+    return;
+  }
+
 
 }
 
