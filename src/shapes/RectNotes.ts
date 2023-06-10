@@ -16,6 +16,8 @@ export const rectNotesDefaultValues: Partial<TClassProperties<RectNotes>> = {
   obj_type: 'WBRectNotes',
   height: 138,
   maxHeight: 138,
+  emoj: [0, 0, 0, 0, 0],
+
 
 };
 
@@ -54,7 +56,11 @@ export class RectNotes extends Textbox {
 
   declare relationship: object[];
 
-  public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'verticalAlign', 'lines', '_id', 'zIndex', 'relationship'];
+  declare emoj: object[];
+
+  declare userEmoji: object[];
+
+  public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'verticalAlign', 'lines', '_id', 'zIndex', 'relationship', 'emoj', 'userEmoji'];
   /**
    * Minimum calculated width of a textbox, in pixels.
    * fixed to 2 so that an empty textbox cannot go to 0
