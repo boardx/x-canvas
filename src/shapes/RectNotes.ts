@@ -630,6 +630,25 @@ export class RectNotes extends Textbox {
     return (rectHeight - textHeight) / 2;
   }
 
+  _render(ctx) {
+    const path: any = this.path;
+
+    path && !path.isNotVisible() && path._render(ctx);
+    this._setTextStyles(ctx);
+    this._renderTextLinesBackground(ctx);
+    this._renderTextDecoration(ctx, 'underline');
+    this._renderText(ctx);
+    this._renderTextDecoration(ctx, 'overline');
+    this._renderTextDecoration(ctx, 'linethrough');
+
+    const isEmojiExist = !(
+      this.emoji === undefined || this.emoji.join() === '0,0,0,0,0'
+    );
+    if (isEmojiExist) {
+      this.renderEmoji(ctx);
+    }
+  }
+
   _renderBackground(ctx) {
     if (!this.backgroundColor) {
       return;
@@ -714,6 +733,45 @@ export class RectNotes extends Textbox {
         modifier -= 23.6;
       }
     }
+  }
+  _renderText(ctx) {
+    ctx.shadowOffsetX = ctx.shadowOffsetY = ctx.shadowBlur = 0;
+    ctx.shadowColor = '';
+
+    if (this.paintFirst === 'stroke') {
+      this._renderTextStroke(ctx);
+      this._renderTextFill(ctx);
+    } else {
+      this._renderTextFill(ctx);
+      this._renderTextStroke(ctx);
+    }
+  }
+  drawRoundRectPath(cxt, width, height, radius) {
+    cxt.beginPath(0);
+    //从右下角顺时针绘制，弧度从0到1/2PI
+    cxt.arc(width - radius, height - radius, radius, 0, Math.PI / 2);
+
+    //矩形下边线
+    cxt.lineTo(radius, height);
+
+    //左下角圆弧，弧度从1/2PI到PI
+    cxt.arc(radius, height - radius, radius, Math.PI / 2, Math.PI);
+
+    //矩形左边线
+    cxt.lineTo(0, radius);
+
+    //左上角圆弧，弧度从PI到3/2PI
+    cxt.arc(radius, radius, radius, Math.PI, (Math.PI * 3) / 2);
+
+    //上边线
+    cxt.lineTo(width - radius, 0);
+
+    //右上角圆弧
+    cxt.arc(width - radius, radius, radius, (Math.PI * 3) / 2, Math.PI * 2);
+
+    //右边线
+    cxt.lineTo(width, height - radius);
+    cxt.closePath();
   }
 }
 

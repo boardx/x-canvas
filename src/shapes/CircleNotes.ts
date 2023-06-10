@@ -18,8 +18,8 @@ export const circleNotesDefaultValues: Partial<TClassProperties<CircleNotes>> = 
   maxHeight: 99.5,
   noteType: 'circle',
   padding: 30,
-  radius: 69
-
+  radius: 69,
+  emoj: [0, 0, 0, 0, 0],
 };
 
 /**
@@ -57,7 +57,11 @@ export class CircleNotes extends Textbox {
 
   declare relationship: object[];
 
-  public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'verticalAlign', 'lines', '_id', 'zIndex', 'relationship'];
+  declare emoj: object[];
+
+  declare userEmoji: object[];
+
+  public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'verticalAlign', 'lines', '_id', 'zIndex', 'relationship', 'emoj', 'userEmoji'];
   /**
    * Minimum calculated width of a textbox, in pixels.
    * fixed to 2 so that an empty textbox cannot go to 0
@@ -636,6 +640,26 @@ export class CircleNotes extends Textbox {
       0
     );
   }
+
+  _render(ctx) {
+    const path: any = this.path;
+
+    path && !path.isNotVisible() && path._render(ctx);
+    this._setTextStyles(ctx);
+    this._renderTextLinesBackground(ctx);
+    this._renderTextDecoration(ctx, 'underline');
+    this._renderText(ctx);
+    this._renderTextDecoration(ctx, 'overline');
+    this._renderTextDecoration(ctx, 'linethrough');
+
+    const isEmojiExist = !(
+      this.emoji === undefined || this.emoji.join() === '0,0,0,0,0'
+    );
+    if (isEmojiExist) {
+      this.renderEmoji(ctx);
+    }
+  }
+
   renderEmoji(ctx) {
     if (this.emoji === undefined) {
       return;
@@ -661,8 +685,8 @@ export class CircleNotes extends Textbox {
 
     if (emojiList.length === 0) return;
 
-    const x = this.width / 2 - width;
-    const y = this.height / 2 - 18;
+    const x = this.width / 2 - width + this.padding / 2;
+    const y = this.height / 2 - 18 + this.padding / 2;
     ctx.font = '10px Inter ';
     ctx.lineJoin = 'round';
     ctx.save();
@@ -679,14 +703,14 @@ export class CircleNotes extends Textbox {
     if (isEmojiThumbExist) {
       let modifier = 0;
       for (let i = 0; i < imageListArray.length; i++) {
-        const imageX = this.width / 2 - 33.6 + modifier + 2;
-        const imageY = this.height / 2 - 15;
+        const imageX = this.width / 2 - 33.6 + modifier + 2 + this.padding / 2;
+        const imageY = this.height / 2 - 15 + this.padding / 2;
         const imageW = 10;
         const imageH = 10;
         ctx.drawImage(imageListArray[i], imageX, imageY, imageW, imageH);
         ctx.fillText(
           emojiList[i].toString(),
-          this.width / 2 - 20.6 + modifier + 1,
+          this.width / 2 - 20.6 + modifier + 1 + this.padding / 2,
           y + 12
         );
         modifier -= 23.6;
@@ -720,6 +744,34 @@ export class CircleNotes extends Textbox {
       this._renderTextStroke(ctx);
     }
   };
+
+  drawRoundRectPath(cxt, width, height, radius) {
+    cxt.beginPath(0);
+    //从右下角顺时针绘制，弧度从0到1/2PI
+    cxt.arc(width - radius, height - radius, radius, 0, Math.PI / 2);
+
+    //矩形下边线
+    cxt.lineTo(radius, height);
+
+    //左下角圆弧，弧度从1/2PI到PI
+    cxt.arc(radius, height - radius, radius, Math.PI / 2, Math.PI);
+
+    //矩形左边线
+    cxt.lineTo(0, radius);
+
+    //左上角圆弧，弧度从PI到3/2PI
+    cxt.arc(radius, radius, radius, Math.PI, (Math.PI * 3) / 2);
+
+    //上边线
+    cxt.lineTo(width - radius, 0);
+
+    //右上角圆弧
+    cxt.arc(width - radius, radius, radius, (Math.PI * 3) / 2, Math.PI * 2);
+
+    //右边线
+    cxt.lineTo(width, height - radius);
+    cxt.closePath();
+  }
 }
 
 classRegistry.setClass(CircleNotes);
