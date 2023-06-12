@@ -161,7 +161,7 @@ export class Arrow extends Line {
 
             this.canvas.setActiveObject(hoverTarget);
             const minPoint = this.calcDistanceToTarget({ x, y }, hoverTarget);
-            hoverTarget.__corner = minPoint.dot;
+            //hoverTarget.__corner = minPoint.dot;
 
             target.setConnectorObj(hoverTarget, minPoint, false, true);
             // target.set('x1', minPoint.x).set('y1', minPoint.y);
@@ -215,7 +215,7 @@ export class Arrow extends Line {
 
             this.canvas.setActiveObject(hoverTarget);
             const minPoint = this.calcDistanceToTarget({ x, y }, hoverTarget);
-            hoverTarget.__corner = minPoint.dot;
+            //hoverTarget.__corner = minPoint.dot;
 
             target.setConnectorObj(hoverTarget, minPoint, false, false);
             // target.set('x2', minPoint.x).set('y2', minPoint.y);
@@ -275,7 +275,7 @@ export class Arrow extends Line {
 
             this.canvas.setActiveObject(hoverTarget);
             const minPoint = this.calcDistanceToTarget({ x, y }, hoverTarget);
-            hoverTarget.__corner = minPoint.dot;
+            //hoverTarget.__corner = minPoint.dot;
 
             target.setConnectorObj(hoverTarget, minPoint, false, false);
             // target.set('x2', minPoint.x).set('y2', minPoint.y);
