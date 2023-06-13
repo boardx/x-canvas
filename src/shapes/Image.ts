@@ -51,6 +51,7 @@ export const imageDefaultValues: Partial<UniqueImageProps> &
   cropX: 0,
   cropY: 0,
   imageSmoothing: true,
+  crossOrigin: 'anonymous',
 };
 
 export interface SerializedImageProps extends SerializedObjectProps {
