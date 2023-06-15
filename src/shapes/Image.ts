@@ -223,6 +223,7 @@ export class Image<
         : arg0,
       options
     );
+
   }
 
   /**
@@ -620,8 +621,8 @@ export class Image<
    * @param {LoadImageOptions} [options] Options object
    */
   setSrc(src: string, { crossOrigin, signal }: LoadImageOptions = {}) {
-    return loadImage(src, { crossOrigin, signal }).then((img) => {
-      typeof crossOrigin !== 'undefined' && this.set({ crossOrigin });
+    return loadImage(src, { crossOrigin: 'annonymous', signal }).then((img) => {
+      typeof crossOrigin !== 'undefined' && this.set({ crossOrigin: 'annonymous' });
       this.setElement(img);
     });
   }
@@ -941,7 +942,7 @@ export class Image<
     options: { signal: AbortSignal }
   ) {
     return Promise.all([
-      loadImage(src, { ...options, crossOrigin }),
+      loadImage(src, { ...options, crossOrigin: 'annonymous' }),
       f && enlivenObjects(f, options),
       // TODO: redundant - handled by enlivenObjectEnlivables
       rf && enlivenObjects([rf], options),
@@ -965,11 +966,17 @@ export class Image<
    * @param {LoadImageOptions} [options] Options object
    * @returns {Promise<Image>}
    */
-  static fromURL<T extends TProps<SerializedImageProps>>(
-    url: string,
-    options: T & LoadImageOptions = {}
+  static fromURL<T extends TProps<SerializedImageProps>>(fileOptions: T & LoadImageOptions = {}
   ): Promise<Image> {
-    return loadImage(url, options).then((img) => new this(img, options));
+    return new Promise(async (resolve, reject) => {
+      const url = fileOptions.previewImage ? fileOptions.previewImage : this.getFileIconURL(fileOptions.name);
+      try {
+        const loadedImg = await loadImage(url, fileOptions && fileOptions.crossOrigin);
+        resolve(new Image(loadedImg, fileOptions));
+      } catch (error) {
+        reject(error);
+      }
+    });
   }
 
   /**
