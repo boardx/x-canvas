@@ -88,6 +88,9 @@ export interface GroupOwnProps {
   layout: LayoutStrategy;
   subTargetCheck: boolean;
   interactive: boolean;
+  obj_type: string;
+  lockUniScaling: boolean;
+  zIndex: number;
 }
 
 export interface SerializedGroupProps
@@ -103,6 +106,7 @@ export const groupDefaultValues = {
   strokeWidth: 0,
   subTargetCheck: false,
   interactive: false,
+  obj_type: 'WBGroup'
 };
 
 /**
@@ -114,6 +118,10 @@ export class Group extends createCollectionMixin(
   FabricObject<GroupProps, SerializedGroupProps, GroupEvents>
 ) {
   declare obj_type: string;
+
+  declare lockUniScaling: boolean;
+
+  declare zIndex: number;
   /**
    * Specifies the **layout strategy** for instance
    * Used by `getLayoutStrategyResult` to calculate layout
