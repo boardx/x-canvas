@@ -106,7 +106,8 @@ export const groupDefaultValues = {
   strokeWidth: 0,
   subTargetCheck: false,
   interactive: false,
-  obj_type: 'WBGroup'
+  obj_type: 'WBGroup',
+  hasControls: true,
 };
 
 /**
@@ -158,6 +159,8 @@ export class Group extends createCollectionMixin(
 
   declare userId: string;
 
+  declare userNo: string;
+
   declare timestamp: Date;
 
   declare verticalAlign: string;
@@ -168,7 +171,17 @@ export class Group extends createCollectionMixin(
 
   declare icon: string;
 
-  public extendPropeties = ['subTargetCheck', 'obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'verticalAlign', 'lines', 'icon'];
+  declare _id: string;
+
+  declare selectable: boolean;
+
+  declare hobjectArr: any[];
+
+  declare subObjList: any[];
+
+  declare relationship: any[];
+
+  public extendPropeties = ['subTargetCheck', 'obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'verticalAlign', 'lines', 'icon', '_id', 'selectable', 'hobjectArr', 'subObjList', 'relationship', 'userNo'];
 
   /**
    * Used internally to optimize performance

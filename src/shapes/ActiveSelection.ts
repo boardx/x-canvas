@@ -27,6 +27,7 @@ export class ActiveSelection extends Group {
     super(objects, options, objectsRelativeToGroup);
 
     this.initialize(objects, options);
+    this.resetBorderAndControls();
   }
 
   static getDefaults() {
@@ -298,6 +299,9 @@ export class ActiveSelection extends Group {
     ASObjects.sort((a, b) => b.zIndex - a.zIndex);
     return ASObjects;
   };
+  saveData(action: string, value: any) {
+    return;
+  }
 }
 
 classRegistry.setClass(ActiveSelection);

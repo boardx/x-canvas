@@ -1609,4 +1609,19 @@ export class Canvas extends SelectableCanvas {
 
     return obj[0];
   }
+  _updateGroup() {
+    return;
+  }
+  bindGroup() {
+    return;
+  }
+  _createGroup() {
+    return;
+  }
+  ungroup() {
+    return;
+  }
+  group() {
+    return;
+  }
 }
