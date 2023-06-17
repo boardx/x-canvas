@@ -28,6 +28,11 @@ export class ActiveSelection extends Group {
 
     this.initialize(objects, options);
     this.resetBorderAndControls();
+    this.hasBorders = true;
+    this.hasControls = true;
+    if (this._objects && this._objects.length > 0) {
+      this.controls = createPathDefaultControls();
+    }
   }
 
   static getDefaults() {
@@ -302,6 +307,7 @@ export class ActiveSelection extends Group {
   saveData(action: string, value: any) {
     return;
   }
+
 }
 
 classRegistry.setClass(ActiveSelection);
