@@ -108,6 +108,7 @@ export const groupDefaultValues = {
   interactive: false,
   obj_type: 'WBGroup',
   hasControls: true,
+  cornerStyle: 'circle',
 };
 
 /**
@@ -242,6 +243,20 @@ export class Group extends createCollectionMixin(
       options,
       objectsRelativeToGroup,
     });
+    this.setControlVisible('tr', true);
+    this.setControlVisible('br', true);
+    this.setControlVisible('bl', true);
+    this.setControlVisible('ml', false);
+    this.setControlVisible('mr', false);
+    this.setControlVisible('mt', false);
+    this.setControlVisible('mb', false);
+    this.setControlVisible('mra', false);
+    this.setControlVisible('mla', false);
+    this.setControlVisible('mta', false);
+    this.setControlVisible('mba', false);
+    this.setControlVisible('tl', true);
+    this.setControlVisible('mtr', false);
+    this.setControlVisible('mtr2', false);
   }
 
   /**
