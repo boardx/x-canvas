@@ -17,8 +17,8 @@ export const rectNotesDefaultValues: Partial<TClassProperties<RectNotes>> = {
   height: 138,
   maxHeight: 138,
   emoj: [0, 0, 0, 0, 0],
-
-
+  originX: 'center',
+  originY: 'center',
 };
 
 /**
