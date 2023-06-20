@@ -2,13 +2,10 @@ import type { ControlRenderingStyleOverride } from '../controls/controlRendering
 import { classRegistry } from '../ClassRegistry';
 import { Group } from './Group';
 import type { FabricObject } from './Object/FabricObject';
-import { ObjectEvents } from '../EventTypeDefs';
-import { FabricObjectProps, SerializedObjectProps } from './Object/types';
-import { createPathDefaultControls } from '../controls/commonControls';
 
 export class ActiveSelection extends Group {
   declare _objects: FabricObject[];
-  declare locked: boolean;
+
   /**
    * controls how selected objects are added during a multiselection event
    * - `canvas-stacking` adds the selected object to the active selection while respecting canvas object stacking order
@@ -16,8 +13,11 @@ export class ActiveSelection extends Group {
    * meaning that the stack is ordered by the order in which objects were selected
    * @default `canvas-stacking`
    */
+  // TODO FIX THIS WITH THE DEFAULTS LOGIC
   multiSelectionStacking: 'canvas-stacking' | 'selection-order' =
     'canvas-stacking';
+
+  static type = 'ActiveSelection';
 
   constructor(
     objects?: FabricObject[],
@@ -25,26 +25,9 @@ export class ActiveSelection extends Group {
     objectsRelativeToGroup?: boolean
   ) {
     super(objects, options, objectsRelativeToGroup);
-
-    this.initialize(objects, options);
-    this.resetBorderAndControls();
-    this.hasBorders = true;
-    this.hasControls = true;
-    if (this._objects && this._objects.length > 0) {
-      this.controls = createPathDefaultControls();
-    }
+    this.setCoords();
   }
 
-  static getDefaults() {
-    return {
-      ...super.getDefaults(),
-      controls: createPathDefaultControls(),
-    };
-  }
-
-  initialize(objects: FabricObject<Partial<FabricObjectProps>, SerializedObjectProps, ObjectEvents>[] | undefined, options: any) {
-    return true;
-  }
   /**
    * @private
    */
@@ -65,7 +48,6 @@ export class ActiveSelection extends Group {
    * @param targets object to add to selection
    */
   multiSelectAdd(...targets: FabricObject[]) {
-    console.log('this trigger  multiSelectAdd')
     if (this.multiSelectionStacking === 'selection-order') {
       this.add(...targets);
     } else {
@@ -90,7 +72,6 @@ export class ActiveSelection extends Group {
    * @returns {boolean} true if object entered group
    */
   enterGroup(object: FabricObject, removeParentTransform?: boolean) {
-    console.log('this trigger  enterGroup')
     if (object.group) {
       //  save ref to group for later in order to return to it
       const parent = object.group;
@@ -108,7 +89,6 @@ export class ActiveSelection extends Group {
    * @param {boolean} [removeParentTransform] true if object should exit group without applying group's transform to it
    */
   exitGroup(object: FabricObject, removeParentTransform?: boolean) {
-    console.log('this trigger  exitGroup')
     this._exitGroup(object, removeParentTransform);
     const parent = object.__owningGroup;
     if (parent) {
@@ -124,12 +104,9 @@ export class ActiveSelection extends Group {
    * @param {FabricObject[]} targets
    */
   _onAfterObjectsChange(type: 'added' | 'removed', targets: FabricObject[]) {
-    console.log('this trigger _onAfterObjectsChange')
     super._onAfterObjectsChange(type, targets);
     const groups: Group[] = [];
-    console.log('targets---', targets)
     targets.forEach((object) => {
-      console.log('object---', object)
       object.group &&
         !groups.includes(object.group) &&
         groups.push(object.group);
@@ -141,7 +118,6 @@ export class ActiveSelection extends Group {
       });
     } else {
       //  mark groups as dirty
-      console.log('group---', groups)
       groups.forEach((group) => {
         group._set('dirty', true);
       });
@@ -154,7 +130,6 @@ export class ActiveSelection extends Group {
    * @return {Boolean} [cancel]
    */
   onDeselect() {
-    console.log('this trigger onDeselect')
     this.removeAll();
     return false;
   }
@@ -202,7 +177,7 @@ export class ActiveSelection extends Group {
     ctx.globalAlpha = this.isMoving ? this.borderOpacityWhenMoving : 1;
     super._renderControls(ctx, styleOverride);
     const options = {
-      //hasControls: true,
+      hasControls: false,
       ...childrenOverride,
       forActiveSelection: true,
     };
@@ -211,113 +186,6 @@ export class ActiveSelection extends Group {
     }
     ctx.restore();
   }
-  /*boardx custom function*/
-  getContextMenuList() {
-    let menuList;
-    if (this.locked) {
-      menuList = ['Group'];
-    } else {
-      menuList = [
-        'Bring to front',
-        'Send to back',
-        'Group',
-        'Duplicate',
-        'Copy',
-        'Paste',
-        'Cut',
-        'Delete',
-      ];
-    }
-    if (this._objects.length > 1) {
-      if (this.locked) {
-        menuList.push('Unlock All');
-      } else {
-        menuList.push('Lock All');
-      }
-    } else if (this.locked) {
-      menuList.push('Unlock');
-    } else {
-      menuList.push('Lock');
-    }
-
-    return menuList;
-  }
-  _updateObjectsCoords(center: any) {
-    console.log('this trigger _updateObjectsCoords')
-    const _center = center || this.getCenterPoint();
-    for (let i = this._objects.length; i--;) {
-      this._updateObjectCoords(this._objects[i], _center);
-    }
-  }
-  _updateObjectCoords(object: any, center: any) {
-    console.log('this trigger  _updateObjectCoords')
-    let objectLeft = object.left - center.x;
-    let objectTop = object.top - center.y;
-    const skipControls = true;
-    if (Math.abs(objectLeft) < 0.1) objectLeft = 0.1;
-    if (Math.abs(objectTop) < 0.1) objectTop = 0.1;
-    object.set({
-      left: objectLeft,
-      top: objectTop,
-    });
-
-    object.group = this;
-    object.setCoords(skipControls);
-  }
-
-  sendObjToBack() {
-    return;
-  };
-  bringObjToFront() {
-    return;
-  };
-
-  saveUpdatedzIndex(ASObjects: any, newZindexArr: any, isTrue: boolean) {
-    return;
-  }
-
-  resetBorderAndControls() {
-    if (this && this._objects) {
-      this.setControlVisible('mtr', false);
-      this.setControlVisible('mtr2', false);
-      if (this._objects.length > 0) {
-        this.setControlVisible('tl', true);
-        this.setControlVisible('tr', true);
-        this.setControlVisible('br', true);
-        this.setControlVisible('bl', true);
-        this.hasBorders = true;
-      } else {
-        this.setControlVisible('tl', false);
-        this.setControlVisible('tr', false);
-        this.setControlVisible('br', false);
-        this.setControlVisible('bl', false);
-        this.hasBorders = true;
-      }
-      this.setControlVisible('ml', false);
-      this.setControlVisible('mr', false);
-      this.setControlVisible('mt', false);
-      this.setControlVisible('mb', false);
-      this.setControlVisible('mla', false);
-      this.setControlVisible('mra', false);
-      this.setControlVisible('mta', false);
-      this.setControlVisible('mba', false);
-
-    }
-  };
-
-  sortActiveSelectionObjs() {
-
-    const ASObjects = [];
-    for (let i = 0; i < this._objects.length; i++) {
-      if (this._objects[i]._id) ASObjects.push(this._objects[i]);
-    }
-    ASObjects.sort((a, b) => b.zIndex - a.zIndex);
-    return ASObjects;
-  };
-  saveData(action: string, value: any) {
-    return;
-  }
-
 }
 
 classRegistry.setClass(ActiveSelection);

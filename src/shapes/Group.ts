@@ -26,7 +26,6 @@ import {
   SerializedObjectProps,
   TProps,
 } from './Object/types';
-import { createPathDefaultControls } from '../controls/commonControls';
 
 export type LayoutContextType =
   | 'initialization'
@@ -88,9 +87,6 @@ export interface GroupOwnProps {
   layout: LayoutStrategy;
   subTargetCheck: boolean;
   interactive: boolean;
-  obj_type: string;
-  lockUniScaling: boolean;
-  zIndex: number;
 }
 
 export interface SerializedGroupProps
@@ -107,9 +103,6 @@ export const groupDefaultValues = {
   subTargetCheck: false,
   interactive: false,
   obj_type: 'WBGroup',
-  hasControls: true,
-  cornerStyle: 'circle',
-  objectCaching: false
 };
 
 /**
@@ -120,11 +113,6 @@ export const groupDefaultValues = {
 export class Group extends createCollectionMixin(
   FabricObject<GroupProps, SerializedGroupProps, GroupEvents>
 ) {
-  declare obj_type: string;
-
-  declare lockUniScaling: boolean;
-
-  declare zIndex: number;
   /**
    * Specifies the **layout strategy** for instance
    * Used by `getLayoutStrategyResult` to calculate layout
@@ -149,7 +137,6 @@ export class Group extends createCollectionMixin(
    * @type boolean
    */
   declare interactive: boolean;
-
   /* boardx cusotm function */
   declare subTargetCheck: boolean;
 
@@ -188,7 +175,6 @@ export class Group extends createCollectionMixin(
   declare objectCaching: boolean;
 
   public extendPropeties = ['subTargetCheck', 'obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'verticalAlign', 'lines', 'icon', '_id', 'selectable', 'objectArr', 'subObjList', 'relationship', 'userNo', 'panelObj', 'objectCaching'];
-
   /**
    * Used internally to optimize performance
    * Once an object is selected, instance is rendered without the selected object.
@@ -210,7 +196,6 @@ export class Group extends createCollectionMixin(
   static getDefaults(): Record<string, any> {
     return {
       ...super.getDefaults(),
-      controls: createPathDefaultControls(),
       ...Group.ownDefaults,
     };
   }
@@ -248,20 +233,6 @@ export class Group extends createCollectionMixin(
       options,
       objectsRelativeToGroup,
     });
-    this.setControlVisible('tr', true);
-    this.setControlVisible('br', true);
-    this.setControlVisible('bl', true);
-    this.setControlVisible('ml', false);
-    this.setControlVisible('mr', false);
-    this.setControlVisible('mt', false);
-    this.setControlVisible('mb', false);
-    this.setControlVisible('mra', false);
-    this.setControlVisible('mla', false);
-    this.setControlVisible('mta', false);
-    this.setControlVisible('mba', false);
-    this.setControlVisible('tl', true);
-    this.setControlVisible('mtr', false);
-    this.setControlVisible('mtr2', false);
   }
 
   /**
@@ -535,7 +506,7 @@ export class Group extends createCollectionMixin(
           object.calcTransformMatrix()
         )
       );
-      //object.setCoords();
+      object.setCoords();
     }
     this._watchObject(false, object);
     const index =
@@ -1124,23 +1095,6 @@ export class Group extends createCollectionMixin(
       visibility = this.visible ? '' : ' visibility: hidden;';
     return [opacity, this.getSvgFilter(), visibility].join('');
   }
-
-  /**
-   * Returns svg clipPath representation of an instance
-   * @param {Function} [reviver] Method for further parsing of svg representation.
-   * @return {String} svg representation of an instance
-   */
-  toClipPathSVG(reviver?: TSVGReviver) {
-    const svgString = [];
-    const bg = this._createSVGBgRect(reviver);
-    bg && svgString.push('\t', bg);
-    for (let i = 0; i < this._objects.length; i++) {
-      svgString.push('\t', this._objects[i].toClipPathSVG(reviver));
-    }
-    return this._createBaseClipPathSVGMarkup(svgString, {
-      reviver,
-    });
-  }
   /**boardx cusotm function */
   getWidgetMenuList() {
     if (this.locked) {
@@ -1253,6 +1207,23 @@ export class Group extends createCollectionMixin(
   }
 
   /**boardx cusotm function */
+  /**
+   * Returns svg clipPath representation of an instance
+   * @param {Function} [reviver] Method for further parsing of svg representation.
+   * @return {String} svg representation of an instance
+   */
+  toClipPathSVG(reviver?: TSVGReviver) {
+    const svgString = [];
+    const bg = this._createSVGBgRect(reviver);
+    bg && svgString.push('\t', bg);
+    for (let i = 0; i < this._objects.length; i++) {
+      svgString.push('\t', this._objects[i].toClipPathSVG(reviver));
+    }
+    return this._createBaseClipPathSVGMarkup(svgString, {
+      reviver,
+    });
+  }
+
   /**
    * @todo support loading from svg
    * @private
