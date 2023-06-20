@@ -52,7 +52,7 @@ export const DefaultCanvasProperties = {
   freeDrawingCursor: 'crosshair',
   notAllowedCursor: 'not-allowed',
   containerClass: 'canvas-container',
-  perPixelTargetFind: false,
+  perPixelTargetFind: true,
   targetFindTolerance: 0,
   skipTargetFind: false,
   preserveObjectStacking: false,
