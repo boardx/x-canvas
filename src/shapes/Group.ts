@@ -109,6 +109,7 @@ export const groupDefaultValues = {
   obj_type: 'WBGroup',
   hasControls: true,
   cornerStyle: 'circle',
+  objectCaching: false
 };
 
 /**
@@ -176,13 +177,17 @@ export class Group extends createCollectionMixin(
 
   declare selectable: boolean;
 
-  declare hobjectArr: any[];
+  declare objectArr: any[];
 
   declare subObjList: any[];
 
   declare relationship: any[];
 
-  public extendPropeties = ['subTargetCheck', 'obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'verticalAlign', 'lines', 'icon', '_id', 'selectable', 'hobjectArr', 'subObjList', 'relationship', 'userNo'];
+  declare panelObj: boolean;
+
+  declare objectCaching: boolean;
+
+  public extendPropeties = ['subTargetCheck', 'obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'verticalAlign', 'lines', 'icon', '_id', 'selectable', 'objectArr', 'subObjList', 'relationship', 'userNo', 'panelObj', 'objectCaching'];
 
   /**
    * Used internally to optimize performance

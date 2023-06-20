@@ -43,7 +43,7 @@ export class ActiveSelection extends Group {
   }
 
   initialize(objects: FabricObject<Partial<FabricObjectProps>, SerializedObjectProps, ObjectEvents>[] | undefined, options: any) {
-    this.setCoords();
+    return true;
   }
   /**
    * @private
@@ -65,6 +65,7 @@ export class ActiveSelection extends Group {
    * @param targets object to add to selection
    */
   multiSelectAdd(...targets: FabricObject[]) {
+    console.log('this trigger  multiSelectAdd')
     if (this.multiSelectionStacking === 'selection-order') {
       this.add(...targets);
     } else {
@@ -89,6 +90,7 @@ export class ActiveSelection extends Group {
    * @returns {boolean} true if object entered group
    */
   enterGroup(object: FabricObject, removeParentTransform?: boolean) {
+    console.log('this trigger  enterGroup')
     if (object.group) {
       //  save ref to group for later in order to return to it
       const parent = object.group;
@@ -106,6 +108,7 @@ export class ActiveSelection extends Group {
    * @param {boolean} [removeParentTransform] true if object should exit group without applying group's transform to it
    */
   exitGroup(object: FabricObject, removeParentTransform?: boolean) {
+    console.log('this trigger  exitGroup')
     this._exitGroup(object, removeParentTransform);
     const parent = object.__owningGroup;
     if (parent) {
@@ -121,9 +124,12 @@ export class ActiveSelection extends Group {
    * @param {FabricObject[]} targets
    */
   _onAfterObjectsChange(type: 'added' | 'removed', targets: FabricObject[]) {
+    console.log('this trigger _onAfterObjectsChange')
     super._onAfterObjectsChange(type, targets);
     const groups: Group[] = [];
+    console.log('targets---', targets)
     targets.forEach((object) => {
+      console.log('object---', object)
       object.group &&
         !groups.includes(object.group) &&
         groups.push(object.group);
@@ -135,6 +141,7 @@ export class ActiveSelection extends Group {
       });
     } else {
       //  mark groups as dirty
+      console.log('group---', groups)
       groups.forEach((group) => {
         group._set('dirty', true);
       });
@@ -147,6 +154,7 @@ export class ActiveSelection extends Group {
    * @return {Boolean} [cancel]
    */
   onDeselect() {
+    console.log('this trigger onDeselect')
     this.removeAll();
     return false;
   }
@@ -194,7 +202,7 @@ export class ActiveSelection extends Group {
     ctx.globalAlpha = this.isMoving ? this.borderOpacityWhenMoving : 1;
     super._renderControls(ctx, styleOverride);
     const options = {
-      //hasControls: false,
+      //hasControls: true,
       ...childrenOverride,
       forActiveSelection: true,
     };
@@ -235,12 +243,14 @@ export class ActiveSelection extends Group {
     return menuList;
   }
   _updateObjectsCoords(center: any) {
+    console.log('this trigger _updateObjectsCoords')
     const _center = center || this.getCenterPoint();
     for (let i = this._objects.length; i--;) {
       this._updateObjectCoords(this._objects[i], _center);
     }
   }
   _updateObjectCoords(object: any, center: any) {
+    console.log('this trigger  _updateObjectCoords')
     let objectLeft = object.left - center.x;
     let objectTop = object.top - center.y;
     const skipControls = true;
