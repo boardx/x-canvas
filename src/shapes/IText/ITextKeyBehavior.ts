@@ -105,6 +105,12 @@ export abstract class ITextKeyBehavior<
       this._clickHandlerInitialized = true;
     }
   }
+  /**
+     * Override this method to customize cursor behavior on textbox blur
+     */
+  blur() {
+    this.abortCursorAnimation();
+  }
 
   onClick() {
     this.hiddenTextarea && this.hiddenTextarea.focus();
@@ -193,8 +199,8 @@ export abstract class ITextKeyBehavior<
     }
     // decisions about style changes.
     const nextText = this._splitTextIntoLines(
-        this.hiddenTextarea.value
-      ).graphemeText,
+      this.hiddenTextarea.value
+    ).graphemeText,
       charCount = this._text.length,
       nextCharCount = nextText.length,
       selectionStart = this.selectionStart,
