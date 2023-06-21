@@ -14,6 +14,8 @@ import type { ObjectEvents } from '../EventTypeDefs';
 export const rectDefaultValues: Partial<TClassProperties<Rect>> = {
   rx: 0,
   ry: 0,
+  originX: 'center',
+  originY: 'center',
 };
 
 interface UniqueRectProps {
