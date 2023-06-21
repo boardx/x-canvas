@@ -56,6 +56,8 @@ export class Rect<
 
   declare state: any;
 
+  declare actionType: any;
+
   static cacheProperties = [...cacheProperties, ...RECT_PROPS];
 
   static ownDefaults: Record<string, any> = rectDefaultValues;
