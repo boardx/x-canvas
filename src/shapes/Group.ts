@@ -11,10 +11,12 @@ import {
   multiplyTransformMatrices,
   transformPoint,
 } from '../util/misc/matrix';
+
 import {
   enlivenObjectEnlivables,
   enlivenObjects,
 } from '../util/misc/objectEnlive';
+
 import { applyTransformToObject } from '../util/misc/objectTransforms';
 import { degreesToRadians } from '../util/misc/radiansDegreesConversion';
 import { sin } from '../util/misc/sin';
@@ -95,7 +97,10 @@ export interface SerializedGroupProps
   objects: SerializedObjectProps[];
 }
 
-export interface GroupProps extends FabricObjectProps, GroupOwnProps { }
+export interface GroupProps extends FabricObjectProps, GroupOwnProps {
+  obj_type: string;
+  lockUniScaling: boolean;
+}
 
 export const groupDefaultValues = {
   layout: 'fit-content',
@@ -174,7 +179,9 @@ export class Group extends createCollectionMixin(
 
   declare objectCaching: boolean;
 
-  public extendPropeties = ['subTargetCheck', 'obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'verticalAlign', 'lines', 'icon', '_id', 'selectable', 'objectArr', 'subObjList', 'relationship', 'userNo', 'panelObj', 'objectCaching'];
+  declare lockUniScaling: boolean;
+
+  public extendPropeties = ['subTargetCheck', 'obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'verticalAlign', 'lines', 'icon', '_id', 'selectable', 'objectArr', 'subObjList', 'relationship', 'userNo', 'panelObj', 'objectCaching', 'lockUniScaling'];
   /**
    * Used internally to optimize performance
    * Once an object is selected, instance is rendered without the selected object.
