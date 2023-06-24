@@ -34,6 +34,7 @@ import {
   textDefaultValues,
   textLayoutProperties,
 } from './constants';
+import { createTextboxDefaultControls } from '../../controls/commonControls';
 
 let measuringContext: CanvasRenderingContext2D | null;
 
@@ -481,7 +482,11 @@ export class Text<
   static ownDefaults: Record<string, any> = textDefaultValues;
 
   static getDefaults() {
-    return { ...super.getDefaults(), ...Text.ownDefaults };
+    return {
+      ...super.getDefaults(),
+      controls: createTextboxDefaultControls(),
+      ...Text.ownDefaults
+    };
   }
 
   constructor(text: string, options: any) {

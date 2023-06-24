@@ -198,7 +198,7 @@ export const createResizeControlsForText = () => ({
 });
 export const createTextboxDefaultControls = () => ({
   //...createObjectDefaultControls(),
-  //...createResizeControlsForText(),
+  ...createResizeControlsForText(),
 });
 export const createRectNotesDefaultControls = () => ({
   ...createObjectDefaultNoRotateControls(),
