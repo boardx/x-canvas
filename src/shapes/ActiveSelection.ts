@@ -178,6 +178,7 @@ export class ActiveSelection extends Group {
     super._renderControls(ctx, styleOverride);
     const options = {
       hasControls: false,
+      hasBorders: false,
       ...childrenOverride,
       forActiveSelection: true,
     };
