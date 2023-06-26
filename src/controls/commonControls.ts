@@ -196,13 +196,15 @@ export const createResizeControlsForText = () => ({
     actionName: 'resizing',
   }),
 });
+
+
 export const createTextboxDefaultControls = () => ({
   //...createObjectDefaultControls(),
   ...createResizeControlsForText(),
 });
 export const createRectNotesDefaultControls = () => ({
   ...createObjectDefaultNoRotateControls(),
-  ...createResizeControls(),
+  //...createResizeControls(),
 });
 export const createShapeNotesDefaultControls = () => ({
   ...createObjectDefaultNoRotateControls(),
