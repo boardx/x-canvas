@@ -694,6 +694,7 @@ export class IText<
     return [
       'drawNote',
       'more',
+      'textToMultipleStickyNotes',
       'switchNoteType',
       'fontSize',
       'changeFont',
@@ -706,6 +707,7 @@ export class IText<
       'applyFormat',
       'objectLock',
       'delete',
+      'aiassist',
     ];
   }
 
