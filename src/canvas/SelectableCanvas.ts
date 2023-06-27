@@ -44,7 +44,7 @@ export const DefaultCanvasProperties = {
   selectionColor: 'rgba(179, 205, 253, 0.5)', // blue
   selectionDashArray: [],
   selectionBorderColor: '#31A4F5',
-  selectionLineWidth: 2,
+  selectionLineWidth: 0,
   selectionFullyContained: false,
   hoverCursor: 'move',
   moveCursor: 'move',
