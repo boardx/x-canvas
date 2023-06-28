@@ -101,7 +101,9 @@ export class Arrow extends Line {
 
   declare timestamp: number;
 
-  public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'connectorShape', '_id', 'subType', 'perPixelTargetFind', 'userNo', 'connectorEnd', 'connectorStart', 'connectorType', 'tips', 'connectorStyle', 'timestamp'];
+  declare moving: boolean;
+
+  public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'connectorShape', '_id', 'subType', 'perPixelTargetFind', 'userNo', 'connectorEnd', 'connectorStart', 'connectorType', 'tips', 'connectorStyle', 'timestamp', 'moving'];
 
   static cacheProperties = [...cacheProperties, ...coordProps];
 
@@ -139,6 +141,7 @@ export class Arrow extends Line {
         cursorStyle: 'crosshair',
         //@ts-ignore
         mouseDownHandler: (eventData, transformData) => {
+          console.log('mousedownProcess-----------------start')
           this.mousedownProcess(transformData, eventData, true);
         },
         positionHandler: (dim, finalMatrix, fabricObject) => {
@@ -152,20 +155,20 @@ export class Arrow extends Line {
           if (hoverTarget && hoverTarget.obj_type === 'WBArrow') return;
 
           if (hoverTarget) {
-            if (
-              target.connectorEnd &&
-              hoverTarget._id === target.connectorEnd._id
-            )
-              return;
+            // if (
+            //   target.connectorEnd &&
+            //   hoverTarget._id === target.connectorEnd._id
+            // )
+            //   return;
 
-            this.canvas.setActiveObject(hoverTarget);
+            // this.canvas.setActiveObject(hoverTarget);
             const minPoint = this.calcDistanceToTarget({ x, y }, hoverTarget);
             hoverTarget.__corner = minPoint.dot;
 
             target.setConnectorObj(hoverTarget, minPoint, false, true);
             // target.set('x1', minPoint.x).set('y1', minPoint.y);
           } else {
-            //this.canvas.discardActiveObject();
+            this.canvas.discardActiveObject();
             const oldConnObj =
               target.connectorStart && target.connectorStart._id
                 ? this.canvas.findById(target.connectorStart._id)
@@ -175,7 +178,7 @@ export class Arrow extends Line {
               oldConnObj.lines = oldConnObj.lines.filter(
                 item => item._id !== target._id
               );
-
+            this.canvas.setActiveObject(target);
             target.set('x1', x + 5).set('y1', y + 5);
             target.connectorStart = null;
           }
@@ -192,6 +195,7 @@ export class Arrow extends Line {
         cursorStyle: 'crosshair',
         //@ts-ignore
         mouseDownHandler: (eventData, transformData) => {
+          console.log('mousedownProcess----------------end')
           this.mousedownProcess(transformData, eventData, false);
         },
         positionHandler: (dim, finalMatrix, fabricObject) => {
@@ -206,20 +210,19 @@ export class Arrow extends Line {
           if (hoverTarget && hoverTarget.obj_type === 'WBArrow') return;
 
           if (hoverTarget) {
-            if (
-              target.connectorStart &&
-              hoverTarget._id === target.connectorStart._id
-            )
-              return;
+            // if (
+            //   target.connectorStart &&
+            //   hoverTarget._id === target.connectorStart._id
+            // )
+            //   return;
 
-            this.canvas.setActiveObject(hoverTarget);
+            //this.canvas.setActiveObject(hoverTarget);
             const minPoint = this.calcDistanceToTarget({ x, y }, hoverTarget);
             hoverTarget.__corner = minPoint.dot;
 
             target.setConnectorObj(hoverTarget, minPoint, false, false);
           } else {
-            //this.canvas.discardActiveObject();
-
+            console.log('no hoverTarget')
             const oldConnObj =
               target.connectorEnd && target.connectorEnd._id
                 ? this.canvas.findById(target.connectorEnd._id)
@@ -229,7 +232,6 @@ export class Arrow extends Line {
               oldConnObj.lines = oldConnObj.lines.filter(
                 item => item._id !== target._id
               );
-
             target.set('x2', x - 5).set('y2', y - 5);
             target.connectorEnd = null;
           }
@@ -251,6 +253,7 @@ export class Arrow extends Line {
 
         //@ts-ignore
         mouseDownHandler: (eventData, transformData) => {
+          console.log('mousedownProcess-----------------foreach')
           this.mousedownProcess(transformData, eventData, false);
         },
         positionHandler: (dim, finalMatrix, fabricObject) => {
@@ -258,6 +261,7 @@ export class Arrow extends Line {
         },
         actionHandler: (eventData, transform, x, y) => {
           const target: any = transform.target;
+          console.log('fabric canvas arrow foreach --modify', target)
           if (target.locked) return;
 
           const hoverTarget = this.canvas.findTarget(eventData);
@@ -265,13 +269,13 @@ export class Arrow extends Line {
           if (hoverTarget && hoverTarget.obj_type === 'WBArrow') return;
 
           if (hoverTarget) {
-            if (
-              target.connectorStart &&
-              hoverTarget._id === target.connectorStart._id
-            )
-              return;
+            // if (
+            //   target.connectorStart &&
+            //   hoverTarget._id === target.connectorStart._id
+            // )
+            //   return;
 
-            this.canvas.setActiveObject(hoverTarget);
+            // this.canvas.setActiveObject(hoverTarget);
             const minPoint = this.calcDistanceToTarget({ x, y }, hoverTarget);
             hoverTarget.__corner = minPoint.dot;
 
