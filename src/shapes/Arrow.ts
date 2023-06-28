@@ -141,7 +141,6 @@ export class Arrow extends Line {
         cursorStyle: 'crosshair',
         //@ts-ignore
         mouseDownHandler: (eventData, transformData) => {
-          console.log('mousedownProcess-----------------start')
           this.mousedownProcess(transformData, eventData, true);
         },
         positionHandler: (dim, finalMatrix, fabricObject) => {
@@ -235,7 +234,6 @@ export class Arrow extends Line {
 
         //@ts-ignore
         mouseDownHandler: (eventData, transformData) => {
-          console.log('mousedownProcess-----------------foreach')
           this.mousedownProcess(transformData, eventData, false);
         },
         positionHandler: (dim, finalMatrix, fabricObject) => {
@@ -243,7 +241,6 @@ export class Arrow extends Line {
         },
         actionHandler: (eventData, transform, x, y) => {
           const target: any = transform.target;
-          console.log('fabric canvas arrow foreach --modify', target)
           if (target.locked) return;
 
           const hoverTarget = this.canvas.findTarget(eventData);
