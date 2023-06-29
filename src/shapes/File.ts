@@ -360,9 +360,43 @@ export class WBFile<
     }
 
     if (this.name.substring(this.name.lastIndexOf('.') + 1) !== 'pdf') {
-      this.renderTitle(ctx, this.name, Util.getFileType(this.name));
+      this.renderTitle(ctx, this.name, this.getFileType(this.name));
     }
     this._renderStroke(ctx);
+  }
+
+  getFileType(name = '') {
+    let fileType = '';
+    switch (name.substring(name.lastIndexOf('.') + 1)) {
+      case 'doc':
+      case 'docx':
+        fileType = 'Word Document';
+        break;
+      case 'xls':
+      case 'xlsx':
+        fileType = 'Excel Document';
+        break;
+      case 'ppt':
+      case 'pptx':
+        fileType = 'PPT Document';
+        break;
+      case 'pdf':
+        fileType = 'PDF Document';
+        break;
+      case 'zip':
+        fileType = 'ZIP File';
+        break;
+      case 'mp4':
+        fileType = 'Video Document';
+        break;
+      case 'webm':
+        fileType = 'Video Document';
+        break;
+      default:
+        fileType = 'Other Document';
+        break;
+    }
+    return fileType;
   }
 
   isFileVideo(name: string) {
@@ -413,8 +447,7 @@ export class WBFile<
     this.wrapText(ctx, title, x + 15, y - 5, maxWidth - 20, 23);
 
     // url setting
-    const newurl = `${this.url.split('/')[0]}/${this.url.split('/')[1]}/${this.url.split('/')[2]
-      }`;
+    const newurl = this.url ? `${this.url.split('/')[0]}/${this.url.split('/')[1]}/${this.url.split('/')[2]}` : '';
     ctx.font = '12px Arial';
     ctx.fillStyle = 'rgba(35, 41, 48, 0.65)';
     // gray square in front of website
