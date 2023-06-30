@@ -259,10 +259,13 @@ export class InteractiveFabricObject<
       // coords[key] are sometimes used as points. Those are points to which we add
       // the property corner and touchCorner from `_calcCornerCoords`.
       // don't remove this assign for an object spread.
-      coords[key] = Object.assign(
-        position,
-        this._calcCornerCoords(control, position)
-      );
+      if (position && position.x) {
+        coords[key] = Object.assign(
+          position,
+          this._calcCornerCoords(control, position)
+        );
+      }
+
     });
 
     // debug code
