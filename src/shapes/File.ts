@@ -79,9 +79,11 @@ export class WBFile<
 
   declare lines: object[];
 
+  declare url: string;
+
   declare relationship: object[];
 
-  public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'verticalAlign', 'lines', '_id', 'zIndex', 'relationship'];
+  public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'verticalAlign', 'lines', '_id', 'zIndex', 'relationship', 'url'];
 
   declare dynamicMinWidth: number;
 
