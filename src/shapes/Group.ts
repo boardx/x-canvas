@@ -333,7 +333,8 @@ export class Group extends createCollectionMixin(
    * @param {boolean} [removeParentTransform] true if object should exit group without applying group's transform to it
    */
   _onObjectRemoved(object: FabricObject, removeParentTransform?: boolean) {
-    this.exitGroup(object, removeParentTransform);
+    //this.exitGroup(object, removeParentTransform);
+    delete object.group;
     this.fire('object:removed', { target: object });
     object.fire('removed', { target: this });
   }
