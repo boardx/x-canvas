@@ -457,14 +457,11 @@ export class WBFile<
   }
 
   changeFileImgUrl(targetSrc) {
-    const originalWidth = this.width;
-    const originalHeight = this.height;
     this.setSrc(
       targetSrc,
       () => {
-        //@ts-ignore
-        this.width = originalWidth;
-        this.height = originalHeight;
+        this.width = 320;
+        this.height = 453;
         this.dirty = true;
         if (canvas) {
           canvas.requestRenderAll();

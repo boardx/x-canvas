@@ -710,6 +710,51 @@ export class IText<
       'aiassist',
     ];
   }
+  getWidgetMenuLength() {
+    if (this.locked) return 50;
+    return 520;
+  }
+  getContextMenuList() {
+    let menuList;
+    if (this.locked) {
+      menuList = [
+        'Export board',
+        'Exporting selected area',
+        'Create Share Back',
+        'Bring forward',
+        'Bring to front',
+        'Send backward',
+        'Send to back',
+        'Copy as image',
+        'Copy As Text'
+      ];
+    } else {
+      menuList = [
+        'Export board',
+        'Exporting selected area',
+        'Create Share Back',
+        'Bring forward',
+        'Bring to front',
+        'Send backward',
+        'Send to back',
+        'Duplicate',
+        'Copy',
+        'Copy as image',
+        'Copy As Text',
+        'Paste',
+        'Cut',
+        'Edit',
+        'Delete',
+      ];
+    }
+    menuList.push('Select All');
+    if (this.locked) {
+      menuList.push('Unlock');
+    } else {
+      menuList.push('Lock');
+    }
+    return menuList;
+  }
 
   onChangedListener() {
     this.initDimensions();
