@@ -38,7 +38,7 @@ export const WBFileDefaultValues: Partial<TClassProperties<WBFile>> = {
   lockScalingFlip: true,
   noScaleCache: false,
   _wordJoiners: /[ \t\r]/,
-  splitByGrapheme: true,
+  splitByGrapheme: false,
   obj_type: 'WBFile',
   height: 200,
   maxHeight: 200,

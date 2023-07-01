@@ -12,7 +12,7 @@ export const circleNotesDefaultValues: Partial<TClassProperties<CircleNotes>> = 
   lockScalingFlip: true,
   noScaleCache: false,
   _wordJoiners: /[ \t\r]/,
-  splitByGrapheme: true,
+  splitByGrapheme: false,
   obj_type: 'WBCircleNotes',
   height: 99.5,
   maxHeight: 99.5,

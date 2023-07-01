@@ -30,7 +30,7 @@ export const ArrowDefaultValues: Partial<TClassProperties<Arrow>> = {
   lockScalingFlip: true,
   noScaleCache: false,
   _wordJoiners: /[ \t\r]/,
-  splitByGrapheme: true,
+  splitByGrapheme: false,
   obj_type: 'WBArrow',
   height: 200,
   maxHeight: 200,

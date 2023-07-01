@@ -13,7 +13,7 @@ export const textboxDefaultValues: Partial<TClassProperties<Textbox>> = {
   lockScalingFlip: true,
   noScaleCache: false,
   _wordJoiners: /[ \t\r]/,
-  splitByGrapheme: true,
+  splitByGrapheme: false,
   obj_type: 'WBTextbox',
 };
 
