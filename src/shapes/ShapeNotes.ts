@@ -13,7 +13,7 @@ export const shapeNotesDefaultValues: Partial<TClassProperties<ShapeNotes>> = {
   lockScalingFlip: true,
   noScaleCache: false,
   _wordJoiners: /[ \t\r]/,
-  splitByGrapheme: false,
+  splitByGrapheme: true,
   obj_type: 'WBShapeNotes',
   height: 138,
   maxHeight: 138,

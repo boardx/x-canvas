@@ -12,7 +12,7 @@ export const rectNotesDefaultValues: Partial<TClassProperties<RectNotes>> = {
   lockScalingFlip: true,
   noScaleCache: false,
   _wordJoiners: /[ \t\r]/,
-  splitByGrapheme: false,
+  splitByGrapheme: true,
   obj_type: 'WBRectNotes',
   height: 138,
   maxHeight: 138,

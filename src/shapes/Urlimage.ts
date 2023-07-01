@@ -38,7 +38,7 @@ export const UrlImageDefaultValues: Partial<TClassProperties<UrlImage>> = {
     lockScalingFlip: true,
     noScaleCache: false,
     _wordJoiners: /[ \t\r]/,
-    splitByGrapheme: false,
+    splitByGrapheme: true,
     obj_type: 'WBUrlImage',
     height: 200,
     maxHeight: 200,
