@@ -639,110 +639,6 @@ export class ShapeNotes extends Textbox {
     return objects;
   }
 
-  getWidgetMenuList() {
-    if (this.isDraw) {
-      return [
-        'textNote',
-        'borderLineIcon',
-        'backgroundColor',
-        'resetDraw',
-        'switchNoteType',
-        'drawOption',
-        'lineWidth',
-        'noteDrawColor', // strokeColor
-        'emojiMenu',
-        'more',
-        'objectLock',
-        'aiassist'
-      ];
-    }
-    if (this.locked) {
-      return ['objectLock'];
-    }
-    return [
-      'drawNote',
-      'more',
-      'borderLineIcon',
-      'switchNoteType',
-      'fontSize',
-      'textAlign',
-      'backgroundColor',
-      'emojiMenu',
-      'fontWeight',
-      'textBullet',
-      'objectLock',
-      'delete',
-      'aiassist'
-    ];
-  }
-  getWidgetMenuTouchList() {
-    if (this.isDraw) {
-      return ['emojiMenu', 'objectLock'];
-    }
-    if (this.locked) {
-      return ['objectLock'];
-    }
-    return [
-      'objectDelete',
-      'moreMenuStickyNote',
-      'backgroundColor',
-      'fontColor',
-      'emojiMenu',
-      'objectLock',
-      'aiassist'
-    ];
-  }
-
-  getContextMenuList() {
-    let menuList;
-    if (this.locked) {
-      menuList = [
-        'Export board',
-        'Exporting selected area',
-        'Create Share Back',
-        'Bring forward',
-        'Bring to front',
-        'Send backward',
-        'Send to back',
-        'Copy as image',
-        'Copy As Text'
-      ];
-    } else {
-      menuList = [
-        'Export board',
-        'Exporting selected area',
-        'Create Share Back',
-        'Bring forward',
-        'Bring to front',
-        'Send backward',
-        'Send to back',
-        'Duplicate',
-        'Copy',
-        'Copy as image',
-        'Copy As Text',
-        'Paste',
-        'Cut',
-        'Edit',
-        'Delete'
-      ];
-    }
-    menuList.push('Select All');
-    if (this.locked) {
-      menuList.push('Unlock');
-    } else {
-      menuList.push('Lock');
-    }
-    return menuList;
-  }
-
-  getWidgetMenuLength() {
-    if (this.locked) return 50;
-    if (this.isDraw) {
-      return 308;
-    }
-    return 420;
-  }
-
   setLockedShadow(locked) {
     if (locked) {
       this.shadow = new fabric.Shadow({
@@ -1035,6 +931,76 @@ export class ShapeNotes extends Textbox {
       textTop: this._getTopOffset(),
       lineTop: this.getHeightOfLine(0)
     };
+  }
+  getWidgetMenuList() {
+    if (this.locked) {
+      return ['objectLock'];
+    }
+    return [
+      'more',
+      'fontSize',
+      'changeFont',
+      'backgroundColor',
+      'fontColor',
+      'borderLineIcon',
+      'fontWeight',
+      'objectLock',
+      'shapeBorderColor',
+      'lineWidth',
+      'borderLineIcon',
+      'delete'
+    ];
+  }
+  getWidgetMenuLength() {
+    if (this.locked) return 50;
+    return 420;
+  }
+  getContextMenuList() {
+    let menuList;
+    if (this.locked) {
+      menuList = [
+        'Export board',
+        'Exporting selected area',
+        'Create Share Back',
+        'Bring forward',
+        'Bring to front',
+        'Send backward',
+        'Send to back',
+        'Copy as image',
+        'Copy As Text'
+      ];
+    } else {
+      menuList = [
+        'Export board',
+        'Exporting selected area',
+        'Create Share Back',
+        'Bring forward',
+        'Bring to front',
+        'Send backward',
+        'Send to back',
+        'Duplicate',
+        'Copy',
+        'Copy as image',
+        'Copy As Text',
+        'Paste',
+        'Cut',
+        'Edit',
+        'Delete'
+      ];
+    }
+    menuList.push('Select All');
+    if (this.locked) {
+      menuList.push('Unlock');
+    } else {
+      menuList.push('Lock');
+    }
+    // const notLockedPanel = this.isPanel && !this.locked;
+    // if (notLockedPanel) {
+    //   menuList.push('Switch to non-panel');
+    // } else {
+    //   menuList.push('Switch to panel');
+    // }
+    return menuList;
   }
 }
 
