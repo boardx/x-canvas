@@ -189,7 +189,17 @@ export class WBFile<
       menuList.push('borderLineIcon');
       menuList.push('fileDownload');
       const fileType = this.name.split('.').pop();
-      if (fileType == 'mp3' || fileType === 'm4a' || fileType === 'wav') {
+      if (
+        fileType.toLocaleLowerCase() == 'mp3' ||
+        fileType.toLocaleLowerCase() === 'm4a' ||
+        fileType.toLocaleLowerCase() === 'wav' ||
+        fileType.toLocaleLowerCase() === 'aac' ||
+        fileType.toLocaleLowerCase() === 'flac' ||
+        fileType.toLocaleLowerCase() === 'ogg' ||
+        fileType.toLocaleLowerCase() === 'aiff' ||
+        fileType.toLocaleLowerCase() === 'wma' ||
+        fileType.toLocaleLowerCase() === 'ape'
+      ) {
         menuList.push('audioToText');
       }
     }
