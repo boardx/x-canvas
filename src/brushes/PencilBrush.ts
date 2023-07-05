@@ -273,6 +273,12 @@ export class PencilBrush extends BaseBrush {
   _finalizeAndAddPath() {
     const ctx = this.canvas.contextTop;
     ctx.closePath();
+    const points: Point[] = [];
+    this._points.map(o => {
+      if (!isNaN(o.x)) points.push(o);
+    });
+
+    this._points = points;
     if (this.decimate) {
       this._points = this.decimatePoints(this._points, this.decimate);
     }
