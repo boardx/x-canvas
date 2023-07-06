@@ -19,7 +19,7 @@ import { StaticCanvas, TCanvasSizeOptions } from './StaticCanvas';
 import { isCollection } from '../util/types';
 import { invertTransform, transformPoint } from '../util/misc/matrix';
 import { isTransparent } from '../util/misc/isTransparent';
-import { AssertKeys, TMat2D, TOriginX, TOriginY, TSize } from '../typedefs';
+import { TMat2D, TOriginX, TOriginY, TSize } from '../typedefs';
 import { degreesToRadians } from '../util/misc/radiansDegreesConversion';
 import { getPointer, isTouchEvent } from '../util/dom_event';
 import type { IText } from '../shapes/IText/IText';
@@ -641,6 +641,7 @@ export class SelectableCanvas<
    * @private
    */
   setTargetFindTolerance(value: number) {
+    console.log('setTargetFindTolerance', value)
     value = Math.round(value);
     this.targetFindTolerance = value;
     const retina = this.getRetinaScaling();
@@ -660,6 +661,7 @@ export class SelectableCanvas<
    * @return {Boolean}
    */
   isTargetTransparent(target: FabricObject, x: number, y: number): boolean {
+    console.log('isTargetTransparent', target, x, y)
     const tolerance = this.targetFindTolerance;
     const ctx = this.pixelFindContext;
     this.clearContext(ctx);
@@ -688,6 +690,7 @@ export class SelectableCanvas<
    * @param {TPointerEvent} e Event object
    */
   _isSelectionKeyPressed(e: TPointerEvent): boolean {
+    console.log('_isSelectionKeyPressed', e)
     const sKey = this.selectionKey;
     if (!sKey) {
       return false;
@@ -708,6 +711,7 @@ export class SelectableCanvas<
     e: TPointerEvent,
     target?: FabricObject
   ): target is undefined {
+    console.log('_shouldClearSelection', e, target)
     const activeObjects = this.getActiveObjects(),
       activeObject = this._activeObject;
 
@@ -881,6 +885,7 @@ export class SelectableCanvas<
    * @param {CanvasRenderingContext2D} ctx to draw the selection on
    */
   _drawSelection(ctx: CanvasRenderingContext2D): void {
+    console.log('drawSelection');
     const { x, y, deltaX, deltaY } = this._groupSelector!,
       start = new Point(x, y).transform(this.viewportTransform),
       extent = new Point(x + deltaX, y + deltaY).transform(
@@ -970,7 +975,7 @@ export class SelectableCanvas<
         }
       }
     }
-
+    console.log('this._objects', this._objects, pointer)
     return this.searchPossibleTargets(this._objects, pointer);
   }
 
@@ -1275,6 +1280,7 @@ export class SelectableCanvas<
    * @return {HTMLCanvasElement}
    */
   getSelectionElement(): HTMLCanvasElement {
+    console.log('getSelectionElement', this.upperCanvasEl)
     return this.upperCanvasEl;
   }
 
@@ -1283,6 +1289,7 @@ export class SelectableCanvas<
    * @return {FabricObject | null} active object
    */
   getActiveObject(): FabricObject | undefined {
+    console.log('getActiveObject', this._activeObject)
     return this._activeObject;
   }
 
@@ -1290,6 +1297,7 @@ export class SelectableCanvas<
    * Returns instance's active selection
    */
   getActiveSelection() {
+    console.log('getActiveSelection', this._activeSelection)
     return this._activeSelection;
   }
 
@@ -1301,8 +1309,10 @@ export class SelectableCanvas<
     const active = this._activeObject;
     if (active) {
       if (active === this._activeSelection) {
+        console.log('getActiveObjects', [...(active as ActiveSelection)._objects])
         return [...(active as ActiveSelection)._objects];
       } else {
+        console.log('getActiveObjects', [active])
         return [active];
       }
     }
@@ -1316,6 +1326,7 @@ export class SelectableCanvas<
    * @param {TPointerEvent} e mouse event triggering the selection events
    */
   _fireSelectionEvents(oldObjects: FabricObject[], e?: TPointerEvent) {
+    console.log('_fireSelectionEvents', oldObjects, e)
     let somethingChanged = false,
       invalidate = false;
     const objects = this.getActiveObjects(),
@@ -1377,11 +1388,12 @@ export class SelectableCanvas<
   setActiveObject(
     object: FabricObject,
     e?: TPointerEvent
-  ): this is AssertKeys<this, '_activeObject'> {
+  ) {
     // we can't inline this, since _setActiveObject will change what getActiveObjects returns
     const currentActives = this.getActiveObjects();
     const selected = this._setActiveObject(object, e);
     this._fireSelectionEvents(currentActives, e);
+    console.log('setActiveObject', selected)
     return selected;
   }
 
@@ -1396,7 +1408,7 @@ export class SelectableCanvas<
   _setActiveObject(
     object: FabricObject,
     e?: TPointerEvent
-  ): this is AssertKeys<this, '_activeObject'> {
+  ) {
     if (this._activeObject === object) {
       return false;
     }
@@ -1492,6 +1504,7 @@ export class SelectableCanvas<
    * @private
    */
   destroy() {
+    console.log('destroy')
     const wrapperEl = this.wrapperEl as HTMLDivElement,
       lowerCanvasEl = this.lowerCanvasEl!,
       upperCanvasEl = this.upperCanvasEl!,
