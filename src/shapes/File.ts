@@ -573,7 +573,7 @@ export class WBFile<
     return new Promise(async (resolve, reject) => {
       const url = fileOptions.previewImage ? fileOptions.previewImage : this.getFileIconURL(fileOptions.name);
       try {
-        const loadedImg = await loadImage(url, fileOptions && fileOptions.crossOrigin);
+        const loadedImg = await loadImage(url, { ...fileOptions, crossOrigin: 'anonymous' });
         resolve(new WBFile(loadedImg, fileOptions));
       } catch (error) {
         reject(error);
