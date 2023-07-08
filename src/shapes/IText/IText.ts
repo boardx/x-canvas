@@ -257,6 +257,7 @@ export class IText<
     property: 'selectionStart' | 'selectionEnd',
     index: number
   ) {
+    console.log('this[property]', this[property], index)
     if (this[property] !== index) {
       this._fireSelectionChanged();
       this[property] = index;
@@ -269,6 +270,7 @@ export class IText<
    * @private
    */
   _fireSelectionChanged() {
+    console.log('this _fireSelectionChanged')
     this.fire('selection:changed');
     this.canvas && this.canvas.fire('text:selection:changed', { target: this });
   }
