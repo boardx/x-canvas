@@ -1302,12 +1302,7 @@ export class SelectableCanvas<
       if (active === this._activeSelection) {
         return [...(active as ActiveSelection)._objects];
       } else {
-        if (active.obj_type === 'WBGroup') {
-          return [...(active as ActiveSelection)._objects];
-        } else {
-          return [active];
-        }
-
+        return [active];
       }
     }
     return [];
