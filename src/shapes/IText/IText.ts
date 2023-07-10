@@ -533,7 +533,6 @@ export class IText<
         ? this.hiddenTextarea!.selectionEnd
         : this.selectionEnd,
     };
-    console.log('function renderselection---', ctx, selection, boundaries)
     this._renderSelection(ctx, selection, boundaries);
   }
 

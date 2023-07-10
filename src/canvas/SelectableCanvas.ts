@@ -891,7 +891,6 @@ export class SelectableCanvas<
       minY = Math.min(start.y, extent.y),
       maxX = Math.max(start.x, extent.x),
       maxY = Math.max(start.y, extent.y);
-    console.log('this.selectionColor', this.selectionColor)
     if (this.selectionColor) {
       ctx.fillStyle = this.selectionColor;
       ctx.fillRect(minX, minY, maxX - minX, maxY - minY);
