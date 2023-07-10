@@ -443,7 +443,6 @@ export abstract class ITextBehavior<
 
     this.borderColor = this.editingBorderColor;
     this.hasControls = false;
-    this.selectable = true;
     this.lockMovementX = this.lockMovementY = true;
   }
 

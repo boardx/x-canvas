@@ -105,17 +105,17 @@ export abstract class ITextKeyBehavior<
       this._clickHandlerInitialized = true;
     }
   }
+
+  onClick() {
+    this.hiddenTextarea && this.hiddenTextarea.focus();
+  }
+
   /**
      * Override this method to customize cursor behavior on textbox blur
      */
   blur() {
     this.abortCursorAnimation();
   }
-
-  onClick() {
-    this.hiddenTextarea && this.hiddenTextarea.focus();
-  }
-
 
   /**
    * Handles keydown event
