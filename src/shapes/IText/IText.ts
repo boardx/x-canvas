@@ -636,9 +636,7 @@ export class IText<
           drawStart = boundaries.left + lineOffset - boxEnd;
         }
       }
-      boundaries.top + boundaries.topOffset + extraTop,
-        drawWidth,
-        drawHeight);
+
       ctx.fillRect(
         drawStart,
         boundaries.top + boundaries.topOffset + extraTop,
