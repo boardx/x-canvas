@@ -257,7 +257,6 @@ export class IText<
     property: 'selectionStart' | 'selectionEnd',
     index: number
   ) {
-    console.log('this[property]', this[property], index)
     if (this[property] !== index) {
       this._fireSelectionChanged();
       this[property] = index;
@@ -270,10 +269,9 @@ export class IText<
    * @private
    */
   _fireSelectionChanged() {
-    console.log('this _fireSelectionChanged')
     this.fire('selection:changed');
     this.canvas && this.canvas.fire('text:selection:changed', { target: this });
-    this.canvas && this.canvas.renderAll();
+
   }
 
   /**
@@ -360,16 +358,20 @@ export class IText<
    */
   renderCursorOrSelection() {
     if (!this.isEditing) {
+      console.log('renderCursorOrSelection not editing', this.isEditing);
       return;
     }
     const ctx = this.clearContextTop(true);
     if (!ctx) {
+      console.log('renderCursorOrSelection not ctx', ctx);
       return;
     }
     const boundaries = this._getCursorBoundaries();
     if (this.selectionStart === this.selectionEnd) {
+      console.log('renderCursorOrSelection not selectionStart === selectionEnd', this.selectionStart, this.selectionEnd)
       this.renderCursor(ctx, boundaries);
     } else {
+      console.log('renderCursorOrSelection right', ctx, boundaries)
       this.renderSelection(ctx, boundaries);
     }
     this.canvas!.contextTopDirty = true;
@@ -535,6 +537,7 @@ export class IText<
         ? this.hiddenTextarea!.selectionEnd
         : this.selectionEnd,
     };
+    console.log('function renderselection---', ctx, selection, boundaries)
     this._renderSelection(ctx, selection, boundaries);
   }
 
@@ -638,6 +641,10 @@ export class IText<
           drawStart = boundaries.left + lineOffset - boxEnd;
         }
       }
+      console.log('_rendersekectui------', drawStart,
+        boundaries.top + boundaries.topOffset + extraTop,
+        drawWidth,
+        drawHeight);
       ctx.fillRect(
         drawStart,
         boundaries.top + boundaries.topOffset + extraTop,

@@ -314,21 +314,17 @@ export abstract class ITextBehavior<
    */
   searchWordBoundary(selectionStart: number, direction: number): number {
     const text = this._text;
-    console.log('text', text)
     let index = this._reSpace.test(text[selectionStart])
       ? selectionStart - 1
       : selectionStart,
       _char = text[index];
-    console.log('index-----1', index)
     while (!reNonWord.test(_char) && index > 0 && index < text.length) {
       index += direction;
       _char = text[index];
     }
     if (reNonWord.test(_char)) {
       index += direction === 1 ? 0 : 1;
-      console.log('index2', index)
     }
-    console.log('index3', index)
     return index;
   }
 
@@ -346,8 +342,6 @@ export abstract class ITextBehavior<
         selectionStart,
         1
       ); /* search forward */
-    console.log('newSelectionStart', newSelectionStart)
-    console.log('newSelectionEnd', newSelectionEnd)
     this.selectionStart = newSelectionStart;
     this.selectionEnd = newSelectionEnd;
     this._fireSelectionChanged();
@@ -413,9 +407,6 @@ export abstract class ITextBehavior<
     const newSelectionStart = this.getSelectionStartFromPointer(e),
       currentStart = this.selectionStart,
       currentEnd = this.selectionEnd;
-    console.log('this.selectionStart', this.selectionStart)
-    console.log('this.selectionEnd', this.selectionEnd)
-    console.log('newSelectionStart', newSelectionStart)
     if (
       (newSelectionStart !== this.__selectionStartOnMouseDown ||
         currentStart === currentEnd) &&
