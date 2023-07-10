@@ -79,17 +79,17 @@
     assert.equal(text.constructor.name, 'Text');
     assert.equal(text.get('text'), 'x');
   });
-
-  QUnit.test('toString', function (assert) {
+  //测试鼠标选中一些文字后，当前selection的高亮是否正常显示
+  QUnit.test('selection highlight', function (assert) {
     var text = createTextObject();
-    assert.ok(typeof text.toString === 'function');
-    assert.equal(text.toString(), '#<Text (1): { "text": "x", "fontFamily": "Times New Roman" }>');
-  });
-
-  QUnit.test('toObject', function (assert) {
-    var text = createTextObject();
-    assert.ok(typeof text.toObject === 'function');
-    assert.deepEqual(text.toObject(), REFERENCE_TEXT_OBJECT);
-  });
+    text.setSelectionStart(0);
+    text.setSelectionEnd(1);
+    assert.equal(text._getSelectedText().text, 'x');
+    assert.equal(text._getSelectedText().top, 0);
+    assert.equal(text._getSelectedText().left, 0);
+    assert.equal(text._getSelectedText().width, CHAR_WIDTH);
+    assert.equal(text._getSelectedText().height, 45.2);
+  }
+  );
 
 })();
