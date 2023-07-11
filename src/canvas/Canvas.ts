@@ -1629,4 +1629,13 @@ export class Canvas extends SelectableCanvas {
   group() {
     return;
   }
+  resetBackgoundImage() {
+    return;
+  }
+  checkIfResetBackground() {
+    return;
+  }
+  _initStatic() {
+    return;
+  }
 }
