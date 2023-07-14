@@ -19,6 +19,7 @@ export const rectNotesDefaultValues: Partial<TClassProperties<RectNotes>> = {
   emoj: [0, 0, 0, 0, 0],
   originX: 'center',
   originY: 'center',
+  width: 230
 };
 
 /**
@@ -304,7 +305,26 @@ export class RectNotes extends Textbox {
     this.isWrapping = false;
     return wrapped;
   }
-
+  graphemeSplitForRectNotes(textstring: string): string[] {
+    const graphemes = [];
+    const wordJoiners = /[ \t\r]/;
+    const words = textstring.split(wordJoiners);
+    words.forEach((word, index) => {
+      if (index !== 0) {
+        word = ' ' + word;
+      }
+      if (/^[\u4e00-\u9fa5]+$/.test(word)) {  // 如果是中文
+        graphemes.push(...word.split(''));  // 把每个中文字符作为一个独立元素
+      } else if (/^[A-Za-z]+$/.test(word)) {  // 如果是英文
+        if (word.length <= 14) {  // 如果长度小于等于14
+          graphemes.push(word);  // 作为一个独立元素
+        } else {  // 如果长度大于14
+          graphemes.push(...word.split(''));  // 把每个字母作为一个独立元素
+        }
+      }
+    });
+    return graphemes;
+  };
   /**
    * Helper function to measure a string of text, given its lineIndex and charIndex offset
    * It gets called when charBounds are not available yet.
@@ -389,7 +409,6 @@ export class RectNotes extends Textbox {
       offset += word.length + 1;
       return { word: word, width: width };
     });
-
     const maxWidth = Math.max(
       desiredWidth,
       largestWordWidth,
