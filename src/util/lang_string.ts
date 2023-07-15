@@ -30,17 +30,15 @@ export const escapeXml = (string: string): string =>
  */
 export const graphemeSplit = (textstring: string): string[] => {
   const graphemes = [];
-  const wordRegex = /^[a-zA-Z]{1,13}\b/;
-  for (let i = 0; i < textstring.length;) {
-    // 如果字符后的字符串组成一个长度不大于13个的单词，则将整个单词作为元素添加到数组
-    if (wordRegex.test(textstring.slice(i))) {
-      const word = textstring.slice(i).match(wordRegex)[0]
-      graphemes.push(word);
-      i += word.length;
-    } else { // 否则，将字符添加到数组
-      const char = textstring[i]
-      graphemes.push(char);
-      i++;
+  const words = textstring.split(/\b/);
+  for (let i = 0; i < words.length; i++) {
+    // 检查单词是否全为拉丁字母，长度不大于13，且没有四个或更多的连续相同的字母
+    if (/^[a-zA-Z]+$/.test(words[i]) && words[i].length <= 13 && !(/(\w)\1{3,}/.test(words[i]))) {
+      graphemes.push(words[i]);
+    } else {
+      for (let j = 0; j < words[i].length; j++) {
+        graphemes.push(words[i][j]);
+      }
     }
   }
   return graphemes;
