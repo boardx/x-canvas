@@ -670,17 +670,17 @@ export class ShapeNotes extends Textbox {
     const dim = this._getNonTransformedDimensions();
     ctx.fillStyle = this.backgroundColor;
 
-    ctx.shadowBlur = 20;
+    //ctx.shadowBlur = 20;
     // ctx.shadowOffsetX = 2 * this.scaleX * canvas.getZoom();
     // ctx.shadowOffsetY = 6 * this.scaleY * canvas.getZoom();
-    ctx.shadowColor = 'rgba(0,0,0,0.1)';
+    //ctx.shadowColor = 'rgba(0,0,0,0.1)';
     // ctx.shadowColor = 'rgba(0,0,0,1)';
 
     //ctx.fillRect(-dim.x / 2, -dim.y / 2, dim.x, dim.y);
 
     // if there is background color no other shadows
     // should be casted
-    this._removeShadow(ctx);
+    //this._removeShadow(ctx);
     /*
       0: rect
       1: diamond

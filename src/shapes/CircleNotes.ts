@@ -9,16 +9,18 @@ import { createRectNotesDefaultControls } from '../controls/commonControls';
 export const circleNotesDefaultValues: Partial<TClassProperties<CircleNotes>> = {
   minWidth: 20,
   dynamicMinWidth: 2,
+  verticalAlign: 'middle',
   lockScalingFlip: true,
   noScaleCache: false,
   _wordJoiners: /[ \t\r]/,
   splitByGrapheme: true,
   obj_type: 'WBCircleNotes',
-  height: 99.5,
-  maxHeight: 99.5,
+  height: 138,
+  maxHeight: 138,
+  width: 138,
   noteType: 'circle',
-  padding: 30,
-  radius: 69,
+  radius: 138,
+  breakWords: true,
   emoj: [0, 0, 0, 0, 0],
 };
 
@@ -117,7 +119,7 @@ export class CircleNotes extends Textbox {
     }
     // clear cache and re-calculate height
     const height = this.calcTextHeight();
-    if (height > this.maxHeight && this.fontSize > 2) {
+    if (height > 76 && this.fontSize > 2) {
       this.set('fontSize', this.fontSize - 2);
       this._splitTextIntoLines(this.text);
       return;
@@ -355,6 +357,22 @@ export class CircleNotes extends Textbox {
    * @returns {Array} Array of line(s) into which the given text is wrapped
    * to.
    */
+  graphemeSplitForRectNotes(textstring: string): string[] {
+    const graphemes = [];
+    const words = textstring.split(/\b/);
+    for (let i = 0; i < words.length; i++) {
+      // 检查单词是否全为拉丁字母，长度不大于13，且没有四个或更多的连续相同的字母
+      if (/^[a-zA-Z]+$/.test(words[i]) && words[i].length <= 13 && !(/(\w)\1{3,}/.test(words[i]))) {
+        graphemes.push(words[i]);
+      } else {
+        for (let j = 0; j < words[i].length; j++) {
+          graphemes.push(words[i][j]);
+        }
+      }
+    }
+    return graphemes;
+  };
+
   _wrapLine(
     _line,
     lineIndex: number,
@@ -365,7 +383,7 @@ export class CircleNotes extends Textbox {
       splitByGrapheme = this.splitByGrapheme,
       graphemeLines = [],
       words = splitByGrapheme
-        ? this.graphemeSplit(_line)
+        ? this.graphemeSplitForRectNotes(_line)
         : this.wordSplit(_line),
       infix = splitByGrapheme ? '' : ' ';
 
@@ -384,13 +402,12 @@ export class CircleNotes extends Textbox {
     // measure words
     const data = words.map((word) => {
       // if using splitByGrapheme words are already in graphemes.
-      word = splitByGrapheme ? word : this.graphemeSplit(word);
+      word = splitByGrapheme ? word : this.graphemeSplitForRectNotes(word);
       const width = this._measureWord(word, lineIndex, offset);
       largestWordWidth = Math.max(width, largestWordWidth);
       offset += word.length + 1;
       return { word: word, width: width };
     });
-
     const maxWidth = Math.max(
       desiredWidth,
       largestWordWidth,
@@ -633,11 +650,26 @@ export class CircleNotes extends Textbox {
   }
 
   _getTopOffset() {
-    return -this._getTotalLineHeights() / 2;
+    switch (this.verticalAlign) {
+      case 'middle':
+        return -this._getTotalLineHeights() / 2;
+      case 'bottom':
+        return this.height / 2 - this._getTotalLineHeights();
+      default:
+        return -this.height / 2;
+    }
   }
+
   _getTotalLineHeight() {
     return this._textLines.reduce(
       (total, _line, index) => total + this.getHeightOfLine(index),
+      0
+    );
+  }
+
+  _getTotalLineHeights() {
+    return this._textLines.reduce(
+      (total, line, index) => total + this.getHeightOfLine(index),
       0
     );
   }
@@ -745,6 +777,41 @@ export class CircleNotes extends Textbox {
       this._renderTextStroke(ctx);
     }
   };
+  _renderTextCommon(ctx, method) {
+    ctx.save();
+    let lineHeights = 0;
+    const left = this._getLeftOffset();
+    const top = this._getTopOffset();
+    console.log('left ,top ', left, top)
+    const offsets = this._applyPatternGradientTransform(
+      ctx,
+      method === 'fillText' ? this.fill : this.stroke
+    );
+
+    for (let i = 0, len = this._textLines.length; i < len; i++) {
+      const heightOfLine = this.getHeightOfLine(i);
+      const maxHeight = heightOfLine / this.lineHeight;
+      const leftOffset = this._getLineLeftOffset(i);
+      this._renderTextLine(
+        method,
+        ctx,
+        this._textLines[i],
+        left + leftOffset - offsets.offsetX,
+        top + lineHeights + maxHeight - offsets.offsetY,
+        i
+      );
+      lineHeights += heightOfLine;
+    }
+    ctx.restore();
+  }
+
+  _getSVGLeftTopOffsets() {
+    return {
+      textLeft: -this.width / 2,
+      textTop: this._getTopOffset(),
+      lineTop: this.getHeightOfLine(0)
+    };
+  }
 
   drawRoundRectPath(cxt, width, height, radius) {
     cxt.beginPath(0);
