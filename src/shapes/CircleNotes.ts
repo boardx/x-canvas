@@ -17,8 +17,8 @@ export const circleNotesDefaultValues: Partial<TClassProperties<CircleNotes>> = 
   height: 99.5,
   maxHeight: 99.5,
   noteType: 'circle',
-  padding: 30,
-  radius: 69,
+  //padding: 30,
+  //radius: 69,
   emoj: [0, 0, 0, 0, 0],
 };
 
@@ -723,11 +723,19 @@ export class CircleNotes extends Textbox {
       return;
     }
     const dim = this._getNonTransformedDimensions();
+
+    // get the zoom level of the canvas
+    const zoom = this.canvas ? this.canvas.getZoom() : 1;
+
     ctx.fillStyle = this.backgroundColor;
     ctx.beginPath(); // start new path
-    const radius = dim.x / 2 + this.padding / this.scaleX / this.canvas?.getZoom();
+    const radius = dim.x / 2 + this.padding / this.scaleX / zoom;
     ctx.arc(0, 0, radius, 0, 2 * Math.PI); // draw circle path
     ctx.closePath(); // close path
+
+    // set the line width proportional to the zoom level
+    ctx.lineWidth = 1 / zoom;
+
     ctx.strokeStyle = this.backgroundColor;
     ctx.fillStyle = this.backgroundColor;
     ctx.stroke();
