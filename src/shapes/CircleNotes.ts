@@ -643,23 +643,64 @@ export class CircleNotes extends Textbox {
   }
 
   _render(ctx) {
-    const path: any = this.path;
 
-    path && !path.isNotVisible() && path._render(ctx);
-    this._setTextStyles(ctx);
-    this._renderTextLinesBackground(ctx);
-    this._renderTextDecoration(ctx, 'underline');
-    this._renderText(ctx);
-    this._renderTextDecoration(ctx, 'overline');
-    this._renderTextDecoration(ctx, 'linethrough');
+    if (!this.ctx) {
+      this.ctx = ctx;
+    }
 
-    const isEmojiExist = !(
-      this.emoji === undefined || this.emoji.join() === '0,0,0,0,0'
-    );
-    if (isEmojiExist) {
-      this.renderEmoji(ctx);
+    // this.renderAuthor(ctx);
+
+    if (!this.isDraw) {
+      this.callSuper('_render', ctx);
+      const isEmojiExist = !(
+        this.emoji === undefined || this.emoji.join() === '0,0,0,0,0'
+      );
+      if (isEmojiExist) {
+        // this.renderEmoji(ctx);
+      }
+      return;
+    }
+
+    if (this.isDraw && this.imageElement) {
+      ctx.drawImage(
+        this.imageElement,
+        -this.width / 2,
+        -this.height / 2,
+        this.width,
+        this.height
+      );
+      this.imageElement.crossOrigin = 'anonymous';
+      const isEmojiExist = !(
+        this.emoji === undefined || this.emoji.join() === '0,0,0,0,0'
+      );
+      if (isEmojiExist) {
+        // this.renderEmoji(ctx);
+      }
+      return;
+    }
+
+    if (this.isDraw && this.imageSrc && this.imageSrc.indexOf('base64') > -1) {
+      fabric.Image.fromURL(
+        this.imageSrc,
+        img => {
+          this.imageElement = img._element;
+        },
+        { crossOrigin: 'anonymous' },
+        { crossOrigin: 'anonymous' }
+      );
+    } else if (this.isDraw && this.imageSrc && !this.imageElement) {
+      fabric.Image.fromURL(
+        this.imageSrc,
+        img => {
+          this.imageElement = img._element;
+          this.canvas.requestRenderAll();
+        },
+        { crossOrigin: 'anonymous' },
+        { crossOrigin: 'anonymous' }
+      );
     }
   }
+
 
   renderEmoji(ctx) {
     if (this.emoji === undefined) {
@@ -718,29 +759,26 @@ export class CircleNotes extends Textbox {
       }
     }
   }
-  _renderBackground(ctx) {
+  const _renderBackground = function (ctx) {
+    ctx.fillStyle = this.backgroundColor;
     if (!this.backgroundColor) {
       return;
     }
-    const dim = this._getNonTransformedDimensions();
 
-    // get the zoom level of the canvas
-    const zoom = this.canvas ? this.canvas.getZoom() : 1;
-
-    ctx.fillStyle = this.backgroundColor;
-    ctx.beginPath(); // start new path
-    const radius = dim.x / 2 + this.padding / this.scaleX / zoom;
-    ctx.arc(0, 0, radius, 0, 2 * Math.PI); // draw circle path
-    ctx.closePath(); // close path
-
-    // set the line width proportional to the zoom level
-    ctx.lineWidth = 1 / zoom;
-
+    const svgPath = new window.Path2D(
+      'M-71,0.5a70.5,70.5 0 1,0 141,0a70.5,70.5 0 1,0 -141,0'
+    );
     ctx.strokeStyle = this.backgroundColor;
     ctx.fillStyle = this.backgroundColor;
-    ctx.stroke();
-    ctx.fill();
-  }
+
+    ctx.shadowBlur = 20;
+    // ctx.shadowOffsetX = 2 * this.scaleX * canvas.getZoom();
+    // ctx.shadowOffsetY = 6 * this.scaleY * canvas.getZoom();
+    ctx.shadowColor = 'rgba(0,0,0,0.1)';
+
+    ctx.stroke(svgPath);
+    ctx.fill(svgPath);
+  };
   _renderText(ctx) {
     ctx.shadowOffsetX = ctx.shadowOffsetY = ctx.shadowBlur = 0;
     ctx.shadowColor = '';
