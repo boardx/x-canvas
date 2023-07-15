@@ -28,22 +28,17 @@ export const escapeXml = (string: string): string =>
  * @param {String} textstring String to escape
  * @return {Array} array containing the graphemes
  */
+
 export const graphemeSplit = (textstring: string): string[] => {
   const graphemes = [];
-  const words = textstring.split(/\b/);
-  for (let i = 0; i < words.length; i++) {
-    // 检查单词是否全为拉丁字母，长度不大于13，且没有四个或更多的连续相同的字母
-    if (/^[a-zA-Z]+$/.test(words[i]) && words[i].length <= 13 && !(/(\w)\1{3,}/.test(words[i]))) {
-      graphemes.push(words[i]);
-    } else {
-      for (let j = 0; j < words[i].length; j++) {
-        graphemes.push(words[i][j]);
-      }
+  for (let i = 0, chr; i < textstring.length; i++) {
+    if ((chr = getWholeChar(textstring, i)) === false) {
+      continue;
     }
+    graphemes.push(chr as string);
   }
   return graphemes;
 };
-
 // taken from mdn in the charAt doc page.
 const getWholeChar = (str: string, i: number): string | boolean => {
   const code = str.charCodeAt(i);

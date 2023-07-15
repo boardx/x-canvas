@@ -17,8 +17,8 @@ export const circleNotesDefaultValues: Partial<TClassProperties<CircleNotes>> = 
   height: 99.5,
   maxHeight: 99.5,
   noteType: 'circle',
-  //padding: 30,
-  //radius: 69,
+  padding: 30,
+  radius: 69,
   emoj: [0, 0, 0, 0, 0],
 };
 
