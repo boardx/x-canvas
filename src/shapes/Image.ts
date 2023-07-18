@@ -1023,7 +1023,7 @@ export class Image<
 
   resizeImageAccordingToZoomAndOnScreen() {
     const zoom = this.canvas.getZoom();
-    const realWidth = this.scaleX * this.width * zoom;
+    const realWidth = this.scaleX * this.width;
 
     const originalWidth = this.width;
     const originalHeight = this.height;
