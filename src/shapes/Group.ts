@@ -108,6 +108,7 @@ export const groupDefaultValues = {
   subTargetCheck: false,
   interactive: false,
   obj_type: 'WBGroup',
+  lockScalingFlip: true,
 };
 
 /**
