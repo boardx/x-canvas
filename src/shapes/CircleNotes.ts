@@ -383,7 +383,7 @@ export class CircleNotes extends Textbox {
       splitByGrapheme = this.splitByGrapheme,
       graphemeLines = [],
       words = splitByGrapheme
-        ? this.graphemeSplitForRectNotes(_line)
+        ? this.graphemeSplit(_line)
         : this.wordSplit(_line),
       infix = splitByGrapheme ? '' : ' ';
 
@@ -402,7 +402,7 @@ export class CircleNotes extends Textbox {
     // measure words
     const data = words.map((word) => {
       // if using splitByGrapheme words are already in graphemes.
-      word = splitByGrapheme ? word : this.graphemeSplitForRectNotes(word);
+      word = splitByGrapheme ? word : this.graphemeSplit(word);
       const width = this._measureWord(word, lineIndex, offset);
       largestWordWidth = Math.max(width, largestWordWidth);
       offset += word.length + 1;
