@@ -2158,9 +2158,17 @@ export class Arrow extends Line {
   }
   calcDistanceToControlPoint(current, target) {
     const { left, top, width, height, scaleX, scaleY } = target;
-    if (this.canvas.getActiveObject().isEditing) {
-      this.canvas.getActiveObject().exitEditing()
+    if (this.canvas.getActiveObject() &&
+      (this.canvas.getActiveObject()?.obj_type === 'WBTextbox' ||
+        this.canvas.getActiveObject()?.obj_type === 'WBRectNotes' ||
+        this.canvas.getActiveObject()?.obj_type === 'WBCircleNotes' ||
+        this.canvas.getActiveObject()?.obj_type === 'WBShapeNotes'
+      )) {
+      if (this.canvas.getActiveObject().isEditing) {
+        this.canvas.getActiveObject().exitEditing()
+      }
     }
+
     const range = 30 // 计算范围时包括画布缩放
 
     const ml = { x: left - (width * scaleX) / 2, y: top };
