@@ -109,7 +109,9 @@ export class RectNotes extends Textbox {
     this._styleMap = this._generateStyleMap(this._splitText());
     // if after wrapping, the width is smaller than dynamicMinWidth, change the width and re-wrap
     if (this.dynamicMinWidth > this.width) {
-      this._set('width', this.dynamicMinWidth);
+      this.set('fontSize', this.fontSize - 2);
+      this._splitTextIntoLines(this.text);
+      return;
     }
     if (this.textAlign.indexOf('justify') !== -1) {
       // once text is measured we need to make space fatter to make justified text.
@@ -360,8 +362,8 @@ export class RectNotes extends Textbox {
     const graphemes = [];
     const words = textstring.split(/\b/);
     for (let i = 0; i < words.length; i++) {
-      // 检查单词是否全为拉丁字母，长度不大于13，且没有四个或更多的连续相同的字母
-      if (/^[a-zA-Z]+$/.test(words[i]) && words[i].length <= 13 && !(/(\w)\1{3,}/.test(words[i]))) {
+      // 检查单词是否全为拉丁字母，长度不大于13
+      if (/^[a-zA-Z]{1,13}$/.test(words[i])) {
         graphemes.push(words[i]);
       } else {
         for (let j = 0; j < words[i].length; j++) {
@@ -433,7 +435,12 @@ export class RectNotes extends Textbox {
       if (!lineJustStarted && !splitByGrapheme) {
         line.push(infix);
       }
-      line = line.concat(word);
+      if (word.length > 1) {
+        line = line.concat(word.split(''));
+      } else {
+        line = line.concat(word);
+      }
+
 
       infixWidth = splitByGrapheme
         ? 0

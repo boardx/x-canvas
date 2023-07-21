@@ -111,7 +111,9 @@ export class CircleNotes extends Textbox {
     this._styleMap = this._generateStyleMap(this._splitText());
     // if after wrapping, the width is smaller than dynamicMinWidth, change the width and re-wrap
     if (this.dynamicMinWidth > this.width) {
-      this._set('width', this.dynamicMinWidth);
+      this.set('fontSize', this.fontSize - 2);
+      this._splitTextIntoLines(this.text);
+      return;
     }
     if (this.textAlign.indexOf('justify') !== -1) {
       // once text is measured we need to make space fatter to make justified text.
@@ -373,6 +375,7 @@ export class CircleNotes extends Textbox {
     return graphemes;
   };
 
+
   _wrapLine(
     _line,
     lineIndex: number,
@@ -383,7 +386,7 @@ export class CircleNotes extends Textbox {
       splitByGrapheme = this.splitByGrapheme,
       graphemeLines = [],
       words = splitByGrapheme
-        ? this.graphemeSplit(_line)
+        ? this.graphemeSplitForRectNotes(_line)
         : this.wordSplit(_line),
       infix = splitByGrapheme ? '' : ' ';
 
@@ -402,7 +405,7 @@ export class CircleNotes extends Textbox {
     // measure words
     const data = words.map((word) => {
       // if using splitByGrapheme words are already in graphemes.
-      word = splitByGrapheme ? word : this.graphemeSplit(word);
+      word = splitByGrapheme ? word : this.graphemeSplitForRectNotes(word);
       const width = this._measureWord(word, lineIndex, offset);
       largestWordWidth = Math.max(width, largestWordWidth);
       offset += word.length + 1;
@@ -434,7 +437,12 @@ export class CircleNotes extends Textbox {
       if (!lineJustStarted && !splitByGrapheme) {
         line.push(infix);
       }
-      line = line.concat(word);
+      if (word.length > 1) {
+        line = line.concat(word.split(''));
+      } else {
+        line = line.concat(word);
+      }
+
 
       infixWidth = splitByGrapheme
         ? 0
