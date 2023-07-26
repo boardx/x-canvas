@@ -381,9 +381,11 @@ export class UrlImage<
         };
         // Handle non-unicode or non-utf8 coding string
         const unicodeTitle = GB2312UnicodeConverter.ToUnicode(title);
-
+        if (!this.url && this.src) {
+            this.url = this.src;
+        }
         // handle the situation that the website's title is null
-        if (title === null || unicodeTitle.indexOf('\\ufffd') !== -1 || !title) {
+        if ((title === null || unicodeTitle.indexOf('\\ufffd') !== -1 || !title) && this.url) {
             const firstChar = this.url.indexOf('.');
             const lastChar = this.url.indexOf('.', firstChar + 1);
             this.title = this.url.substring(firstChar + 1, lastChar);
