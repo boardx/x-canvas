@@ -34,8 +34,8 @@ export const cacheProperties = [
 ];
 
 export const fabricObjectDefaultValues = {
-  originX: 'left',
-  originY: 'top',
+  originX: 'center',
+  originY: 'center',
   top: 0,
   left: 0,
   width: 0,
