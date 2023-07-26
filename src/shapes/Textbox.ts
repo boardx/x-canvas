@@ -63,8 +63,15 @@ export class Textbox extends IText {
   constructor(text: string, options: any) {
     super(text, options);
     this.addControls();
+    this.InitializeEvent();
   }
 
+  InitializeEvent(this: any) {
+    return true;
+  }
+  changeWidth(eventData, transform, x, yr) {
+    return true;
+  }
   /**
    * Unlike superclass's version of this function, Textbox does not update
    * its width.
@@ -320,6 +327,22 @@ export class Textbox extends IText {
    * @returns {Array} Array of line(s) into which the given text is wrapped
    * to.
    */
+  graphemeSplitForRectNotes(textstring: string): string[] {
+    const graphemes = [];
+    const words = textstring.split(/\b/);
+    for (let i = 0; i < words.length; i++) {
+      // 检查单词是否全为拉丁字母，长度不大于13
+      if (/^[a-zA-Z]{1,13}$/.test(words[i])) {
+        graphemes.push(words[i]);
+      } else {
+        for (let j = 0; j < words[i].length; j++) {
+          graphemes.push(words[i][j]);
+        }
+      }
+    }
+    return graphemes;
+  };
+
   _wrapLine(
     _line,
     lineIndex: number,
@@ -330,7 +353,7 @@ export class Textbox extends IText {
       splitByGrapheme = this.splitByGrapheme,
       graphemeLines = [],
       words = splitByGrapheme
-        ? this.graphemeSplit(_line)
+        ? this.graphemeSplitForRectNotes(_line)
         : this.wordSplit(_line),
       infix = splitByGrapheme ? '' : ' ';
 
@@ -349,13 +372,12 @@ export class Textbox extends IText {
     // measure words
     const data = words.map((word) => {
       // if using splitByGrapheme words are already in graphemes.
-      word = splitByGrapheme ? word : this.graphemeSplit(word);
+      word = splitByGrapheme ? word : this.graphemeSplitForRectNotes(word);
       const width = this._measureWord(word, lineIndex, offset);
       largestWordWidth = Math.max(width, largestWordWidth);
-      offset += word.length + infix.length;
-      return { word, width };
+      offset += word.length + 1;
+      return { word: word, width: width };
     });
-
     const maxWidth = Math.max(
       desiredWidth,
       largestWordWidth,
@@ -382,7 +404,12 @@ export class Textbox extends IText {
       if (!lineJustStarted && !splitByGrapheme) {
         line.push(infix);
       }
-      line = line.concat(word);
+      if (word.length > 1) {
+        line = line.concat(word.split(''));
+      } else {
+        line = line.concat(word);
+      }
+
 
       infixWidth = splitByGrapheme
         ? 0
