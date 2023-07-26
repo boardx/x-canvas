@@ -745,9 +745,7 @@ export class Image<
     }
     this._stroke(ctx);
     this._renderPaintInOrder(ctx);
-    if (this.isOnScreen && this.compressSize !== 1000) {
-      this.resizeImageAccordingToZoomAndOnScreen();
-    }
+    this.resizeImageAccordingToZoomAndOnScreen();
   }
 
   /**
@@ -1046,12 +1044,9 @@ export class Image<
       this.setSrc(
         targetSrc,
         () => {
-          //@ts-ignore
-          this.set({
-            width: originalWidth,
-            height: originalHeight,
-            dirty: true
-          });
+          this.width = originalWidth;
+          this.height = originalHeight;
+          this.dirty = true;
           if (canvas) {
             canvas.requestRenderAll();
           }
