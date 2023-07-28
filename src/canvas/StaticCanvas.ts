@@ -1051,6 +1051,11 @@ export class StaticCanvas<
     return this.toObject();
   }
 
+  findById(id: string) {
+    const obj = this.getObjects().filter((_obj) => _obj._id === id);
+
+    return obj[0];
+  }
   /**
    * Returns dataless object representation of canvas
    * @param {Array} [propertiesToInclude] Any properties that you might want to additionally include in the output
