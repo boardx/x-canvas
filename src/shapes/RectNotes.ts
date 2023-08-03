@@ -124,7 +124,12 @@ export class RectNotes extends Textbox {
       this._splitTextIntoLines(this.text);
       return;
     }
-
+    console.log('tjos-----', height, this.maxHeight, this.fontSize)
+    if (height > 130 && this.fontSize === 6) {
+      const prenum = 125 / height.toFixed(2);
+      const newText = this.text.substring(0, this.text.length * prenum - 5);
+      this.set('text', newText + '...');
+    }
     this.height = this.maxHeight;
     return this.height;
   }
