@@ -1028,7 +1028,7 @@ export class Image<
     let originalSrc = "";
     if (!this.src || this.src.indexOf('base64') !== -1) return;
     if (
-      (zoom >= 0.4 && this.compressSize !== 1000) ||
+      (zoom >= 0.04 && this.compressSize !== 1000) ||
       realWidth > getWindow().innerWidth * 0.4
     ) {
       if (this.src.includes('oss-')) {
@@ -1040,15 +1040,15 @@ export class Image<
       }
       this.compressSize = 1000;
       const targetSrc = originalSrc;
-
+      console.log('originalWidth', originalWidth)
       this.setSrc(
         targetSrc,
         () => {
           this.width = originalWidth;
           this.height = originalHeight;
           this.dirty = true;
-          if (canvas) {
-            canvas.requestRenderAll();
+          if (this.canvas) {
+            this.canvas.requestRenderAll();
           }
 
         },
