@@ -1779,17 +1779,6 @@ export class Text<
     );
   }
 
-  _getSelectionStartOffsetY() {
-    switch (this.verticalAlign) {
-      case 'middle':
-        return this.height / 2 - this._getTotalLineHeights() / 2;
-      case 'bottom':
-        return this.height - this._getTotalLineHeights();
-      default:
-        return 0;
-    }
-  }
-
   /**
    * Returns object representation of an instance
    * @param {Array} [propertiesToInclude] Any properties that you might want to additionally include in the output

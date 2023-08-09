@@ -81,9 +81,11 @@ export class UrlImage<
 
     declare lines: object[];
 
+    declare title: string;
+
     declare relationship: object[];
 
-    public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'verticalAlign', 'lines', '_id', 'zIndex', 'relationship', 'url'];
+    public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'verticalAlign', 'lines', '_id', 'zIndex', 'relationship', 'url', 'title'];
 
     declare dynamicMinWidth: number;
 
