@@ -681,6 +681,9 @@ export abstract class ITextBehavior<
       this.canvas.fire('text:editing:exited', { target: this });
       isTextChanged && this.canvas.fire('object:modified', { target: this });
     }
+    this.initDimensions();
+    this.dirty = true;
+    this.canvas?.requestRenderAll();
     return this;
   }
 
