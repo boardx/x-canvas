@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { getDocument, getEnv, getWindow } from '../env';
+import { getDocument, getEnv } from '../env';
 import type { BaseFilter } from '../filters/BaseFilter';
 import { getFilterBackend } from '../filters/FilterBackend';
 import { SHARED_ATTRIBUTES } from '../parser/attributes';
@@ -188,7 +188,13 @@ export class Image<
 
   declare _id: string;
 
-  public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'verticalAlign', 'line', 'relationship', '_id'];
+  declare oWidth: number;
+
+  declare oHeight: number;
+
+  declare strokeWidth: number;
+
+  public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'verticalAlign', 'line', 'relationship', '_id', 'oWidth', 'oHeight', 'strokeWidth'];
 
   protected declare _element: ImageSource;
   protected declare _originalElement: ImageSource;
@@ -219,6 +225,7 @@ export class Image<
   constructor(arg0: ImageSource | string, options: Props = {} as Props) {
     super({ filters: [], ...options });
     this.cacheKey = `texture${uid()}`;
+    console.log('Image constructor', arg0, options, (getDocument().getElementById(arg0) as ImageSource), this._element, this._originalElement);
     this.setElement(
       typeof arg0 === 'string'
         ? (getDocument().getElementById(arg0) as ImageSource)
@@ -745,7 +752,7 @@ export class Image<
     }
     this._stroke(ctx);
     this._renderPaintInOrder(ctx);
-    this.resizeImageAccordingToZoomAndOnScreen();
+    //this.resizeImageAccordingToZoomAndOnScreen();
   }
 
   /**
@@ -1023,12 +1030,12 @@ export class Image<
     const zoom = this.canvas.getZoom();
     const realWidth = this.scaleX * this.width;
 
-    const originalWidth = this.width;
-    const originalHeight = this.height;
+    const originalWidth = this.oWidth;
+    const originalHeight = this.oHeight;
     let originalSrc = "";
     if (!this.src || this.src.indexOf('base64') !== -1) return;
     if (
-      (zoom >= 0.04 && this.compressSize !== 1000) ||
+      zoom >= 0.4 ||
       realWidth > getWindow().innerWidth * 0.4
     ) {
       if (this.src.includes('oss-')) {
@@ -1038,23 +1045,26 @@ export class Image<
       } else {
         originalSrc = this.src.replace('smallPic/', 'bigPic/');
       }
-      this.compressSize = 1000;
-      const targetSrc = originalSrc;
-      console.log('originalWidth', originalWidth)
-      this.setSrc(
-        targetSrc,
-        () => {
-          this.width = originalWidth;
-          this.height = originalHeight;
-          this.dirty = true;
-          if (this.canvas) {
-            this.canvas.requestRenderAll();
-          }
-
-        },
-        { crossOrigin: 'anonymous', ...this.toObject() }
-      );
     }
+    else {
+      originalSrc = this.src.replace('bigPic/', 'smallPic/');
+    }
+    this.compressSize = 1000;
+    const targetSrc = originalSrc;
+    console.log('targetSrc', targetSrc, originalWidth, originalHeight)
+    this.setSrc(
+      targetSrc,
+      () => {
+        this.src = targetSrc;
+        this.dirty = true;
+        if (this.canvas) {
+          this.canvas.renderAll();
+        }
+
+      },
+      { crossOrigin: 'anonymous', ...this.toObject() }
+    );
+
   }
 
   cloneWidget() {
