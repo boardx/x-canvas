@@ -116,5 +116,5 @@ export const fabricObjectDefaultValues = {
   hasRotatingPoint: false,
   locked: false,
   isLoading: false,
-
+  url: ''
 } as const;

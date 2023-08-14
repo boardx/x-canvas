@@ -30,6 +30,7 @@ interface UniqueImageProps {
     cropY: number;
     imageSmoothing: boolean;
     crossOrigin: string | null;
+    url: string;
 }
 
 export const UrlImageDefaultValues: Partial<TClassProperties<UrlImage>> = {
@@ -51,6 +52,7 @@ export interface SerializedImageProps extends SerializedObjectProps {
     resizeFilter?: any;
     cropX: number;
     cropY: number;
+    url: string;
 }
 export interface UrlImageProps extends FabricObjectProps, UniqueImageProps { }
 
@@ -384,7 +386,7 @@ export class UrlImage<
         // Handle non-unicode or non-utf8 coding string
         const unicodeTitle = GB2312UnicodeConverter.ToUnicode(title);
         if (!this.url && this.src) {
-            this.url = this.src;
+            console.log('url-----------', url)
         }
         // handle the situation that the website's title is null
         if ((title === null || unicodeTitle.indexOf('\\ufffd') !== -1 || !title) && this.url) {

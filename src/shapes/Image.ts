@@ -225,7 +225,6 @@ export class Image<
   constructor(arg0: ImageSource | string, options: Props = {} as Props) {
     super({ filters: [], ...options });
     this.cacheKey = `texture${uid()}`;
-    console.log('Image constructor', arg0, options, (getDocument().getElementById(arg0) as ImageSource), this._element, this._originalElement);
     this.setElement(
       typeof arg0 === 'string'
         ? (getDocument().getElementById(arg0) as ImageSource)
@@ -411,6 +410,7 @@ export class Image<
       'cornerStyle',
       'lightbox',
       'cropSelectionRect',
+      'url',
     ];
     keys.forEach((key) => {
       object[key] = this[key];
@@ -1051,7 +1051,6 @@ export class Image<
     }
     this.compressSize = 1000;
     const targetSrc = originalSrc;
-    console.log('targetSrc', targetSrc, originalWidth, originalHeight)
     this.setSrc(
       targetSrc,
       () => {
