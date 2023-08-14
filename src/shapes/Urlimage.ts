@@ -386,7 +386,6 @@ export class UrlImage<
         // Handle non-unicode or non-utf8 coding string
         const unicodeTitle = GB2312UnicodeConverter.ToUnicode(title);
         if (!this.url && this.src) {
-            console.log('url-----------', url)
             this.url = this.src;
         }
         // handle the situation that the website's title is null
