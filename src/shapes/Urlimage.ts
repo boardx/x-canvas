@@ -387,7 +387,7 @@ export class UrlImage<
         const unicodeTitle = GB2312UnicodeConverter.ToUnicode(title);
         if (!this.url && this.src) {
             console.log('url-----------', url)
-            this.url = 'this.src';
+            this.url = this.src;
         }
         // handle the situation that the website's title is null
         if ((title === null || unicodeTitle.indexOf('\\ufffd') !== -1 || !title) && this.url) {
