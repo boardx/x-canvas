@@ -117,7 +117,9 @@ export abstract class ITextClickBehavior<
     if (!this.isEditing) {
       return;
     }
-    this.selectLine(this.getSelectionStartFromPointer(options.e));
+
+    //this.selectLine(this.getSelectionStartFromPointer(options.e));
+    this.selectAll();
   }
 
   /**

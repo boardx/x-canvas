@@ -160,7 +160,7 @@ export abstract class ITextBehavior<
     this._currentTickCompleteState = this._animateCursor({
       toValue: 0,
       duration: this.cursorDuration / 2,
-      delay: 100,
+      delay: 950,
       onComplete: this._tick,
     });
   }
