@@ -141,12 +141,15 @@ export class Arrow extends Line {
         cursorStyle: 'crosshair',
         //@ts-ignore
         mouseDownHandler: (eventData, transformData) => {
+          //console.log('mouseDownHandler')
           this.mousedownProcess(transformData, eventData, true);
         },
         positionHandler: (dim, finalMatrix, fabricObject) => {
+          //console.log('positionProcess')
           return this.positionProcess(fabricObject, true);
         },
         actionHandler: (eventData, transform, x, y) => {
+          //console.log('actionHandler')
           const target: any = transform.target;
           if (target.locked) return;
 
@@ -154,7 +157,14 @@ export class Arrow extends Line {
           if (hoverTarget && hoverTarget.obj_type === 'WBArrow') return;
 
           if (hoverTarget) {
-            const minPoint = this.calcDistanceToTarget({ x, y }, hoverTarget);
+            let minPoint;
+            //如果箭头在当前object内部，不用计算直接返回
+            if (x > this.left && x < this.left + this.width && y > this.top && y < this.top + this.height) {
+              minPoint = { x, y, dot: 0 };
+            }
+            else {
+              minPoint = this.calcDistanceToTarget({ x, y }, hoverTarget);
+            }
             hoverTarget.__corner = minPoint.dot;
 
             target.setConnectorObj(hoverTarget, minPoint, false, true);
@@ -169,7 +179,7 @@ export class Arrow extends Line {
                 item => item._id !== target._id
               );
             this.canvas.setActiveObject(target);
-            target.set('x1', x + 5).set('y1', y + 5);
+            target.set('x1', x).set('y1', y);
             target.connectorStart = null;
           }
           if (target) {
@@ -185,12 +195,15 @@ export class Arrow extends Line {
         cursorStyle: 'crosshair',
         //@ts-ignore
         mouseDownHandler: (eventData, transformData) => {
+          //console.log('mouseDownHandler  --end')
           this.mousedownProcess(transformData, eventData, false);
         },
         positionHandler: (dim, finalMatrix, fabricObject) => {
+          //console.log('positionHandler  --end')
           return this.positionProcess(fabricObject, false);
         },
         actionHandler: (eventData, transform, x, y) => {
+          //console.log('actionHandler  --end')
           const target: any = transform.target;
           if (target.locked) return;
 
@@ -199,9 +212,22 @@ export class Arrow extends Line {
           if (hoverTarget && hoverTarget.obj_type === 'WBArrow') return;
 
           if (hoverTarget) {
-            const minPoint = this.calcDistanceToTarget({ x, y }, hoverTarget);
-            hoverTarget.__corner = minPoint.dot;
+            //console.log('this hovertarget----------end');
+            let minPoint;
+            //如果箭头在当前object内部，不用计算直接返回
+            if (x > hoverTarget.left && x < hoverTarget.left + hoverTarget.width && y > hoverTarget.top && y < hoverTarget.top + hoverTarget.height) {
+              minPoint = { x, y, dot: 0 };
+            }
+            else {
+              minPoint = this.calcDistanceToTarget({ x, y }, hoverTarget);
+            }
 
+            hoverTarget.__corner = minPoint.dot;
+            // this.set({
+            //   x2: x,
+            //   y2: y,
+            //   connectorEnd: { _id: hoverTarget._id, rx: x, ry: y }
+            // });
             target.setConnectorObj(hoverTarget, minPoint, false, false);
           } else {
             const oldConnObj =
@@ -213,7 +239,7 @@ export class Arrow extends Line {
               oldConnObj.lines = oldConnObj.lines.filter(
                 item => item._id !== target._id
               );
-            target.set('x2', x - 5).set('y2', y - 5);
+            target.set('x2', x).set('y2', y);
             target.connectorEnd = null;
           }
           if (target) {
@@ -234,12 +260,15 @@ export class Arrow extends Line {
 
         //@ts-ignore
         mouseDownHandler: (eventData, transformData) => {
+          //console.log('actionHandler  --cmmen')
           this.mousedownProcess(transformData, eventData, false);
         },
         positionHandler: (dim, finalMatrix, fabricObject) => {
+          //console.log('positionHandler  --cmmen')
           return this.positionProcess(fabricObject, false);
         },
         actionHandler: (eventData, transform, x, y) => {
+          //console.log('actionHandler  --cmmen')
           const target: any = transform.target;
           if (target.locked) return;
 
@@ -248,6 +277,7 @@ export class Arrow extends Line {
           if (hoverTarget && hoverTarget.obj_type === 'WBArrow') return;
 
           if (hoverTarget) {
+            //console.log('this hovertarget----------start11')
             const minPoint = this.calcDistanceToTarget({ x, y }, hoverTarget);
             hoverTarget.__corner = minPoint.dot;
 
@@ -264,7 +294,7 @@ export class Arrow extends Line {
                 item => item._id !== target._id
               );
 
-            target.set('(x2+x1)/2', x - 5).set('(y1+y2)/2', y - 5);
+            target.set('(x2+x1)/2', x).set('(y1+y2)/2', y);
             //target.connectorEnd = null;
           }
           if (target) {
