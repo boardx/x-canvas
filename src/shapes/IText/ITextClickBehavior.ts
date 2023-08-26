@@ -118,8 +118,8 @@ export abstract class ITextClickBehavior<
       return;
     }
 
-    //this.selectLine(this.getSelectionStartFromPointer(options.e));
-    this.selectAll();
+    this.selectLine(this.getSelectionStartFromPointer(options.e));
+    //this.selectAll();
   }
 
   /**
