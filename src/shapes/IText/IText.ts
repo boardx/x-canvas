@@ -121,6 +121,7 @@ export class IText<
 
   declare compositionEnd: number;
 
+  declare oneLine: boolean;
   /**
    * Color of text selection
    * @type String

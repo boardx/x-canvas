@@ -52,7 +52,7 @@ export abstract class ITextBehavior<
 
   declare abstract compositionStart: number;
   declare abstract compositionEnd: number;
-
+  declare oneLine: boolean;
   declare abstract hiddenTextarea: HTMLTextAreaElement | null;
 
   /**
@@ -81,6 +81,7 @@ export abstract class ITextBehavior<
     moveCursor?: CSSStyleDeclaration['cursor'];
   };
   protected declare _selectionDirection: 'left' | 'right' | null;
+
 
   abstract initHiddenTextarea(): void;
   abstract _fireSelectionChanged(): void;
@@ -680,6 +681,9 @@ export abstract class ITextBehavior<
       // @ts-expect-error in reality it is an IText instance
       this.canvas.fire('text:editing:exited', { target: this });
       isTextChanged && this.canvas.fire('object:modified', { target: this });
+    }
+    if (this.oneLine) {
+      this.set({ oneLine: false })
     }
     this.initDimensions();
     this.dirty = true;

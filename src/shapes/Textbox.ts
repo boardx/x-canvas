@@ -33,6 +33,8 @@ export class Textbox extends IText {
 
   /* boardx cusotm function */
   declare obj_type: string;
+
+  declare hasNoText: boolean;
   /**
    * Minimum calculated width of a textbox, in pixels.
    * fixed to 2 so that an empty textbox cannot go to 0
@@ -42,6 +44,7 @@ export class Textbox extends IText {
    */
   declare dynamicMinWidth: number;
 
+  declare oneLine: boolean;
   /**
    * Use this boolean property in order to split strings that have no white space concept.
    * this is a cheap way to help with chinese/japanese
@@ -464,9 +467,15 @@ export class Textbox extends IText {
    * @override
    */
   _splitTextIntoLines(text: string) {
-    const newText = super._splitTextIntoLines(text),
-      graphemeLines = this._wrapText(newText.lines, this.width),
-      lines = new Array(graphemeLines.length);
+    const newText = super._splitTextIntoLines(text);
+
+    if ((this.obj_type === 'WBText' || this.obj_type === 'WBTextbox') && newText && newText.lines && this.oneLine) {
+      if (newText.lines[0].length > 1) {
+        this.width = this._measureWord(newText.lines[0], 0, 0) > 250 ? this._measureWord(newText.lines[0], 0, 0) : 250;
+      }
+    }
+    const graphemeLines = this._wrapText(newText.lines, this.width);
+    const lines = new Array(graphemeLines.length);
     for (let i = 0; i < graphemeLines.length; i++) {
       lines[i] = graphemeLines[i].join('');
     }

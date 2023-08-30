@@ -88,7 +88,7 @@ interface UniqueTextProps {
   overline: boolean;
   linethrough: boolean;
   textAlign: string;
-
+  oneLine: boolean;
   path?: Path;
 }
 
@@ -183,6 +183,8 @@ export class Text<
   declare whiteboardId: string;
 
   declare zIndex: number;
+
+  declare oneLine: boolean;
 
   declare verticalAlign: string;
   /*boardx custom function end*/
