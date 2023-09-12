@@ -395,7 +395,7 @@ export class Textbox extends IText {
       offset += word.length;
 
       lineWidth += infixWidth + wordWidth - additionalSpace;
-      if (lineWidth > maxWidth && !lineJustStarted) {
+      if (lineWidth > maxWidth && !lineJustStarted && !this.oneLine) {
         graphemeLines.push(line);
         line = [];
         lineWidth = wordWidth;
@@ -468,7 +468,12 @@ export class Textbox extends IText {
    */
   _splitTextIntoLines(text: string) {
     const newText = super._splitTextIntoLines(text);
-
+    if (this.textLines && this.textLines.length > 1) {
+      this.oneLine = false;
+    }
+    else {
+      this.oneLine = true;
+    }
     if ((this.obj_type === 'WBText' || this.obj_type === 'WBTextbox') && newText && newText.lines && this.oneLine) {
       if (newText.lines[0].length > 1) {
         this.width = this._measureWord(newText.lines[0], 0, 0) > 250 ? this._measureWord(newText.lines[0], 0, 0) : 250;

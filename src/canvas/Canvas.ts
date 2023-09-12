@@ -114,8 +114,6 @@ export class Canvas extends SelectableCanvas {
 
   declare isActiveSelectionAction: boolean;
 
-  declare asStartPosition: object;
-
   declare currentSubTargets?: FabricObject[];
 
   private _isClick: boolean;
@@ -1465,12 +1463,6 @@ export class Canvas extends SelectableCanvas {
     target?: FabricObject
   ): this is AssertKeys<this, '_activeObject'> {
     this.isActiveSelectionAction = true;
-    if (e instanceof MouseEvent || e instanceof PointerEvent) {
-      this.asStartPosition = { x: e.pageX, y: e.pageY };
-    } else if (e instanceof TouchEvent && e.touches.length > 0) {
-      this.asStartPosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-    }
-
     const activeObject = this._activeObject;
     const activeSelection = this._activeSelection;
     const isAS = activeObject === activeSelection;
