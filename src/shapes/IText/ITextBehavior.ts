@@ -683,7 +683,7 @@ export abstract class ITextBehavior<
       isTextChanged && this.canvas.fire('object:modified', { target: this });
     }
     if (this.oneLine) {
-      this.set({ oneLine: false })
+      this.oneLine = false;
     }
     this.initDimensions();
     this.dirty = true;
