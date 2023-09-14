@@ -1660,7 +1660,10 @@ export class Canvas extends SelectableCanvas {
 
   zoomToViewAllObjects() {
 
-    let topLeftX: number | null = null, topLeftY: number | null = null, bottomRightX: number | null = null, bottomRightY: number | null = null;
+    let topLeftX = 0;
+    let topLeftY = 0;
+    let bottomRightX = 0;
+    let bottomRightY = 0;
 
     //calculate the top left and bottom right points for all the objects on canvas
     this.getObjects().forEach((obj) => {
@@ -1714,7 +1717,10 @@ export class Canvas extends SelectableCanvas {
 
   zoomToViewObjects(objs: any[]) {
 
-    let topLeftX: number | null = null, topLeftY: number | null = null, bottomRightX: number | null = null, bottomRightY: number | null = null;
+    let topLeftX = 0;
+    let topLeftY = 0;
+    let bottomRightX = 0;
+    let bottomRightY = 0;
 
     //calculate the top left and bottom right points for all the objects on canvas
     objs.forEach((obj: { left: number; top: number; width: any; height: any; }) => {
