@@ -13,7 +13,7 @@ import { Point } from '../Point';
 import { Group } from '../shapes/Group';
 import type { IText } from '../shapes/IText/IText';
 import type { FabricObject } from '../shapes/Object/FabricObject';
-import { AssertKeys } from '../typedefs';
+import { AssertKeys, TMat2D } from '../typedefs';
 import { isTouchEvent, stopEvent } from '../util/dom_event';
 import { sendPointToPlane } from '../util/misc/planeChange';
 import {
@@ -1641,4 +1641,130 @@ export class Canvas extends SelectableCanvas {
   _initStatic() {
     return;
   }
+
+
+  /**
+   * @custom
+   */
+  zoomToCenterPoint(vpCenter: { x: number; y: number; }, zoom: number) {
+    const vpt: TMat2D = [
+      zoom,
+      0,
+      0,
+      zoom,
+      -(vpCenter.x * zoom - this.width / 2),
+      -(vpCenter.y * zoom - this.height / 2),
+    ];
+    this.setViewportTransform(vpt);
+  }
+
+  zoomToViewAllObjects() {
+
+    let topLeftX: number | null = null, topLeftY: number | null = null, bottomRightX: number | null = null, bottomRightY: number | null = null;
+
+    //calculate the top left and bottom right points for all the objects on canvas
+    this.getObjects().forEach((obj) => {
+
+      if (topLeftX == null) {
+        topLeftX = obj.left;
+        topLeftY = obj.top;
+      }
+
+      if (obj.left < topLeftX) topLeftX = obj.left;
+
+      if (obj.top < topLeftY) topLeftY = obj.top;
+
+      if (bottomRightX == null) {
+
+        bottomRightX = obj.left + obj.width;
+
+        bottomRightY = obj.top + obj.height;
+
+      }
+
+      if (obj.left + obj.width > bottomRightX) bottomRightX = obj.left + obj.width;
+
+      if (obj.top + obj.height > bottomRightY) bottomRightY = obj.top + obj.height;
+
+    });
+
+    //calculate the center of the canvas
+    const centerX = (topLeftX + bottomRightX) / 2;
+
+    const centerY = (topLeftY + bottomRightY) / 2;
+
+    //calculate the scale factor
+
+    const scaleX = this.width / (bottomRightX - topLeftX);
+
+    const scaleY = this.height / (bottomRightY - topLeftY);
+
+    let scale = Math.round(Math.min(scaleX, scaleY) * 0.8 * 100);
+
+    if (scale > 100) scale = 100;
+    if (scale < 3) scale = 3;
+
+    //zoom to cover all the objects on canvas
+
+    this.zoomToCenterPoint({ x: centerX, y: centerY }, scale / 100);
+
+    return scale;
+
+  }
+
+  zoomToViewObjects(objs: any[]) {
+
+    let topLeftX: number | null = null, topLeftY: number | null = null, bottomRightX: number | null = null, bottomRightY: number | null = null;
+
+    //calculate the top left and bottom right points for all the objects on canvas
+    objs.forEach((obj: { left: number; top: number; width: any; height: any; }) => {
+
+      if (topLeftX == null) {
+
+        topLeftX = obj.left;
+
+        topLeftY = obj.top;
+
+      }
+
+      if (obj.left < topLeftX) topLeftX = obj.left;
+
+      if (obj.top < topLeftY) topLeftY = obj.top;
+
+      if (bottomRightX == null) {
+
+        bottomRightX = obj.left + obj.width;
+
+        bottomRightY = obj.top + obj.height;
+
+      }
+
+      if (obj.left + obj.width > bottomRightX) bottomRightX = obj.left + obj.width;
+
+      if (obj.top + obj.height > bottomRightY) bottomRightY = obj.top + obj.height;
+
+    });
+
+    //calculate the center of the canvas
+    const centerX = (topLeftX + bottomRightX) / 2;
+
+    const centerY = (topLeftY + bottomRightY) / 2;
+
+    //calculate the scale factor
+    const scaleX = this.width / (bottomRightX - topLeftX);
+
+    const scaleY = this.height / (bottomRightY - topLeftY);
+
+    let scale = Math.round(Math.min(scaleX, scaleY) * 0.8 * 100);
+
+    if (scale > 100) scale = 100;
+
+    if (scale < 3) scale = 3;
+
+    //zoom to cover all the objects on canvas
+    this.zoomToCenterPoint({ x: centerX, y: centerY }, scale / 100);
+
+    return scale;
+  }
+
 }
