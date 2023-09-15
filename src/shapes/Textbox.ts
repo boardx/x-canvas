@@ -65,7 +65,9 @@ export class Textbox extends IText {
   }
   constructor(text: string, options: any) {
     super(text, options);
-    this.addControls();
+    if (this.obj_type !== 'WBText' && this.obj_type !== 'WBTextbox') {
+      this.addControls();
+    }
     this.InitializeEvent();
   }
 
