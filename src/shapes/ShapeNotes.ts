@@ -393,6 +393,24 @@ export class ShapeNotes extends Textbox {
    * @returns {Array} Array of line(s) into which the given text is wrapped
    * to.
    */
+  /** This is the method of char split */
+  graphemeSplitForRectNotes(textstring: string): string[] {
+    const graphemes = [];
+    const words = textstring.split(/\b/);
+    for (let i = 0; i < words.length; i++) {
+      // 检查单词是否全为拉丁字母，长度不大于16
+      if (/^[a-zA-Z]{1,16}$/.test(words[i])) {
+        graphemes.push(words[i]);
+      } else {
+        for (let j = 0; j < words[i].length; j++) {
+          graphemes.push(words[i][j]);
+        }
+      }
+    }
+    return graphemes;
+  };
+
+
   _wrapLine(
     _line,
     lineIndex: number,
@@ -403,7 +421,7 @@ export class ShapeNotes extends Textbox {
       splitByGrapheme = this.splitByGrapheme,
       graphemeLines = [],
       words = splitByGrapheme
-        ? this.graphemeSplit(_line)
+        ? this.graphemeSplitForRectNotes(_line)
         : this.wordSplit(_line),
       infix = splitByGrapheme ? '' : ' ';
 
@@ -422,13 +440,12 @@ export class ShapeNotes extends Textbox {
     // measure words
     const data = words.map((word) => {
       // if using splitByGrapheme words are already in graphemes.
-      word = splitByGrapheme ? word : this.graphemeSplit(word);
+      word = splitByGrapheme ? word : this.graphemeSplitForRectNotes(word);
       const width = this._measureWord(word, lineIndex, offset);
       largestWordWidth = Math.max(width, largestWordWidth);
       offset += word.length + 1;
       return { word: word, width: width };
     });
-
     const maxWidth = Math.max(
       desiredWidth,
       largestWordWidth,
@@ -455,7 +472,12 @@ export class ShapeNotes extends Textbox {
       if (!lineJustStarted && !splitByGrapheme) {
         line.push(infix);
       }
-      line = line.concat(word);
+      if (word.length > 1) {
+        line = line.concat(word.split(''));
+      } else {
+        line = line.concat(word);
+      }
+
 
       infixWidth = splitByGrapheme
         ? 0
