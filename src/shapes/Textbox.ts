@@ -336,8 +336,8 @@ export class Textbox extends IText {
     const graphemes = [];
     const words = textstring.split(/\b/);
     for (let i = 0; i < words.length; i++) {
-      // 检查单词是否全为拉丁字母，长度不大于13
-      if (/^[a-zA-Z]{1,13}$/.test(words[i])) {
+      // 检查单词是否全为拉丁字母，长度不大于16
+      if (/^[a-zA-Z]{1,16}$/.test(words[i])) {
         graphemes.push(words[i]);
       } else {
         for (let j = 0; j < words[i].length; j++) {
