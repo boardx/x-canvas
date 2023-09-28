@@ -249,6 +249,21 @@ export class FabricObject<
    */
   declare _transformDone?: boolean;
 
+  //extend object properties
+  declare statefullCache: boolean;
+
+  declare isRemoteEditing: boolean;
+
+  declare RemoteUserWhoEditing: string;
+
+  declare NUM_FRACTION_DIGITS: number;
+
+  declare hasRotatingPoint: boolean;
+
+  declare locked: boolean;
+
+  declare isLoading: boolean;
+
   static ownDefaults: Record<string, any> = fabricObjectDefaultValues;
 
   static getDefaults(): Record<string, any> {
@@ -1511,7 +1526,52 @@ export class FabricObject<
     this.off();
     this._set('canvas', undefined);
   }
+  /**extend functions */
+  containsPointNew() { }
 
+  frameExtentContainsPoint() { }
+
+  convertACoordToRCoord() { }
+
+  convertRCoordToACoord1() { }
+
+  convertRCoordToACoord() { }
+
+  convertRCoordToACoordPartialAS() { }
+
+  saveData() { }
+
+  getUndoRedoState() { }
+
+  getRemovedArrow() { }
+
+  getMovedObject() { }
+
+  getModifiedObject() { }
+
+  getFrameBind() { }
+
+  getScaledObject() { }
+
+  initialize() { }
+
+  getCloneWidget() { }
+
+  bringObjToFront() { }
+
+  sendObjToBack() { }
+
+  bringObjForward() { }
+
+  sendObjBackwards() { }
+
+  reSetControl() { }
+
+  drawBordersInGroup() { }
+
+  isActiveSelection() { }
+
+  isGroup() { }
   /**
    *
    * @param {Function} klass

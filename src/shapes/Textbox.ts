@@ -71,7 +71,7 @@ export class Textbox extends IText {
     this.InitializeEvent();
   }
 
-  InitializeEvent(this: any) {
+  InitializeEvent() {
     return true;
   }
   changeWidth(eventData, transform, x, yr) {
@@ -646,6 +646,9 @@ export class Textbox extends IText {
       ['minWidth', 'splitByGrapheme'].concat(propertiesToInclude)
     );
   }
+  /**extend function for fronted */
+  checkTextboxChange() { }
+
 }
 
 classRegistry.setClass(Textbox);

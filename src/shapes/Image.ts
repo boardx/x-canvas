@@ -1081,8 +1081,9 @@ export class Image<
   addSelectionRect() {
     return;
   }
-
-
+  crop() { }
+  cropObjectMovingHandler() { }
+  cropObjectScalingHandler() { }
 }
 
 classRegistry.setClass(Image);
