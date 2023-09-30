@@ -96,7 +96,7 @@ export const fabricObjectDefaultValues = {
   lockSkewingY: false,
   lockScalingFlip: false,
   excludeFromExport: false,
-  objectCaching: true,
+  objectCaching: false,
   noScaleCache: true,
   strokeUniform: false,
   dirty: true,
