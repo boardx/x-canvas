@@ -18,6 +18,8 @@ export const shapeNotesDefaultValues: Partial<TClassProperties<ShapeNotes>> = {
   height: 138,
   maxHeight: 138,
   textAlign: 'center',
+  uniformScaling: false,
+  centeredScaling: false
 };
 
 /**
