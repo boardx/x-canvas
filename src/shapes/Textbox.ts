@@ -45,6 +45,8 @@ export class Textbox extends IText {
   declare dynamicMinWidth: number;
 
   declare oneLine: boolean;
+
+  declare fromCopy: boolean;
   /**
    * Use this boolean property in order to split strings that have no white space concept.
    * this is a cheap way to help with chinese/japanese
@@ -470,11 +472,15 @@ export class Textbox extends IText {
    */
   _splitTextIntoLines(text: string) {
     const newText = super._splitTextIntoLines(text);
-    if ((this.obj_type === 'WBText' || this.obj_type === 'WBTextbox') && this.textLines && this.textLines.length > 1 && this.isEditing) {
+    if (!this.fromCopy) {
+      if ((this.obj_type === 'WBText' || this.obj_type === 'WBTextbox') && this.textLines && this.textLines.length > 1 && this.isEditing) {
+        this.oneLine = false;
+      }
+      else {
+        this.oneLine = true;
+      }
+    } else {
       this.oneLine = false;
-    }
-    else {
-      this.oneLine = true;
     }
     if ((this.obj_type === 'WBText' || this.obj_type === 'WBTextbox') && newText && newText.lines && this.oneLine && this.isEditing) {
       if (newText.lines[0].length > 1) {
