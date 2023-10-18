@@ -94,8 +94,8 @@ export abstract class ITextClickBehavior<
 
   isTripleClick(newPointer: XY) {
     return (
-      this.__newClickTime - this.__lastClickTime < 2000 &&
-      this.__lastClickTime - this.__lastLastClickTime < 2000 &&
+      this.__newClickTime - this.__lastClickTime < 600 &&
+      this.__lastClickTime - this.__lastLastClickTime < 600 &&
       this.__lastPointer.x === newPointer.x &&
       this.__lastPointer.y === newPointer.y
     );
@@ -120,7 +120,8 @@ export abstract class ITextClickBehavior<
     }
     this.isTpClick = true;
     //this.selectLine(this.getSelectionStartFromPointer(options.e));
-    //this.selectAll();
+    // this.selectAllText();
+
   }
 
   /**

@@ -210,6 +210,7 @@ export abstract class ITextBehavior<
    * Selects entire text
    */
   selectAll() {
+
     this.selectionStart = 0;
     this.selectionEnd = this._text.length;
     this._fireSelectionChanged();
@@ -217,6 +218,14 @@ export abstract class ITextBehavior<
     return this;
   }
 
+  selectAllText() {
+
+    this.selectionStart = 0;
+    this.selectionEnd = this._text.length;
+    this._fireSelectionChanged();
+    this._updateTextarea();
+    this.renderCursorOrSelection();
+  }
   /**
    * Returns selected text
    * @return {String}
@@ -335,14 +344,25 @@ export abstract class ITextBehavior<
    */
   selectWord(selectionStart: number) {
     selectionStart = selectionStart || this.selectionStart;
-    const newSelectionStart = this.searchWordBoundary(
-      selectionStart,
-      -1
-    ) /* search backwards */,
+    //如果光标之前的字符是一个中文字符
+    let lastWord = this._text[selectionStart - 1];
+    let newSelectionStart: number = 0;
+    let newSelectionEnd: number = 0;
+    const regex = /^[\u4e00-\u9fa5]+$/;
+    if (regex.test(lastWord)) {
+      newSelectionStart = selectionStart - 1;
+      newSelectionEnd = selectionStart;
+    } else {
+      newSelectionStart = this.searchWordBoundary(
+        selectionStart,
+        -1
+      );
       newSelectionEnd = this.searchWordBoundary(
         selectionStart,
         1
       ); /* search forward */
+    }
+
     this.selectionStart = newSelectionStart;
     this.selectionEnd = newSelectionEnd;
     this._fireSelectionChanged();
