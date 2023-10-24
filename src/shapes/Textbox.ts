@@ -484,7 +484,7 @@ export class Textbox extends IText {
     }
     if ((this.obj_type === 'WBText' || this.obj_type === 'WBTextbox') && newText && newText.lines && this.oneLine && this.isEditing) {
       if (newText.lines[0].length > 1) {
-        this.width = this._measureWord(newText.lines[0], 0, 0) > 250 ? this._measureWord(newText.lines[0], 0, 0) + 10 : this.width;
+        this.width = this._measureWord(newText.lines[0], 0, 0) > this.width ? this._measureWord(newText.lines[0], 0, 0) + 10 : this.width;
       }
     }
     const graphemeLines = this._wrapText(newText.lines, this.width);
