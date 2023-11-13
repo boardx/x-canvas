@@ -963,6 +963,7 @@ export class ShapeNotes extends Textbox {
     return [
       'more',
       'fontSize',
+      'textAlign',
       'changeFont',
       'backgroundColor',
       'fontColor',
@@ -972,7 +973,7 @@ export class ShapeNotes extends Textbox {
       'shapeBorderColor',
       'lineWidth',
       'borderLineIcon',
-      'delete'
+      'delete',
     ];
   }
   getWidgetMenuLength() {
