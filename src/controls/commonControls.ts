@@ -188,13 +188,13 @@ export const createResizeControlsForText = () => ({
     cursorStyleHandler: scaleSkewCursorStyleHandler,
     actionName: 'resizing',
   }),
-  // ml: new Control({
-  //   x: -0.5,
-  //   y: 0,
-  //   actionHandler: changeWidth,
-  //   cursorStyleHandler: scaleSkewCursorStyleHandler,
-  //   actionName: 'resizing',
-  // }),
+  ml: new Control({
+    x: -0.5,
+    y: 0,
+    actionHandler: changeWidth,
+    cursorStyleHandler: scaleSkewCursorStyleHandler,
+    actionName: 'resizing',
+  }),
 });
 
 export const createTextboxDefaultControls = () => ({
