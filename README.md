@@ -1,7 +1,5 @@
 # x-canvas
 
-# x-canvas
-
 ## Overview
 
 x-canvas is an advanced digital canvas tool, essential for the next generation of digital whiteboard applications. Developed as a specialized fork of the fabric.js library, x-canvas is designed to enrich the user experience in digital whiteboard environments, providing a versatile and intuitive platform for creative and collaborative endeavors.
@@ -86,19 +84,29 @@ Stay updated with our future plans for x-canvas:
 
 x-canvas is licensed under:
 
-- [License details]
+- MIT License
 
 ## Support and Contact
 
 For support or inquiries:
 
 - [Support channels and contact information]
-
+ 
 ## Acknowledgements
 
-Special thanks to:
+We owe immense gratitude to the top contributors of fabric.js, whose dedication and expertise have significantly influenced the development of x-canvas. A special thank you to:
 
-- [Credits and acknowledgements]
+- Andrea Bogazzi (GitHub: asturur)
+- Juriy Zaytsev (GitHub: kangax)
+- Keyur Patel (GitHub: keyurpatel)
+- Steve Eberhardt (GitHub: melchiar)
+- Nimish Rajwade (GitHub: nimworks)
+- Shachar (GitHub: ShaMan123)
+- Stefan Hayden (GitHub: stefanhayden)
+- Vincent Battaglia (GitHub: vinch)
+
+Your contributions to fabric.js have been instrumental in advancing digital canvas technology. The x-canvas project greatly benefits from the groundwork you have laid, and your commitment to open-source development inspires us to continue innovating and improving in the field of digital whiteboarding and collaborative tools.
+
 
 ## Appendices
 
