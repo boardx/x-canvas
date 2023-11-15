@@ -1,257 +1,118 @@
-# Fabric.js
+# x-canvas
 
-<a href="http://fabricjs.com/kitchensink" target="_blank"><img align="right" src="/lib/screenshot.png" style="width:400px"></a>
+## Overview
 
-A **simple and powerful Javascript HTML5 canvas library**.
+x-canvas is an advanced digital canvas tool, essential for the next generation of digital whiteboard applications. Developed as a specialized fork of the fabric.js library, x-canvas is designed to enrich the user experience in digital whiteboard environments, providing a versatile and intuitive platform for creative and collaborative endeavors.
+![image](https://github.com/boardx/x-canvas/assets/2325074/1279e92f-f074-4bcc-9074-3827afc27634)
+## Background
 
-- [**Website**][website]
-- [**GOTCHAS**][gotchas]
-- [**Contributing, Developing and More**](CONTRIBUTING.md)
+### Origin
 
----
+Originating as a fork from fabric.js, x-canvas was tailored to meet the specific needs of digital whiteboard applications. Our team has built upon the solid foundation of fabric.js, enhancing its capabilities to cater to dynamic and interactive whiteboard sessions.
 
-<!-- build/coverage status, climate -->
+### Enhancements Over fabric.js
 
-[![🩺](../../actions/workflows/build.yml/badge.svg)](../../actions/workflows/build.yml)
-[![🧪](../../actions/workflows/tests.yml/badge.svg)](../../actions/workflows/tests.yml)
-[![CodeQL](../../actions/workflows/codeql-analysis.yml/badge.svg)](../../actions/workflows/codeql-analysis.yml)
+x-canvas introduces a range of improvements and additional features over the original fabric.js, including:
 
----
-
-<!-- npm, bower, CDNJS versions, downloads -->
-
-[![cdnjs](https://img.shields.io/cdnjs/v/fabric.js.svg)][cdnjs]
-[![jsdelivr](https://data.jsdelivr.com/v1/package/npm/fabric/badge)][jsdelivr]
-[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/fabricjs/fabric.js)
-
-[![NPM](https://badge.fury.io/js/fabric.svg)](http://badge.fury.io/js/fabric)
-[![Downloads per month](https://img.shields.io/npm/dm/fabric.svg)](https://www.npmjs.org/package/fabric)
-[![Bower](https://badge.fury.io/bo/fabric.svg)](http://badge.fury.io/bo/fabric)
-
----
-
-[![Sponsor asturur](https://img.shields.io/static/v1?label=Sponsor%20asturur&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://github.com/sponsors/asturur)
-[![Sponsor melchiar](https://img.shields.io/static/v1?label=Sponsor%20melchiar&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://github.com/sponsors/melchiar)
-[![Sponsor ShaMan123](https://img.shields.io/static/v1?label=Sponsor%20ShaMan123&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://github.com/sponsors/ShaMan123)
-[![Patreon](https://img.shields.io/static/v1?label=Patreon&message=%F0%9F%91%8D&logo=Patreon&color=blueviolet)](https://www.patreon.com/fabricJS)
-
----
+- Enhanced interactivity and responsiveness for a more fluid user experience.
+- Scalability improvements to handle complex, high-traffic whiteboard sessions.
+- Custom tools and widgets designed for diverse digital whiteboard use cases.
 
 ## Features
 
-- Out of the box interactions such as scale, move, rotate, skew, group...
-- Built in shapes, controls, animations, image filters, gradients, patterns, brushes...
-- `JPG`, `PNG`, `JSON` and `SVG` i/o
-- [Typed and modular](#migrating-to-v6)
-- [Unit tested](CONTRIBUTING.md#%F0%9F%A7%AA%20testing)
+x-canvas offers a wide array of features designed to empower users in a digital whiteboard setting. Key features include:
 
-#### Supported Browsers/Environments
+- **Sticky Notes**: Users can easily add, edit, and move sticky notes, perfect for brainstorming sessions and quick note-taking.
+- **Shapes**: A comprehensive set of shapes including rectangles, circles, and custom polygons, allowing for clear and structured visual representations.
+- **Arrows**: Intuitive tools to create and manipulate arrows, ideal for demonstrating relationships and flow in diagrams.
+- **Customization**: Extensive customization options for all elements, including color, size, and text annotations.
+- **Interactive Tools**: Tools designed for user interaction, such as drag-and-drop, resizing, and rotation, enhancing the overall collaborative experience.
+- **Seamless Integration**: Designed to integrate smoothly with BoardX and other digital whiteboard systems, ensuring a cohesive user experience.
+- **Real-Time Collaboration**: Capabilities that support real-time collaboration, allowing multiple users to interact with the canvas simultaneously.
 
-|   Context   | Supported Version | Notes                           |
-| :---------: | :---------------: | ------------------------------- |
-|   Firefox   |        ✔️         | modern version (tbd)            |
-|   Safari    |        ✔️         | version >= 10.1                 |
-|    Opera    |        ✔️         | chromium based                  |
-|   Chrome    |        ✔️         | modern version (tbd)            |
-|    Edge     |        ✔️         | chromium based                  |
-| Edge Legacy |        ❌         |
-|    IE11     |        ❌         |
-|   Node.js   |        ✔️         | [Node.js installation](#nodejs) |
+## Getting Started
 
-Fabric.js Does not use transpilation by default, the browser version we support is determined by the level of canvas api we want to use and some js syntax. While JS can be easily transpiled, canvas API can't.
+### Prerequisites
 
-## Migrating to v6
+Before installing x-canvas, ensure you have:
 
-v6 is a **MAJOR** effort including migrating to TS and es6, countless fixes, rewrites and features.\
-Currently in beta, refer to [#8299](../../issues/8299) for guidance.
+- [List of prerequisites]
 
-```bash
-$ npm install fabric@beta --save
-// or
-$ yarn add fabric@beta
-```
+### Installation
 
-## Installation
+To install x-canvas:
 
-```bash
-$ npm install fabric --save
-// or
-$ yarn add fabric
-```
+- [Installation steps]
 
-#### Browser
+### Basic Usage
 
-[![cdnjs](https://img.shields.io/cdnjs/v/fabric.js.svg)][cdnjs]
-[![jsdelivr](https://data.jsdelivr.com/v1/package/npm/fabric/badge)][jsdelivr]
+Getting started with x-canvas is straightforward:
 
-See [browser modules][mdn_es6] for using es6 imports in the browser or use a dedicated bundler.
+- [Basic usage examples]
 
-#### Node.js
+## Usage in Digital Whiteboard Applications
 
-Fabric.js depends on [node-canvas][node_canvas] for a canvas implementation (`HTMLCanvasElement` replacement) and [jsdom][jsdom] for a `window` implementation on node.
-This means that you may encounter `node-canvas` limitations and [bugs][node_canvas_issues].
+x-canvas is designed to enhance digital whiteboard applications:
 
-Follow these [instructions][node_canvas_install] to get `node-canvas` up and running.
+- [Examples and guides for using x-canvas in whiteboard scenarios]
 
-## Quick Start
+## Integration with BoardX
 
-```js
-// v6
-import { Canvas, Rect } from 'fabric'; // browser
-import { StaticCanvas, Rect } from 'fabric/node'; // node
+x-canvas can be seamlessly integrated into BoardX or other digital whiteboard platforms:
 
-// v5
-import { fabric } from 'fabric';
-```
+- [Integration guide]
 
-<details><summary><b>Plain HTML</b></summary>
+## API Documentation
 
-```html
-<canvas id="canvas" width="300" height="300"></canvas>
+The x-canvas API offers comprehensive functionalities:
 
-<script src="https://cdn.jsdelivr.net/npm/fabric"></script>
-<script>
-  const canvas = new fabric.Canvas('canvas');
-  const rect = new fabric.Rect({
-    top: 100,
-    left: 100,
-    width: 60,
-    height: 70,
-    fill: 'red',
-  });
-  canvas.add(rect);
-</script>
-```
+- [API reference and examples]
 
-</details>
+## Development and Contribution
 
-<details><summary><b>ReactJS</b></summary>
+Contributions to x-canvas are welcome:
 
-```tsx
-import React, { useEffect, useRef } from 'react';
-import * as fabric from 'fabric'; // v6
-import { fabric } from 'fabric'; // v5
+- [Guide for developers]
 
-export const FabricJSCanvas = () => {
-  const canvasEl = useRef<HTMLCanvasElement>(null);
-  useEffect(() => {
-    const options = { ... };
-    const canvas = new fabric.Canvas(canvasEl.current, options);
-    // make the fabric.Canvas instance available to your app
-    updateCanvasContext(canvas);
-    return () => {
-      updateCanvasContext(null);
-      canvas.dispose();
-    }
-  }, []);
+## Roadmap and Future Plans
 
-  return <canvas width="300" height="300" ref={canvasEl}/>;
-};
+Stay updated with our future plans for x-canvas:
 
-```
+- [Roadmap and future features]
 
-</details>
+## License
 
-<details><summary><b>Node.js</b></summary>
+x-canvas is licensed under:
 
-```js
-import http from 'http';
-import * as fabric from 'fabric/node'; // v6
-import { fabric } from 'fabric'; // v5
+- MIT License
 
-const port = 8080;
+## Support and Contact
 
-http
-  .createServer((req, res) => {
-    const canvas = new fabric.Canvas(null, { width: 100, height: 100 });
-    const rect = new fabric.Rect({ width: 20, height: 50, fill: '#ff0000' });
-    const text = new fabric.Text('fabric.js', { fill: 'blue', fontSize: 24 });
-    canvas.add(rect, text);
-    canvas.renderAll();
-    if (req.url === '/download') {
-      res.setHeader('Content-Type', 'image/png');
-      res.setHeader('Content-Disposition', 'attachment; filename="fabric.png"');
-      canvas.createPNGStream().pipe(res);
-    } else if (req.url === '/view') {
-      canvas.createPNGStream().pipe(res);
-    } else {
-      const imageData = canvas.toDataURL();
-      res.writeHead(200, '', { 'Content-Type': 'text/html' });
-      res.write(`<img src="${imageData}" />`);
-      res.end();
-    }
-  })
-  .listen(port, (err) => {
-    if (err) throw err;
-    console.log(
-      `> Ready on http://localhost:${port}, http://localhost:${port}/view, http://localhost:${port}/download`
-    );
-  });
-```
+For support or inquiries:
 
-</details>
+- [Support channels and contact information]
+ 
+## Acknowledgements
 
-See our ready to use [templates](./.codesandbox/templates/).
+We owe immense gratitude to the top contributors of fabric.js, whose dedication and expertise have significantly influenced the development of x-canvas. A special thank you to:
 
----
+- Andrea Bogazzi (GitHub: asturur)
+- Juriy Zaytsev (GitHub: kangax)
+- Keyur Patel (GitHub: keyurpatel)
+- Steve Eberhardt (GitHub: melchiar)
+- Nimish Rajwade (GitHub: nimworks)
+- Shachar (GitHub: ShaMan123)
+- Stefan Hayden (GitHub: stefanhayden)
+- Vincent Battaglia (GitHub: vinch)
 
-## Other Solutions
+Your contributions to fabric.js have been instrumental in advancing digital canvas technology. The x-canvas project greatly benefits from the groundwork you have laid, and your commitment to open-source development inspires us to continue innovating and improving in the field of digital whiteboarding and collaborative tools.
 
-| Project                        | Description          | Demo |
-| ------------------------------ | -------------------- | :--: |
-| [Three.js][three.js]           | 3D graphics          |
-| [PixiJS][pixijs]               | WebGL renderer       |
-| [Konva][konva]                 | Similar features     |  ❌  |
-| [Canvas2PDF][canvas2pdf]       | PDF renderer         |
-| [html-to-image][html-to-image] | HTML to image/canvas |
 
-## More Resources
+## Appendices
 
-- [Demos on `fabricjs.com`][demos]
-- [Fabric.js on `Twitter`][twitter]
-- [Fabric.js on `CodeTriage`][code_triage]
-- [Fabric.js on `Stack Overflow`][so]
-- [Fabric.js on `jsfiddle`][jsfiddles]
-- [Fabric.js on `Codepen.io`][codepens]
+For more information:
 
-## Credits [![Patreon](https://img.shields.io/static/v1?label=Patreon&message=%F0%9F%91%8D&logo=Patreon&color=blueviolet)](https://www.patreon.com/fabricJS)
+- [Additional resources and documentation]
 
-- [kangax][kagnax]
-- [asturur][asturur] on [`Twitter`][asturur_twitter]
-  [![Sponsor asturur](https://img.shields.io/static/v1?label=Sponsor%20asturur&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://github.com/sponsors/asturur)
-- [melchiar][melchiar] [![Sponsor melchiar](https://img.shields.io/static/v1?label=Sponsor%20melchiar&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://github.com/sponsors/melchiar)
-- [ShaMan123][shaman123] [![Sponsor ShaMan123](https://img.shields.io/static/v1?label=Sponsor%20ShaMan123&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://github.com/sponsors/ShaMan123)
-- Ernest Delgado for the original idea of [manipulating images on canvas](http://www.ernestdelgado.com/archive/canvas/)
-- [Maxim "hakunin" Chernyak](http://twitter.com/hakunin) for ideas, and help with various parts of the library throughout its life
-- [Sergey Nisnevich](http://nisnya.com) for help with geometry logic
-- [Stefan Kienzle](https://twitter.com/kienzle_s) for help with bugs, features, documentation, GitHub issues
-- [Shutterstock](http://www.shutterstock.com/jobs) for the time and resources invested in using and improving Fabric.js
-- [and all the other contributors][contributors]
 
-[asturur]: https://github.com/asturur
-[asturur_twitter]: https://twitter.com/AndreaBogazzi
-[canvas2pdf]: https://github.com/joshua-gould/canvas2pdf
-[cdnjs]: https://cdnjs.com/libraries/fabric.js
-[code_triage]: https://www.codetriage.com/kangax/fabric.js
-[codepens]: https://codepen.io/tag/fabricjs
-[contributors]: https://github.com/fabricjs/fabric.js/graphs/contributors
-[demos]: http://fabricjs.com/demos/
-[gotchas]: http://fabricjs.com/fabric-gotchas
-[html-to-image]: https://github.com/bubkoo/html-to-image
-[jsdelivr]: https://www.jsdelivr.com/package/npm/fabric
-[jsdom]: https://github.com/jsdom/jsdom
-[jsfiddles]: https://jsfiddle.net/user/fabricjs/fiddles/
-[kagnax]: https://twitter.com/kangax
-[konva]: https://github.com/konvajs/konva
-[mdn_es6]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules
-[melchiar]: https://github.com/melchiar
-[node_canvas]: https://github.com/Automattic/node-canvas
-[node_canvas_install]: https://github.com/Automattic/node-canvas#compiling
-[node_canvas_issues]: https://github.com/Automattic/node-canvas/issues
-[patreon_badge]: https://img.shields.io/static/v1?label=Patreon&message=%F0%9F%91%8D&logo=Patreon&color=blueviolet
-[pixijs]: https://github.com/pixijs/pixijs
-[shaman123]: https://github.com/ShaMan123
-[so]: https://stackoverflow.com/questions/tagged/fabricjs
-[three.js]: https://github.com/mrdoob/three.js/
-[twitter]: https://twitter.com/fabricjs
-[website]: http://fabricjs.com/
+
