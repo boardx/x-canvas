@@ -63,7 +63,9 @@ export class CircleNotes extends Textbox {
 
   declare userEmoji: object[];
 
-  public extendPropeties = ['obj_type', 'whiteboardId', 'userId', 'timestamp', 'zIndex', 'locked', 'verticalAlign', 'lines', '_id', 'zIndex', 'relationship', 'emoj', 'userEmoji'];
+  public extendPropeties = ['obj_type', 'whiteboardId', 'userId',
+    'timestamp', 'zIndex', 'locked', 'verticalAlign', 'lines', '_id',
+    'zIndex', 'relationship', 'emoj', 'userEmoji'];
   /**
    * Minimum calculated width of a textbox, in pixels.
    * fixed to 2 so that an empty textbox cannot go to 0
@@ -790,7 +792,6 @@ export class CircleNotes extends Textbox {
     let lineHeights = 0;
     const left = this._getLeftOffset();
     const top = this._getTopOffset();
-    console.log('left ,top ', left, top)
     const offsets = this._applyPatternGradientTransform(
       ctx,
       method === 'fillText' ? this.fill : this.stroke

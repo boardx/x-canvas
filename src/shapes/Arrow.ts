@@ -341,7 +341,7 @@ export class Arrow extends Line {
   }
 
   initEvents(options) {
-    console.log('initEvents')
+    // console.log('initEvents');
     return;
   }
 
@@ -432,7 +432,8 @@ export class Arrow extends Line {
       'connectorTip',
       'objectLock',
       'borderLineIcon',
-      'delete'
+      'delete',
+      'aiassist'
     ];
   }
 
@@ -559,202 +560,7 @@ export class Arrow extends Line {
     this.canvas.setActiveObject(this);
     this.canvas.discardActiveObject();
   }
-  _renderbk(ctx) {
-    const p = this.calcLinePoints();
-    const angle = this.getArrowAngle();
-    const currZoom = this.canvas.getZoom();
-    ctx.lineWidth =
-      currZoom > 1.0 ? this.strokeWidth / currZoom : this.strokeWidth;
-    if (!this.ctx) {
-      this.ctx = ctx;
-    }
-    if (this.connectorStyle === 'dashed') {
-      ctx.setLineDash([8, 20]);
-    } else if (this.connectorStyle === 'dotted') {
-      ctx.setLineDash([1, 15]);
-    } else {
-      ctx.setLineDash([]);
-    }
-    ctx.strokeStyle = this.stroke;
-    ctx.fillStyle = this.stroke;
-    ctx.lineJoin = 'round';
-    ctx.lineCap = 'round';
-    ctx.beginPath();
-    const { rx: rx1, ry: ry1 } = this.connectorStart || {};
-    const { rx: rx2, ry: ry2 } = this.connectorEnd || {};
-    const BL = 30;
-    const BASE_LENGTH = currZoom > 1.0 ? BL / currZoom : BL;
-    const { x1, x2, y1, y2 } = p;
 
-    const SLOPE_MAP = {
-      RIGHT: 'RIGHT',
-      LEFT: 'LEFT',
-      UP: 'UP',
-      DOWN: 'DOWN'
-    };
-    Object.freeze(SLOPE_MAP);
-    let slopeToDirection;
-    let endSlopeToDirection;
-
-    let pen = { x: x1, y: y1 };
-    const lineTo = (coordinate: any = {}) => {
-      if (
-        pen.x !== coordinate.x &&
-        pen.y !== coordinate.y &&
-        coordinate.x !== undefined &&
-        coordinate.y !== undefined
-      ) {
-        pen.x !== coordinate.x && lineTo({ x: coordinate.x });
-        pen.y !== coordinate.y && lineTo({ y: coordinate.y });
-        return;
-      } else {
-        if (coordinate.x === undefined) {
-          if (
-            slopeToDirection === SLOPE_MAP.UP &&
-            x1 < 0 &&
-            y1 < 0 &&
-            pen.y < coordinate.y
-          ) {
-            if (pen.x < 0) {
-              lineTo({ x: 0 });
-              return;
-            }
-          }
-        }
-        pen = { ...pen, ...coordinate };
-        ctx.lineTo(pen.x, pen.y);
-      }
-    };
-    const getSlope = ({ x1, x2, y1, y2 }) => {
-      return (y1 - y2) / (x1 - x2);
-    };
-    const getSlopeWithZero = ({ x, y }) => {
-      return getSlope({ x1: 0, x2: x, y1: 0, y2: y });
-    };
-
-    const slope = getSlopeWithZero({ x: rx1, y: ry1 });
-    const endSlope = getSlopeWithZero({ x: rx2, y: ry2 });
-
-    if (-1 < slope && slope < 1) {
-      if (rx1 < 0) {
-        slopeToDirection = SLOPE_MAP.LEFT;
-      } else {
-        slopeToDirection = SLOPE_MAP.RIGHT;
-      }
-    }
-    if (slope > 1 || slope < -1) {
-      if (ry1 < 0) {
-        slopeToDirection = SLOPE_MAP.UP;
-      } else {
-        slopeToDirection = SLOPE_MAP.DOWN;
-      }
-    }
-    if (-1 < endSlope && endSlope < 1) {
-      if (rx2 < 0) {
-        endSlopeToDirection = SLOPE_MAP.LEFT;
-      } else {
-        endSlopeToDirection = SLOPE_MAP.RIGHT;
-      }
-    }
-    if (endSlope > 1 || endSlope < -1) {
-      if (ry2 < 0) {
-        endSlopeToDirection = SLOPE_MAP.UP;
-      } else {
-        endSlopeToDirection = SLOPE_MAP.DOWN;
-      }
-    }
-    if (this.connectorShape === 'angled') {
-      ctx.moveTo(p.x1, p.y1);
-
-      if (slopeToDirection === SLOPE_MAP.UP) {
-        lineTo({ y: y1 - BASE_LENGTH });
-      }
-      if (slopeToDirection === SLOPE_MAP.RIGHT) {
-        lineTo({ x: x1 + BASE_LENGTH });
-      }
-      if (slopeToDirection === SLOPE_MAP.DOWN) {
-        lineTo({ y: y1 + BASE_LENGTH });
-      }
-      if (slopeToDirection === SLOPE_MAP.LEFT) {
-        lineTo({ x: x1 - BASE_LENGTH });
-      }
-
-      if (x1 < x2 && y1 < y2) {
-        lineTo({ y: p.y2 - (p.y2 - p.y1) / 2 });
-      }
-      if (endSlopeToDirection === SLOPE_MAP.UP) {
-        lineTo({ y: y2 - BASE_LENGTH });
-      }
-      if (endSlopeToDirection === SLOPE_MAP.RIGHT) {
-        lineTo({ x: x2 + BASE_LENGTH });
-        lineTo({ y: p.y2 });
-      }
-      if (endSlopeToDirection === SLOPE_MAP.DOWN) {
-        lineTo({ y: y2 + BASE_LENGTH });
-      }
-      if (endSlopeToDirection === SLOPE_MAP.LEFT) {
-        lineTo({ x: x2 - BASE_LENGTH });
-        lineTo({ y: p.y2 });
-      }
-
-      lineTo({ x: x2, y: p.y2 });
-      ctx.stroke();
-    } else if (this.connectorShape === 'curved') {
-      if (
-        Math.round(angle / 90) * 90 === 180 ||
-        (Math.round(angle / 90) * 90) % 360 === 0
-      ) {
-        ctx.moveTo(p.x1, p.y1);
-        const py21 = (p.y2 - p.y1) / 3;
-        ctx.bezierCurveTo(p.x1, p.y1 + py21, p.x2, p.y2 - py21, p.x2, p.y2);
-        ctx.stroke();
-      } else {
-        ctx.moveTo(p.x1, p.y1);
-        const px21 = (p.x2 - p.x1) / 3;
-        ctx.bezierCurveTo(p.x1 + px21, p.y1, p.x2 - px21, p.y2, p.x2, p.y2);
-        ctx.stroke();
-      }
-    } else {
-      ctx.moveTo(p.x1, p.y1);
-      ctx.lineTo(p.x2, p.y2);
-      ctx.stroke();
-    }
-    if (this.connectorShape === 'curved' || this.connectorShape === 'angled') {
-      if (this.subType === 'arrow') {
-        const reAngle = angle % 360;
-        let fixAngle = null;
-        if (reAngle < 45) {
-          fixAngle = 0;
-        } else if (reAngle < 135) {
-          fixAngle = 90;
-        } else if (reAngle < 225) {
-          fixAngle = 180;
-        } else if (reAngle < 315) {
-          fixAngle = 270;
-        } else {
-          fixAngle = 0;
-        }
-
-        if (this.connectorShape === 'angled') {
-          if (endSlopeToDirection === SLOPE_MAP.UP) {
-            fixAngle = 180;
-          }
-          if (endSlopeToDirection === SLOPE_MAP.RIGHT) {
-            fixAngle = 270;
-          }
-          if (endSlopeToDirection === SLOPE_MAP.DOWN) {
-            fixAngle = 1;
-          }
-          if (endSlopeToDirection === SLOPE_MAP.LEFT) {
-            fixAngle = 90;
-          }
-        }
-        this.drawArrowTips(ctx, p, fixAngle);
-      }
-    } else if (this.subType === 'arrow') {
-      this.drawArrowTips(ctx, p);
-    }
-  }
   spmyconvert(xs) {
     const l = [];
     for (let i = 0; i < xs.length; i++) {
@@ -965,7 +771,7 @@ export class Arrow extends Line {
       let sx2a = 0;
       let sy2a = offset;
 
-      console.log('in curved ', p.x1, p.y1, p.x2, p.y2);
+      // console.log('in curved ', p.x1, p.y1, p.x2, p.y2);
 
       let sp = { x: p.x1, y: p.y1 },
         ep = { x: p.x2, y: p.y2 };

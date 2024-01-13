@@ -477,6 +477,7 @@ export class Path<
       'borderLineIcon',
       'objectLock',
       'delete',
+      'aiassist',
     ]; // 'fillColor',  'backgroundColor','more',
   }
   getWidgetMenuLength() {

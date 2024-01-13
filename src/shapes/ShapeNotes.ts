@@ -974,6 +974,7 @@ export class ShapeNotes extends Textbox {
       'lineWidth',
       'borderLineIcon',
       'delete',
+      'aiassist'
     ];
   }
   getWidgetMenuLength() {

@@ -426,7 +426,9 @@ export class Image<
     return ['more', 'objectLock', 'crop', 'delete', 'aiassist'];
   }
   getWidgetMenuLength() {
-    if (this.locked) return 30;
+    if (this.locked) {
+      return 30;
+    }
     return 80;
   }
   getContextMenuList() {

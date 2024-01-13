@@ -14,5 +14,6 @@
   "editor.codeActionsOnSave": {
     "source.organizeImports": false,
     "source.removeUnusedImports": true
-  }
+  },
+  "editor.inlineSuggest.showToolbar": "onHover"
 }

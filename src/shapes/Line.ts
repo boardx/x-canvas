@@ -315,7 +315,8 @@ export class Line<
         'Copy',
         'Paste',
         'Cut',
-        'Delete'
+        'Delete',
+        'aiassist'
       ];
     }
 

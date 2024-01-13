@@ -1108,7 +1108,7 @@ export class Group extends createCollectionMixin(
     if (this.locked) {
       return ['objectLock'];
     }
-    return ['objectLock', 'delete'];
+    return ['objectLock', 'delete', 'aiassist'];
   }
 
   getWidgetMenuLength() {
@@ -1202,7 +1202,7 @@ export class Group extends createCollectionMixin(
         'Copy',
         'Paste',
         'Cut',
-        'Delete'
+        'Delete',
       ];
     }
     if (this.locked) {
